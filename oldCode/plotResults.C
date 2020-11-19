@@ -29,10 +29,20 @@ void plotResults(int run1 = 978, int run2 = 980, int run3 = 987, int run4 = 988,
   C2->Divide(kNcols,floor(kNrows/2));
 
   cout << ceil(kNrows/2) << "  " << floor(kNrows/2) << endl;
+
+  //Load in run/HV correspondance
+  ifstream inFile1("runHV.txt"); //Read in file for first run
+  cout << "Reading in runHV.txt..." << endl;
+
+  
+
   
   for (int R=0; R<5; R++){
 
-    int lineNumber = 0;
+    
+
+
+    
     ifstream inFile1(Form("intPulseRun_%d.txt",runs[R])); //Read in file for first run
 
     cout << "Reading in " << Form("intPulseRun_%d.txt",runs[R]) << "..." << endl;
@@ -73,10 +83,16 @@ void plotResults(int run1 = 978, int run2 = 980, int run3 = 987, int run4 = 988,
 	G1->Draw("AP same");
 
 	CosmicCalPlots->cd();
-	G1->Write(Form("Run%d,Row%d,Col%d",runs[R],row,col));
+	G1->Write(Form("Run%d,Row%d,Col%d",runs[R],row,col));	
 	G1->Draw("AP");
 	
 	//cout << "row = " << row << ", col = " << col << ", intVal = " << intVal << endl;
       }
+
+    
+    //Plot the distribution of pedestals by HV run
+    ifstream inFile1(Form("Pedestals_%d.txt",runs[R])); //Read in file for first run
+
+    
   }
 }

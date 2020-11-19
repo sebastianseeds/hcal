@@ -11,7 +11,7 @@ const Int_t kNrows = 12;
 const Int_t kNcols = 12;
 
 const Int_t DISP_MIN_SAMPLE = 85*0;
-const Int_t DISP_MAX_SAMPLE = 135*0+200*0+150*0+20;
+const Int_t DISP_MAX_SAMPLE = 135*0+200*0+150*0+20; //Change to 19 to eliminate overflow bin
 const Int_t DISP_FADC_SAMPLES = (DISP_MAX_SAMPLE-DISP_MIN_SAMPLE);
 
 const Int_t minADC = 0;
@@ -23,14 +23,18 @@ TChain *T = 0;
 TCanvas *C1 = new TCanvas();
 
 //Augment fn's for cosmic Calibration
-void goodHistoTest(TH1F*, int, int);
+void goodHistoTest(TH1F*, double, int, int);
 void getPedestal(Int_t);
-void integratePulse(TH1F*, TF1*, int, int);
+void pulseSpec(TH1F*, TF1*, double, int, int);
 
 //Augmenting with parameters necessary to obtain integrated landau fit values from good pulses
 Double_t nhit = 0;
 TH1F *histos[kNrows][kNcols];
+TH1F *PMTIntSpec[kNrows][kNcols]; //=new TH1F("","",20,0,5000); //Empirical limits
+TH1F *PMTMaxSpec[kNrows][kNcols]; //=new TH1F("","",20,0,1000); //Empirical limits
+TH1F *passHisto = new TH1F("passHisto","passHisto", 19, 0, 19);
 vector<double> intValues;
+vector<double> maxValues;
 vector<int> intValues_row;
 vector<int> intValues_col;
 int signalTotal = 1;
@@ -40,7 +44,13 @@ TF1 *fFit;  //Declaration for landau fit check
 double pedestals[kNrows][kNcols];
 Bool_t gSaturated[kNrows][kNcols];
 int badFit = 0; //Counts up per landau fit failing chi^2 test
+int chisqr = 0; //Counts up per chi sqr <1 fit
 int DRAWNHISTO = 0; //Counts up per histo drawn
+double con;
+double mu;
+double sig;
+double xmaxy;
+double maxy;
 
 
 TH1F* MakeHisto(Int_t row, Int_t col, Int_t bins){
@@ -128,22 +138,21 @@ void displayEvent(Int_t entry = -1){
       if(tdc[r][c]!=0){
         histos[r][c]->SetLineColor(kGreen+1);
       }
-      if(tdc[r][c]!=0 && !gSaturated[r][c]){ //Must check to make sure that the cols are cols and rows are rows
-	
-	goodHistoTest(histos[r][c],r,c);
+      //if(tdc[r][c]!=0 && !gSaturated[r][c]){ //Commented per recommendation to cut on tdc last.
+      if(!gSaturated[r][c]){
+	goodHistoTest(histos[r][c],tdc[r][c],r,c);
 	checkHistos++;
-	
       }
     }
   }
 }
 
 //Open pedestal text file and read out all pedestal values by HV run
-void getPedestal(Int_t run = 989){  //is 0-12 in file along the row or column?---------------------------------------*
-  Int_t lineNumber = 0;
+void getPedestal(int run = 989){  //is 0-12 in file along the row or column?---------------------------------------*
+  int lineNumber = 0;
   ifstream pedFile(Form("Pedestals_%i.txt",run));
 
-  cout << "Getting pedestal values from run " << run << "." << endl;
+  cout << "Getting pedestal values from run " << run << ".." << endl;
   
   int n1;
   double d1, d2;
@@ -165,7 +174,7 @@ void getPedestal(Int_t run = 989){  //is 0-12 in file along the row or column?--
       
       pedestals[rval][cval] = d1; //Are the numbers in pedFile counting rows first then columns?---------------*
       
-      std::cout << "row = " << rval << ", col = " << cval << ", array val = " << pedestals[rval][cval] << std::endl;
+      //cout << "row = " << rval << ", col = " << cval << ", array val = " << pedestals[rval][cval] << endl;
     }
 
   cout << "Pedestal values extracted." << endl;
@@ -173,77 +182,93 @@ void getPedestal(Int_t run = 989){  //is 0-12 in file along the row or column?--
 }
 
 //Saturation and TDC test already applied in display(). Test now for chi^2 goodness of fit to landau.
-void goodHistoTest(TH1F *testHisto, int row, int col){
-
-  //Try to improve Landau fits
-  //int binmax = testHisto->GetMaximumBin();
-  //testHisto->SetBinContent(20,3*(testHisto->GetBinContent(binmax)));
-
-  //Get pedestal value for the run and pmt
+void goodHistoTest(TH1F *testHisto, double tdcVal, int row, int col){
   
+  //Get pedestal value for the run and pmt 
   double pedVal = pedestals[row][col];
-
-  //Subtract pedestal value from each bin
-  for(int b=0 ; b<testHisto->GetNbinsX() ; ++b) {  //Is this how I should be subtracting the pedestal?----------*
-    testHisto->SetBinContent(b,testHisto->GetBinContent(b)-pedVal);
-    if(testHisto->GetBinContent(b) < 0) testHisto->SetBinContent(b,0.0);
-  }  
   
-  testHisto->Fit("landau", "Q", 0, 19);  //Fit histogram with landau, limits window minus overflow on 20
-  fFit=testHisto->GetFunction("landau");
+  //Subtract pedestal value from each bin and cut off bin 20 (overflow)
+  for(int b=0 ; b<testHisto->GetNbinsX() ; ++b) {
+    passHisto->SetBinContent(b,testHisto->GetBinContent(b)-pedVal);
+    //if(passHisto->GetBinContent(b) < 0) passHisto->SetBinContent(b,0.0); //romoved to check pedestals
+  }
 
-  int dof = 18;  //20 bins -1 per histo, removing last bin to erase overflow -> 19 - 1 = 18
-  double rChiSqr = (fFit->GetChisquare())/dof;
+  
+  //Pass threshold from max value as cut
+  
+  if(passHisto->GetBinContent(passHisto->GetMaximumBin())>50 && passHisto->GetMaximumBin()>2 && passHisto->GetMaximumBin()<17){  //Cut out noise by ensuring all pulses are greater than the std dev avg of the ped and that the max lies within the center of the histogram
 
-  if (rChiSqr > 20.0){  //Is this a good limit?---------------------------------------------------------------*
-    if(badFit % 10000 == 0){
-      HistosFile->cd();
-      testHisto->Write(Form("badFitHisto%d_rChiSqr_gt5",badFit));
-      testHisto->Draw("AP");
-      DRAWNHISTO++;
-    }
-    badFit++;
-  } else if (rChiSqr < 1){
-    if(badFit % 10000 == 0){
-      HistosFile->cd();
-      testHisto->Write(Form("badFitHisto%d_rChiSqr_lt1",badFit));
-      testHisto->Draw("AP");
-      DRAWNHISTO++;
-      cout << "Chisqr <1" << endl;
-    }
-    badFit++;
-  } else {
-
-    //if(row == 0 && col == 7) cout << "Event passes cuts" << endl;
+    //cout << "Threshold values are: Max value " << passHisto->GetBinContent(passHisto->GetMaximumBin()) << " at bin " << passHisto->GetMaximumBin() << endl;
     
-    integratePulse(testHisto, fFit, row, col); //Call integratePulse() for histograms that pass all tests
-  }
-  /*
-  if (checkHistos % 10000 == 0){
-  HistosFile->cd();
-  testHisto->Write(Form("checkHisto%d_r%d_c%d",iter,row,col));
-  testHisto->Draw("AP");
-  DRAWNHISTO++;
-  }
-  */
+    passHisto->Fit("landau", "Q", 0, 19);  //Fit histogram with landau, limits window minus overflow on 20
+    fFit=passHisto->GetFunction("landau"); //Set error of bin content
+    
+    int dof = 18;  //20 bins -1 per histo, removing last bin to erase overflow -> 19 - 1 = 18
+    double rChiSqr = (fFit->GetChisquare())/dof;
+    
+    if (rChiSqr > 500.0){  //Keep updating this empirically. Set very high to cut out very bad fits
+      if(badFit % 20 == 0){
+	HistosFile->cd();
+	passHisto->SetTitle(Form("Bad Fit R%d C%d",row,col));
+	passHisto->Write(Form("badFitHisto%d_rChiSqr_gt5_r%d_c%d",badFit,row,col));
+	passHisto->Draw("AP");
+	DRAWNHISTO++;
+      }
+      
+      badFit++;
+      
+    } else {
+      if(rChiSqr < 1 && chisqr%10==0){
+	cout << "Chi square <1 event detected" << endl;
+	HistosFile->cd();
+	passHisto->SetTitle(Form("Chi Square <1 Fit R%d C%d",row,col));
+	passHisto->Write(Form("FitHisto_rChiSqr_lt1_r%d_c%d",row,col));
+	passHisto->Draw("AP");
+	chisqr++;
+      }
+      //if(row==0 && col==0 && passHisto->GetBinContent(passHisto->GetMaximumBin())<50){
+      //HistosFile->cd();
+      //passHisto->Write(Form("BadFitHisto_NoiseFit_r%d_c%d",row,col));
+      //passHisto->Draw("AP");
+      //}
+      pulseSpec(passHisto, fFit, tdcVal, row, col); //Call integratePulse() for histograms that pass all tests
+      
+    }
+  }  
 }
 
+//integrate good signals, get max from good signals, return spectrums and averages
+void pulseSpec(TH1F *intHisto, TF1 *fFit, double tdcVal, int row, int col){
 
-//integrate good signals, return pulse integrated value by PMT and output 2xnevents array
-void integratePulse(TH1F *intHisto, TF1 *fFit, int row, int col){
   
-  //Should I be integrating the remaining bins or the landau fit?---------------------------------------------*
-  //intHisto->Fit("landau", "Q");  //Fit histogram with landau, will need to verify the limits - "Q" not working
-  //fFit=intHisto->GetFunction("landau");
+  //intValues.push_back(fFit->Integral(0,1000));  //Pushing integral way out to approximate indefinite int
+  intValues.push_back(intHisto->Integral(0,19));  //Just getting total bin content
+  //Using TMath and obtaining parameters from fit function - similar to method in analyze_cosmics.C l:377
+  con = fFit->GetParameter(0);
+  mu = fFit->GetParameter(1);
+  sig = fFit->GetParameter(2);
+  xmaxy = fFit->GetMaximumX(mu*0.5,mu*1.5);
+  maxy  = TMath::Landau(xmaxy,mu,sig)*con;
 
-  intValues.push_back(fFit->Integral(0,DISP_FADC_SAMPLES));  //Not sure if this integral is working correctly - from 0 to 20 bins - Perhaps integrate to inf
+  maxValues.push_back(maxy);
   intValues_row.push_back(row);
   intValues_col.push_back(col);
+    
+  //PMTIntSpec[row][col]->Fill(fFit->Integral(0,1000));
+  PMTIntSpec[row][col]->Fill(intHisto->Integral(0,19)); //Just getting total bin content
+  
 
+  PMTMaxSpec[row][col]->Fill(maxy);
+  
   //if(row == 0 && col == 0) cout << "ROW AND COL ZERO" << endl; //Not sure why r=0,c=0 is always empty
 
   if (signalTotal % 10000 == 0){
+    cout << "Writing a reference good fit histogram to file.." << endl;
+    cout << "Maximum y value for this histogram = " << maxy << "." << endl;
+    cout << "Pedestal for same histogram = " << pedestals[row][col] << "." << endl;
+    cout << "TDC value for same histogram = " << tdcVal << "." << endl << endl;
     HistosFile->cd();
+    intHisto->SetTitle(Form("Good Fit R%d C%d",row,col));
     intHisto->Write(Form("goodFitHisto%d_r%d_c%d",signalTotal,row,col));
     intHisto->Draw("AP");
     DRAWNHISTO++;
@@ -253,11 +278,18 @@ void integratePulse(TH1F *intHisto, TF1 *fFit, int row, int col){
 
 Int_t cosCal(Int_t run = 989, Int_t event = -1)
 {
+  //Build spectrum histograms. Empirical limits.
 
+  cout << "Building spectrum histograms.." << endl;
+  for(int r=0; r<kNrows; r++){
+    for(int c=0; c<kNcols; c++){  
+      PMTIntSpec[r][c] = new TH1F(Form("Int ADC Spect R%d C%d",r,c),Form("Int ADC Spect R%d C%d",r,c),50,0,5000); 
+      PMTMaxSpec[r][c] = new TH1F(Form("Max ADC Spect R%d C%d",r,c),Form("Max ADC Spect R%d C%d",r,c),50,0,1000); 
+    }
+  }
+  
   getPedestal(run);
   
-  //cout << pedestals[6][6] << "!!!!" << endl;
-
   if(!T) { 
     T = new TChain("T");
     T->Add(TString::Format("fadc_f1tdc_%d.root",run));
@@ -295,13 +327,13 @@ Int_t cosCal(Int_t run = 989, Int_t event = -1)
     }
   }
   cout << "Finished loop over run " << run << "." << endl;
-  cout << "Total good signals integrated = " << signalTotal << "." << endl;
-  cout << "Total good signals integrated (intValues.size()) = " << intValues.size() << "..." << endl;
-  
-  
-  //Now take in three vectors and get average integrated pulse value per pmt (unique r c value)
+  cout << "Total good signals = " << signalTotal << "." << endl;
+
+  cout << "Obtaining averages for max value and integrated pulses.." << endl;
+  //Now take in three vectors and get average integrated and max value pulse per pmt (unique r c value)
   double pmtIntTotal[kNrows*kNcols]={0};
   double pmtEvTotal[kNrows*kNcols]={0};
+  double pmtMaxTotal[kNrows*kNcols]={0};
 
   for(int ir=0; ir<kNrows; ir++){
     
@@ -313,50 +345,69 @@ Int_t cosCal(Int_t run = 989, Int_t event = -1)
 	int evCol = intValues_col[iev];
 
 	if(evRow == ir && evCol == ic){
-
-	  //if(evRow == 0 && evCol == 7) cout << "Event is processed" << endl;
 	  
-	  pmtIntTotal[ir*kNrows+(ic)] += intValues[iev]; //build value for int tot, one val per pmt
-	  pmtEvTotal[ir*kNrows+(ic)] += 1.0;
+	  pmtIntTotal[ir*kNrows+ic] += intValues[iev]; //build value for int tot, one val per pmt
+	  pmtMaxTotal[ir*kNrows+ic] += maxValues[iev];
+	  pmtEvTotal[ir*kNrows+ic] += 1.0;
 	  
 	}
       }
     }
   }
 
-  cout << "pmtIntTotal[0] = " <<  pmtIntTotal[0]  << "." << endl;
+  //cout << "pmtIntTotal[0] = " <<  pmtIntTotal[0]  << "." << endl;
 
-  //cout << "pmtIntTotal.size = " << pmtIntTotal.size << "." << endl;
+  //cout << "pmtIntTotal size = " << pmtIntTotal.size() << "." << endl;
 
-  cout << "pmtEvTotal[0] = " << pmtEvTotal[0] << "." << endl;
+  //cout << "pmtMaxTotal size = " << pmtMaxTotal.size() << "." << endl;
 
-  //cout << "pmtEvTotal.size = " << pmtEvTotal.size << "." << endl;
+  //cout << "pmtEvTotal[0] = " << pmtEvTotal[0] << "." << endl;
+
+  //cout << "pmtEvTotal.size = " << pmtEvTotal.size() << "." << endl;
+
+  cout << "Writing spectrum histograms to file.." << endl;
   
-  cout << "Integrated totals and total events per PMT calculated." << endl;
+  for(int r=0; r<kNrows; r++){
+    for(int c=0; c<kNcols; c++){
+      HistosFile->cd();
+      PMTIntSpec[r][c]->Write(Form("Int ADC Spect R%d C%d",r,c));
+      PMTIntSpec[r][c]->Draw("AP");
 
-  cout << "Checked histograms = " << checkHistos << "." << endl;
+      HistosFile->cd();
+      PMTMaxSpec[r][c]->Write(Form("Max ADC Spect R%d C%d",r,c));
+      PMTMaxSpec[r][c]->Draw("AP");
+    }
+  }
   
-  cout << "Total bad fits = " << badFit << "." << endl;
-
-  cout << "Total histograms drawn = " << DRAWNHISTO << "." << endl;
-
   ofstream outFile;
 
-  outFile.open(Form("intPulseRun_%i.txt",run));
+  outFile.open(Form("AvePulseRun_%i.txt",run));
 
-  outFile << "#Integrated pulse data for run " << run << "." << endl;
-  outFile << "#Total number of integrated events is " << intValues.size() << "." << endl;
-  outFile << "#Row  Column  pmtIntValue  EvTotal" << endl;
+  outFile << "#Averaged int pulse and pulse max data for run " << run << "." << endl;
+  outFile << "#Total number of pulse events is " << intValues.size() << "." << endl;
+  outFile << "#Row  Column  pmtIntValue  pmtMaxValue  EvTotal" << endl;
   
   for(int e=0; e<(kNrows*kNcols); e++){
     if(pmtEvTotal[e] == 0){
-      pmtIntTotal[e]=-1.0;
+      pmtIntTotal[e]=-1.0; //Make empty bins obvious
+      pmtMaxTotal[e]=-1.0; //Make empty bins obvious
     } else {
     pmtIntTotal[e] = pmtIntTotal[e]/pmtEvTotal[e];
+    pmtMaxTotal[e] = pmtMaxTotal[e]/pmtEvTotal[e];
     }
-    cout << "PMT row = " << floor(e/kNrows) << ", col = " << e % kNcols << ": Int Pulse Avg = " << pmtIntTotal[e] << " with " << pmtEvTotal[e] << " events averaged over." << endl;
-    outFile << floor(e/kNrows) << "  " << e % kNcols << "  " << pmtIntTotal[e] << "  " << pmtEvTotal[e] << endl;
+    cout << "PMT row = " << floor(e/kNrows) << ", col = " << e % kNcols << ": Int Pulse Avg = " << pmtIntTotal[e] << " and Max Pulse Avg = " << pmtMaxTotal[e] << " with " << pmtEvTotal[e] << " events averaged over." << endl;
+    outFile << floor(e/kNrows) << "  " << e % kNcols << "  " << pmtIntTotal[e] << "  " << pmtMaxTotal[e] << "  " << pmtEvTotal[e] << endl;
   }
+
+  cout << "Integrated averages, maximum averages, and total events per PMT written to file AvePulseRun_" << run << ".txt." << endl;
+
+  cout << "ADC spectrum histograms written to file HistosFile.root" << endl;
+
+  cout << "Checked histograms = " << checkHistos << " written to file HistosFile.root." << endl;
+  
+  cout << "Total bad fits = " << badFit << " rejected." << endl;
+
+  cout << "Total fitted histograms drawn to file HistosFile.root = " << DRAWNHISTO << "." << endl;
   
   return 0;
 }
