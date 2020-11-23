@@ -188,20 +188,20 @@ void goodHistoTest(TH1F *testHisto, double tdcVal, int row, int col){
   double pedVal = pedestals[row][col];
   
   //Subtract pedestal value from each bin and cut off bin 20 (overflow)
-  for(int b=0 ; b<testHisto->GetNbinsX() ; ++b) {
-    passHisto->SetBinContent(b,testHisto->GetBinContent(b)-pedVal);
-    //if(passHisto->GetBinContent(b) < 0) passHisto->SetBinContent(b,0.0); //romoved to check pedestals
+  for(int b=1 ; b<=testHisto->GetNbinsX() ; b++) {
+    testHisto->SetBinContent(b,testHisto->GetBinContent(b)-pedVal);
+    //if(testHisto->GetBinContent(b) < 0) testHisto->SetBinContent(b,0.0); //romoved to check pedestals
   }
 
   
   //Pass threshold from max value as cut
   
-  if(passHisto->GetBinContent(passHisto->GetMaximumBin())>50 && passHisto->GetMaximumBin()>2 && passHisto->GetMaximumBin()<17){  //Cut out noise by ensuring all pulses are greater than the std dev avg of the ped and that the max lies within the center of the histogram
+  if(testHisto->GetBinContent(testHisto->GetMaximumBin())>50 && testHisto->GetMaximumBin()>2 && testHisto->GetMaximumBin()<17){  //Cut out noise by ensuring all pulses are greater than the std dev avg of the ped and that the max lies within the center of the histogram
 
-    //cout << "Threshold values are: Max value " << passHisto->GetBinContent(passHisto->GetMaximumBin()) << " at bin " << passHisto->GetMaximumBin() << endl;
+    //cout << "Threshold values are: Max value " << testHisto->GetBinContent(testHisto->GetMaximumBin()) << " at bin " << testHisto->GetMaximumBin() << endl;
     
-    passHisto->Fit("landau", "Q", 0, 19);  //Fit histogram with landau, limits window minus overflow on 20
-    fFit=passHisto->GetFunction("landau"); //Set error of bin content
+    testHisto->Fit("landau", "Q", 0, 19);  //Fit histogram with landau, limits window minus overflow on 20
+    fFit=testHisto->GetFunction("landau"); //Set error of bin content
     
     int dof = 18;  //20 bins -1 per histo, removing last bin to erase overflow -> 19 - 1 = 18
     double rChiSqr = (fFit->GetChisquare())/dof;
@@ -209,9 +209,9 @@ void goodHistoTest(TH1F *testHisto, double tdcVal, int row, int col){
     if (rChiSqr > 500.0){  //Keep updating this empirically. Set very high to cut out very bad fits
       if(badFit % 20 == 0){
 	HistosFile->cd();
-	passHisto->SetTitle(Form("Bad Fit R%d C%d",row,col));
-	passHisto->Write(Form("badFitHisto%d_rChiSqr_gt5_r%d_c%d",badFit,row,col));
-	passHisto->Draw("AP");
+	testHisto->SetTitle(Form("Bad Fit R%d C%d",row,col));
+	testHisto->Write(Form("badFitHisto%d_rChiSqr_gt5_r%d_c%d",badFit,row,col));
+	testHisto->Draw("AP");
 	DRAWNHISTO++;
       }
       
@@ -221,17 +221,17 @@ void goodHistoTest(TH1F *testHisto, double tdcVal, int row, int col){
       if(rChiSqr < 1 && chisqr%10==0){
 	cout << "Chi square <1 event detected" << endl;
 	HistosFile->cd();
-	passHisto->SetTitle(Form("Chi Square <1 Fit R%d C%d",row,col));
-	passHisto->Write(Form("FitHisto_rChiSqr_lt1_r%d_c%d",row,col));
-	passHisto->Draw("AP");
+	testHisto->SetTitle(Form("Chi Square <1 Fit R%d C%d",row,col));
+	testHisto->Write(Form("FitHisto_rChiSqr_lt1_r%d_c%d",row,col));
+	testHisto->Draw("AP");
 	chisqr++;
       }
-      //if(row==0 && col==0 && passHisto->GetBinContent(passHisto->GetMaximumBin())<50){
+      //if(row==0 && col==0 && testHisto->GetBinContent(testHisto->GetMaximumBin())<50){
       //HistosFile->cd();
-      //passHisto->Write(Form("BadFitHisto_NoiseFit_r%d_c%d",row,col));
-      //passHisto->Draw("AP");
+      //testHisto->Write(Form("BadFitHisto_NoiseFit_r%d_c%d",row,col));
+      //testHisto->Draw("AP");
       //}
-      pulseSpec(passHisto, fFit, tdcVal, row, col); //Call integratePulse() for histograms that pass all tests
+      pulseSpec(testHisto, fFit, tdcVal, row, col); //Call integratePulse() for histograms that pass all tests
       
     }
   }  
