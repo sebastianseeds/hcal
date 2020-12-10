@@ -3,6 +3,9 @@
 #include <TCanvas.h>
 #include <vector>
 #include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <math.h>
 #include <TSystem.h>
 #include "hcal.h"
 
@@ -10,8 +13,8 @@ const Int_t kNrows = 12;
 const Int_t kNcols = 12;
 
 const Int_t kNumModules = kNrows*kNcols;
-const Int_t DISP_MIN_SAMPLE = 85*0;
-const Int_t DISP_MAX_SAMPLE = 135*0+200*0+150*0+20;
+const Int_t DISP_MIN_SAMPLE = 0;  //Temporary - when DISP_MAX_SAMPLE is eliminated, will not be needed
+const Int_t DISP_MAX_SAMPLE = 30;  //Temporary while I learn how to extract pulse window from event samples
 //const Int_t DISP_FADC_SAMPLES = 200;
 const Int_t DISP_FADC_SAMPLES = (DISP_MAX_SAMPLE-DISP_MIN_SAMPLE);
 const Int_t numSamples = 50;

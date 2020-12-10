@@ -10,8 +10,8 @@ const Int_t kNrows = 12;
 const Int_t kNcols = 12;
 
 const Int_t kNumModules = kNrows*kNcols;
-const Int_t DISP_MIN_SAMPLE = 85*0;
-const Int_t DISP_MAX_SAMPLE = 135*0+200*0+150*0+20;
+const Int_t DISP_MIN_SAMPLE = 0;
+const Int_t DISP_MAX_SAMPLE = 30;
 //const Int_t DISP_FADC_SAMPLES = 200;
 const Int_t DISP_FADC_SAMPLES = (DISP_MAX_SAMPLE-DISP_MIN_SAMPLE);
 const Int_t numSamples = 50;
@@ -242,7 +242,7 @@ void clicked_displayEntryButton()
 }
 
 
-Int_t display(Int_t run = 989, Int_t event = -1)
+Int_t display(Int_t run = 1198, Int_t event = -1)
 {
   hcalgui::SetupGUI();
   gStyle->SetLabelSize(0.05,"XY");
@@ -256,8 +256,8 @@ Int_t display(Int_t run = 989, Int_t event = -1)
     T->SetBranchAddress("sbs.hcal.nsamps",hcalt::nsamps);
     T->SetBranchAddress("sbs.hcal.a",hcalt::a);
     T->SetBranchAddress("sbs.hcal.tdc",hcalt::tdc);
-    //T->SetBranchAddress("sbs.hcal.ledbit",&hcalt::ledbit);
-    //T->SetBranchAddress("sbs.hcal.ledcount",&hcalt::ledcount);
+    T->SetBranchAddress("sbs.hcal.ledbit",&hcalt::ledbit);
+    T->SetBranchAddress("sbs.hcal.ledcount",&hcalt::ledcount);
     T->SetBranchAddress("sbs.hcal.samps",hcalt::samps);
     T->SetBranchAddress("sbs.hcal.samps_idx",hcalt::samps_idx);
     T->SetBranchAddress("sbs.hcal.row",hcalt::row);
