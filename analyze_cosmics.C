@@ -1,6 +1,6 @@
 #include "hcal.h"
-const Int_t kNrows = 6;
-const Int_t kNcols = 4;
+const Int_t kNrows = 12;
+const Int_t kNcols = 12;
 const Int_t kN = kNrows*kNcols;
 const Int_t kMinRows = kNrows*0+5;
 const Int_t kBinsHisto = 100;

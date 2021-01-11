@@ -11,7 +11,8 @@ const Int_t kNcols = 12;
 
 const Int_t kNumModules = kNrows*kNcols;
 const Int_t DISP_MIN_SAMPLE = 0;
-const Int_t DISP_MAX_SAMPLE = 30;
+const Int_t DISP_MAX_SAMPLE = 20;
+//const Int_t DISP_MAX_SAMPLE = 30;
 //const Int_t DISP_FADC_SAMPLES = 200;
 const Int_t DISP_FADC_SAMPLES = (DISP_MAX_SAMPLE-DISP_MIN_SAMPLE);
 const Int_t numSamples = 50;
