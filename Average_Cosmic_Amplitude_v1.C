@@ -24,27 +24,27 @@ Int_t r,c,n,idx;
 Int_t nevt;
 Double_t cmu_hv = 1500, jlab_hv = 1600, cmu_exp = 10.5, jlab_exp = 8.; //Note voltages are actually negative but it's easier to plot if positive.
 Double_t target_RAU = 61.425;
-Double_t adc_fire_avg = 10.;                  //Minimum fADC average RAU pedestal standard deviations above which fADC 'fired'.
-Double_t adc_fire_int = 3.;                  //Minimum fADC integral pedestal standard deviations above which fADC 'fired'.
-Double_t adc_int_fire = 100.;
+Double_t adc_fire = 11.;                  //Minimum ADC value above pedestal in RAU to count as fired.
 const Int_t kNrows = 24;
 const Int_t kNcols = 12;
 const Int_t channels = kNrows * kNcols;
 Int_t limit_evts = 0;                     //0-> analyze all events. 1-> only analyze events up until max_evts.
 Int_t loop_max = 0;                       //Dummy variable set equal to max_evts or nevt for the loop.
 Int_t max_evts = 50000;                   //Maximum number of events to analyze if limit_evts = 1.
+//const Int_t maxevts = 10000;
+Int_t use_landau = 0;                     //Will fit fADC pulse with a Landau function. Needs to have starting pars well tuned and slower than just using max value. Pretty sure histogram max value is the best method.
 Int_t use_int = 0;                        //Create plots with the fADC integral too (normally just look at fADC maz RAU). No pedestal subtraction currently.
 Double_t f1_res = 0.112;//0.112
 Double_t fadc_res = 4.;
 TChain *T = 0;
 std::string user_input;
-Int_t skip = 3, skip1 = 1;                            //Gives number of lines to skip at top of data file. 
-Int_t nlines = 0, nlines1 = 0;                          //Counts number of lines in the data file. 
-Int_t ncols, ncols1;                               //Set how many columns of data we have in the data file.
-char str[1000], str1[1000];                           //Variable to read lines of the data file.
-Float_t mod[channels], mod1[channels], hv[channels], ped_avg[channels], ped_int[channels], ped_avg_std_dev[channels], ped_int_std_dev[channels], threshold[channels], avg_amp_tdc[channels], avg_amp_adc[channels], avg_amp_adc_tdc[channels], avg_amp_adc_int[channels], target_voltage_tdc[channels], target_voltage_adc[channels], target_voltage_adc_tdc[channels], target_voltage_adc_int[channels];
-Int_t ntdc_hits[channels], nadc_hits[channels], nadc_tdc_hits[channels], ntdc_hits_vert[channels], nadc_int_hits[channels], nadc_hits_vert[channels], nadc_tdc_hits_vert[channels], nadc_int_hits_vert[channels];
-Float_t mod_temp, mod1_temp, hv_temp, ped_avg_temp, ped_int_temp, ped_avg_std_dev_temp, ped_int_std_dev_temp, threshold_temp;
+Int_t skip = 3;                            //Gives number of lines to skip at top of data file. 
+Int_t nlines = 0;                          //Counts number of lines in the data file. 
+Int_t ncols;                               //Set how many columns of data we have in the data file.
+char str[1000];                           //Variable to read lines of the data file.
+Float_t mod[channels], pedestal[channels], threshold[channels], avg_amp_tdc[channels], avg_amp_adc[channels], target_voltage_tdc[channels], target_voltage_adc[channels];
+Int_t ntdc_hits[channels], nadc_hits[channels], ntdc_hits_vert[channels], nadc_hits_vert[channels];
+Float_t mod_temp, pedestal_temp, threshold_temp;
 
 //Create Gaussian to fit the timing resolution.
 Double_t fit_gaus(Double_t *X,Double_t *par) 
@@ -107,7 +107,7 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
   gROOT->SetBatch(kTRUE);//Always run in batch mode otherwise 100s of plot will appear.
 
   FILE *fp;
-  fp = fopen("/home/daq/test_fadc/Pedestals_Updated.txt","r");
+  fp = fopen("/home/daq/test_fadc/Pedestals.txt","r");
  //Read in data.
   while (1) 
     {
@@ -121,45 +121,16 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
       else
 	{
 	  //Read in the number of columns of data in your data file. 
-	  ncols = fscanf(fp,"%f %f %f %f %f", &mod_temp, &ped_int_temp, &ped_int_std_dev_temp, &ped_avg_temp, &ped_avg_std_dev_temp);
+	  ncols = fscanf(fp,"%f %f %f", &mod_temp, &pedestal_temp, &threshold_temp);
 	  
 	  if (ncols < 0) break;    
 	  
 	  mod[nlines-skip] = mod_temp;
-	  ped_avg[nlines-skip] = ped_avg_temp;
-	  ped_int[nlines-skip] = ped_int_temp;
-	  ped_avg_std_dev[nlines-skip] = ped_avg_std_dev_temp;
-	  ped_int_std_dev[nlines-skip] = ped_int_std_dev_temp;
+	  pedestal[nlines-skip] = pedestal_temp;
 	  //Threshold is defined as 1/4 of the average peak height minus the pedestal during a real event. Then add back in the pedestal value since the Landau fit I use doesn't subtract the pedestal.
-	  //threshold[nlines-skip] = (threshold_temp-pedestal[nlines-skip])/4.0+pedestal[nlines-skip];
+	  threshold[nlines-skip] = (threshold_temp-pedestal[nlines-skip])/4.0+pedestal[nlines-skip];
 
 	  nlines++;
-	}
-    }
-
-  FILE *fp1;
-  fp1 = fopen(Form("/home/daq/test_fadc/Voltage_Scans/HV_Settings/HV_Run_%d.txt",run),"r");
- //Read in data.
-  while (1) 
-    {
-      //Skips the first skip lines of the file. 
-      if (nlines1 < skip1)
-	{
-	  fgets(str1,1000,fp1);
-	  nlines1++;
-	}
-      //Reads the two columns of data into x and y.
-      else
-	{
-	  //Read in the number of columns of data in your data file. 
-	  ncols1 = fscanf(fp1,"%f %f", &mod1_temp, &hv_temp);
-	  
-	  if (ncols1 < 0) break;    
-	  
-	  mod1[nlines1-skip1] = mod1_temp;
-	  hv[nlines1-skip1] = hv_temp;
-
-	  nlines1++;
 	}
     }
 
@@ -169,7 +140,7 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
  
       //============  Reading the Rootfile =======================//
       
-      const TString rootfilePath = "/home/daq/test_fadc/rootfiles/";
+      const TString rootfilePath = "/Users/sebastianseeds/HCAL/";
       std::ostringstream str;
       str << rootfilePath<<"fadc_f1tdc_"<<run;
       TString basename = str.str().c_str();
@@ -248,7 +219,17 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
       func_landau[i] = new TF1("func_landau",fit_landau, DISP_MIN_SAMPLE, DISP_MAX_SAMPLE, 4);
     }
 
-  Double_t max_min = 0, max_max = 1000, max_bins = 201, int_min = 5000, int_max = 20000, int_bins = 1500;
+  //Store the peak value of a Landau fit to the fADC pulse.
+  TH1F **hpeaks = new TH1F*[channels];
+  for(Int_t i = 0; i<channels; i++)
+    {
+      hpeaks[i] = new TH1F(Form("hpeaks%d",i),Form("Peak fADC Values for Module %d",i),4001,0,4000);
+      hpeaks[i]->GetXaxis()->SetTitle("Peak fADC Value");
+      hpeaks[i]->GetXaxis()->CenterTitle();
+      hpeaks[i]->GetYaxis()->SetTitle("Occurrences");
+      hpeaks[i]->GetYaxis()->CenterTitle();
+    }
+  Double_t max_min = 0, max_max = 1000, max_bins = 201, int_min = 0, int_max = 50000, int_bins = 5001;
 
   //Store the max value of the fADC pulse.
   TH1F **hmax_tdc = new TH1F*[channels];
@@ -269,26 +250,6 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
       hmax_adc[i]->GetXaxis()->CenterTitle();
       hmax_adc[i]->GetYaxis()->SetTitle("Occurrences");
       hmax_adc[i]->GetYaxis()->CenterTitle();
-    }
-
-  TH1F **hadc_int = new TH1F*[channels];
-  for(Int_t i = 0; i<channels; i++)
-    {
-      hadc_int[i] = new TH1F(Form("hadc_int%d",i),Form("Integral of Average fADC Values for Module %d (Vertical ADC)",i),int_bins,int_min,int_max);
-      hadc_int[i]->GetXaxis()->SetTitle("Integral of Average fADC Value");
-      hadc_int[i]->GetXaxis()->CenterTitle();
-      hadc_int[i]->GetYaxis()->SetTitle("Occurrences");
-      hadc_int[i]->GetYaxis()->CenterTitle();
-    }
-
-  TH1F **hmax_adc_tdc = new TH1F*[channels];
-  for(Int_t i = 0; i<channels; i++)
-    {
-      hmax_adc_tdc[i] = new TH1F(Form("hmax%d_adc_tdc",i),Form("Maximum fADC Values for Module %d (Vertical ADC and TDC Cuts)",i),max_bins,max_min,max_max);
-      hmax_adc_tdc[i]->GetXaxis()->SetTitle("Maximum fADC Value");
-      hmax_adc_tdc[i]->GetXaxis()->CenterTitle();
-      hmax_adc_tdc[i]->GetYaxis()->SetTitle("Occurrences");
-      hmax_adc_tdc[i]->GetYaxis()->CenterTitle();
     }
 
   //Store the integral of the fADC pulse.
@@ -322,50 +283,13 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
       hintvpeak[i]->GetYaxis()->CenterTitle();
     }
 
-  gStyle->SetOptStat(0);
-
   TH1F *hntdc_hits = new TH1F(Form("hntdc_hits"),Form("Number of TDC Hits per PMT Module"),channels,0,channels);
-  hntdc_hits->GetXaxis()->SetTitle("Module Number (from 0)");
-  hntdc_hits->GetXaxis()->CenterTitle();
-  hntdc_hits->GetYaxis()->SetTitle("Occurrences");
-  hntdc_hits->GetYaxis()->CenterTitle();
   TH1F *hnadc_hits = new TH1F(Form("hnadc_hits"),Form("Number of ADC Hits per PMT Module"),channels,0,channels);
-  hnadc_hits->GetXaxis()->SetTitle("Module Number (from 0)");
-  hnadc_hits->GetXaxis()->CenterTitle();
-  hnadc_hits->GetYaxis()->SetTitle("Occurrences");
-  hnadc_hits->GetYaxis()->CenterTitle();
-  TH1F *hnadc_tdc_hits = new TH1F(Form("hnadc_tdc_hits"),Form("Number of ADC w/ TDC Hits per PMT Module"),channels,0,channels);
-  hnadc_tdc_hits->GetXaxis()->SetTitle("Module Number (from 0)");
-  hnadc_tdc_hits->GetXaxis()->CenterTitle();
-  hnadc_tdc_hits->GetYaxis()->SetTitle("Occurrences");
-  hnadc_tdc_hits->GetYaxis()->CenterTitle();
   TH1F *hntdc_hits_vert = new TH1F(Form("hntdc_hits_vert"),Form("Number of Vertical TDC Hits per PMT Module"),channels,0,channels);
-  hntdc_hits_vert->GetXaxis()->SetTitle("Module Number (from 0)");
-  hntdc_hits_vert->GetXaxis()->CenterTitle();
-  hntdc_hits_vert->GetYaxis()->SetTitle("Occurrences");
-  hntdc_hits_vert->GetYaxis()->CenterTitle();
   TH1F *hnadc_hits_vert = new TH1F(Form("hnadc_hits_vert"),Form("Number of Vertical ADC Hits per PMT Module"),channels,0,channels);
-  hnadc_hits_vert->GetXaxis()->SetTitle("Module Number (from 0)");
-  hnadc_hits_vert->GetXaxis()->CenterTitle();
-  hnadc_hits_vert->GetYaxis()->SetTitle("Occurrences");
-  hnadc_hits_vert->GetYaxis()->CenterTitle();
-  TH1F *hnadc_tdc_hits_vert = new TH1F(Form("hnadc_tdc_hits_vert"),Form("Number of Vertical ADC w/ TDC Hits per PMT Module"),channels,0,channels);
-  hnadc_tdc_hits_vert->GetXaxis()->SetTitle("Module Number (from 0)");
-  hnadc_tdc_hits_vert->GetXaxis()->CenterTitle();
-  hnadc_tdc_hits_vert->GetYaxis()->SetTitle("Voltage (-V)");
-  hnadc_tdc_hits_vert->GetYaxis()->CenterTitle();
-  TH1F *hhv = new TH1F(Form("hhv"),Form("High Voltage Setting per PMT Module"),channels,0,channels);
-  hhv->GetXaxis()->SetTitle("Module Number (from 0)");
-  hhv->GetXaxis()->CenterTitle();
-  hhv->GetYaxis()->SetTitle("Occurrences");
-  hhv->GetYaxis()->CenterTitle();
-  TH1F *hadc_amp_avg = new TH1F(Form("hadc_amp_avg"),Form("Average Vertical fADC Cosmic Signal (RAU) per PMT Module"),channels,0,channels);
-  hadc_amp_avg->GetXaxis()->SetTitle("Module Number (from 0)");
-  hadc_amp_avg->GetXaxis()->CenterTitle();
-  hadc_amp_avg->GetYaxis()->SetTitle("Average fADC Cosmic Signal (RAU)");
-  hadc_amp_avg->GetYaxis()->CenterTitle();
 
   Int_t hits[channels] = {};
+  Double_t pedestals[channels] = {};
   Int_t no_tdc[channels] = {};
 
   //Loop over all events.
@@ -406,7 +330,10 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
 	  for(Int_t s = DISP_MIN_SAMPLE; s < DISP_MAX_SAMPLE && s < n; s++) 
 	    {
 	      histos[r][c]->SetBinContent(s+1-DISP_MIN_SAMPLE,hcalt::samps[idx+s]);
+	      //fadc_int[j] = fadc_int[j] + histos[r][c]->GetBinContent(s+1-DISP_MIN_SAMPLE);
 	    }
+	  //Subtract off avg pedestals.
+	  //fadc_int[j] = fadc_int[j] - pedestal[j]*DISP_MAX_SAMPLE;
 	}
 
       for(Int_t j=0; j<hcalt::ndata; j++)
@@ -423,20 +350,9 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
 	    }
 
 	  //Record if each PMT had the adc fire.
-	  if(histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(ped_avg[j]+adc_fire_avg*ped_avg_std_dev[j]))
+	  if(histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(pedestal[j]+adc_fire))
 	    {
 	      nadc_hits[j] = nadc_hits[j] + 1;
-	    }
-
-	  //Record if each PMT had the adc and tdc fire.
-	  if(histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(ped_avg[j]+adc_fire_avg*ped_avg_std_dev[j]) && tdc[r][c]!=0)
-	    {
-	      nadc_tdc_hits[j] = nadc_tdc_hits[j] + 1;
-	    }
-
-	  if( adc[r][c]>(ped_int[j]+adc_fire_int*ped_int_std_dev[j]) )
-	    {
-	      nadc_int_hits[j] = nadc_int_hits[j] + 1;
 	    }
 	  
 	  //cout<<Form("Event = %d, PMT = %d = (row %d,col %d). tdc(r-4,c)=%f, tdc(r-3,c)=%f, tdc(r-2,c)=%f, tdc(r-1,c)=%f, tdc(r,c)=%f, tdc(r+1,c)=%f, tdc(r+2,c)=%f, tdc(r+3,c)=%f, tdc(r+4,c)=%f",gCurrentEntry,j,r,c,tdc[r-4][c],tdc[r-3][c],tdc[r-2][c],tdc[r-1][c],tdc[r][c],tdc[r+1][c],tdc[r+2][c],tdc[r+3][c],tdc[r+4][c])<<endl;
@@ -455,7 +371,7 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
 	    )
 	  
 	  //Require 3 PMT ADCs vertically fire in a row using integral of ADC (not finished).
-	  //if(   (  ((adc[r][c]>(ped_avg[j]+adc_fire) && adc[r-1][c]>(ped_avg[j]+adc_fire) && adc[r+1][c]>(ped_avg[j]+adc_fire)) || (adc[r][c]>(ped_avg[j]+adc_fire) && adc[r-1][c]>(ped_avg[j]+adc_fire) && adc[r-2][c]>(ped_avg[j]+adc_fire)) || (adc[r][c]>(ped_avg[j]+adc_fire) && adc[r+1][c]>(ped_avg[j]+adc_fire) && adc[r+2][c]>(ped_avg[j]+adc_fire)))  )   )
+	  //if(   (  ((adc[r][c]>(pedestal[j]+adc_fire) && adc[r-1][c]>(pedestal[j]+adc_fire) && adc[r+1][c]>(pedestal[j]+adc_fire)) || (adc[r][c]>(pedestal[j]+adc_fire) && adc[r-1][c]>(pedestal[j]+adc_fire) && adc[r-2][c]>(pedestal[j]+adc_fire)) || (adc[r][c]>(pedestal[j]+adc_fire) && adc[r+1][c]>(pedestal[j]+adc_fire) && adc[r+2][c]>(pedestal[j]+adc_fire)))  )   )
 	  
 	    //Require 3 PMTs vertically fire in a row and the surrounding 6 do not fire.
 	    //if(   (  ((tdc[r][c]!=0 && tdc[r-1][c]!=0 && tdc[r+1][c]!=0 && tdc[r][c-1]==0 && tdc[r-1][c-1]==0 && tdc[r+1][c-1]==0 && tdc[r][c+1]==0 && tdc[r-1][c+1]==0 && tdc[r+1][c+1]==0) || (tdc[r][c]!=0 && tdc[r-1][c]!=0 && tdc[r-2][c]!=0 && tdc[r][c-1]==0 && tdc[r-1][c-1]==0 && tdc[r-2][c-1]==0 && tdc[r][c+1]==0 && tdc[r-1][c+1]==0 && tdc[r-2][c+1]==0) || (tdc[r][c]!=0 && tdc[r+1][c]!=0 && tdc[r+2][c]!=0 && tdc[r][c-1]==0 && tdc[r+1][c-1]==0 && tdc[r+2][c-1]==0 && tdc[r][c+1]==0 && tdc[r+1][c+1]==0 && tdc[r+2][c+1]==0))  )   )
@@ -464,49 +380,23 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
 	    //Require 5 PMTs vertically fire in a row.
 	    //if(   (tdc[r+4][c]!=0 && tdc[r+3][c]!=0 && tdc[r+2][c]!=0 && tdc[r+1][c]!=0 && tdc[r][c]!=0 && (r+1)<kNrows) || (tdc[r+3][c]!=0 && tdc[r+2][c]!=0 && tdc[r+1][c]!=0 && tdc[r][c]!=0 && tdc[r-1][c]!=0 && (r+1)<kNrows && (r-1)>-1) || (tdc[r+2][c]!=0 && tdc[r+1][c]!=0 && tdc[r][c]!=0 && tdc[r-1][c]!=0 && tdc[r-2][c]!=0 && (r+1)<kNrows && (r-1)>-1) || (tdc[r+1][c]!=0 && tdc[r][c]!=0 && tdc[r-1][c]!=0 && tdc[r-2][c]!=0 && tdc[r-3][c]!=0 && (r+1)<kNrows && (r-1)>-1) || (tdc[r][c]!=0 && tdc[r-1][c]!=0 && tdc[r-2][c]!=0 && tdc[r-3][c]!=0 && tdc[r-4][c]!=0 && (r-1)>-1)   )
 	    {
-	      hmax_tdc[j]->Fill(histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())-ped_avg[j]); 
+	      hmax_tdc[j]->Fill(histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())-pedestal[j]); 
 	      ntdc_hits_vert[j] = ntdc_hits_vert[j] + 1;
 	    }
 
 	  //Require 3 PMT ADCs vertically fire in a row.	  
 	  if(   
-	     ( (r-1)>=0 && (r+1)<=(kNrows-1) && histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(ped_avg[j]+adc_fire_avg*ped_avg_std_dev[j]) && histos[r-1][c]->GetBinContent(histos[r-1][c]->GetMaximumBin())>(ped_avg[j-12]+adc_fire_avg*ped_avg_std_dev[j-12]) && histos[r+1][c]->GetBinContent(histos[r+1][c]->GetMaximumBin())>(ped_avg[j+12]+adc_fire_avg*ped_avg_std_dev[j+12]) ) 
+	     ( (r-1)>=0 && (r+1)<=(kNrows-1) && histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(pedestal[j]+adc_fire) && histos[r-1][c]->GetBinContent(histos[r-1][c]->GetMaximumBin())>(pedestal[j]+adc_fire) && histos[r+1][c]->GetBinContent(histos[r+1][c]->GetMaximumBin())>(pedestal[j]+adc_fire) ) 
 	     ||
-	     ( (r-1)>=0 && (r-2)>=0 && histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(ped_avg[j]+adc_fire_avg*ped_avg_std_dev[j]) && histos[r-1][c]->GetBinContent(histos[r-1][c]->GetMaximumBin())>(ped_avg[j-12]+adc_fire_avg*ped_avg_std_dev[j-12]) && histos[r-2][c]->GetBinContent(histos[r-2][c]->GetMaximumBin())>(ped_avg[j-24]+adc_fire_avg*ped_avg_std_dev[j-24]) )
+	     ( (r-1)>=0 && (r-2)>=0 && histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(pedestal[j]+adc_fire) && histos[r-1][c]->GetBinContent(histos[r-1][c]->GetMaximumBin())>(pedestal[j]+adc_fire) && histos[r-2][c]->GetBinContent(histos[r-2][c]->GetMaximumBin())>(pedestal[j]+adc_fire) )
 	     ||
-	     ( (r+1)<=(kNrows-1) && (r+2)<=(kNrows-1) && histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(ped_avg[j]+adc_fire_avg*ped_avg_std_dev[j]) && histos[r+1][c]->GetBinContent(histos[r+1][c]->GetMaximumBin())>(ped_avg[j+12]+adc_fire_avg*ped_avg_std_dev[j+12]) && histos[r+2][c]->GetBinContent(histos[r+2][c]->GetMaximumBin())>(ped_avg[j+24]+adc_fire_avg*ped_avg_std_dev[j+24]) )
+	     ( (r+1)<=(kNrows-1) && (r+2)<=(kNrows-1) && histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(pedestal[j]+adc_fire) && histos[r+1][c]->GetBinContent(histos[r+1][c]->GetMaximumBin())>(pedestal[j]+adc_fire) && histos[r+2][c]->GetBinContent(histos[r+2][c]->GetMaximumBin())>(pedestal[j]+adc_fire) )
 	    )
 	    {
-	      hmax_adc[j]->Fill(histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())-ped_avg[j]); 
+	      hmax_adc[j]->Fill(histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())-pedestal[j]); 
 	      nadc_hits_vert[j] = nadc_hits_vert[j] + 1;
 	    }
-
-	  //Require 1 ADC above and below to fire ADC (from integral).	  
-	  if(   
-	     ( (r-1)>=0 && (r+1)<=(kNrows-1) && adc[r][c]>0 && adc[r-1][c]>(ped_int[j-12]+adc_fire_avg*ped_int_std_dev[j-12]) && adc[r+1][c]>(ped_int[j+12]+adc_fire_avg*ped_int_std_dev[j+12]) ) 
-	     ||
-	     ( (r-1)>=0 && (r-2)>=0 && adc[r][c]>0 && adc[r-1][c]>(ped_int[j-12]+adc_fire_avg*ped_int_std_dev[j-12]) && adc[r-2][c]>(ped_int[j-24]+adc_fire_avg*ped_int_std_dev[j-24]) )
-	     ||
-	     ( (r+1)<=(kNrows-1) && (r+2)<=(kNrows-1) && adc[r][c]>0 && adc[r+1][c]>(ped_int[j+12]+adc_fire_avg*ped_int_std_dev[j+12]) && adc[r+2][c]>(ped_int[j+24]+adc_fire_avg*ped_int_std_dev[j+24]) )
-	    )
-	    {
-	      hadc_int[j]->Fill(adc[r][c]); 
-	      nadc_int_hits_vert[j] = nadc_int_hits_vert[j] + 1;
-	    }
-
-	  //Require 3 PMT ADCs and TDCs vertically fire in a row.
-	  if(   
-	     ( (r-1)>=0 && (r+1)<=(kNrows-1) && histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(ped_avg[j]+adc_fire_avg*ped_avg_std_dev[j]) && histos[r-1][c]->GetBinContent(histos[r-1][c]->GetMaximumBin())>(ped_avg[j-12]+adc_fire_avg*ped_avg_std_dev[j-12]) && histos[r+1][c]->GetBinContent(histos[r+1][c]->GetMaximumBin())>(ped_avg[j+12]+adc_fire_avg*ped_avg_std_dev[j+12]) && tdc[r][c]!=0 && tdc[r-1][c]!=0 && tdc[r+1][c]!=0 ) 
-	     ||
-	     ( (r-1)>=0 && (r-2)>=0 && histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(ped_avg[j]+adc_fire_avg*ped_avg_std_dev[j]) && histos[r-1][c]->GetBinContent(histos[r-1][c]->GetMaximumBin())>(ped_avg[j-12]+adc_fire_avg*ped_avg_std_dev[j-12]) && histos[r-2][c]->GetBinContent(histos[r-2][c]->GetMaximumBin())>(ped_avg[j-24]+adc_fire_avg*ped_avg_std_dev[j-24]) && tdc[r][c]!=0 && tdc[r-1][c]!=0 && tdc[r-2][c]!=0 )
-	     ||
-	     ( (r+1)<=(kNrows-1) && (r+2)<=(kNrows-1) && histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())>(ped_avg[j]+adc_fire_avg*ped_avg_std_dev[j]) && histos[r+1][c]->GetBinContent(histos[r+1][c]->GetMaximumBin())>(ped_avg[j+12]+adc_fire_avg*ped_avg_std_dev[j+12]) && histos[r+2][c]->GetBinContent(histos[r+2][c]->GetMaximumBin())>(ped_avg[j+24]+adc_fire_avg*ped_avg_std_dev[j+24]) && tdc[r][c]!=0 && tdc[r+1][c]!=0 && tdc[r+2][c]!=0 )
-	    )
-	    {
-	      hmax_adc_tdc[j]->Fill(histos[r][c]->GetBinContent(histos[r][c]->GetMaximumBin())-ped_avg[j]); 
-	      nadc_tdc_hits_vert[j] = nadc_tdc_hits_vert[j] + 1;
-	    }
-
+	  
 	}
       
       if(i%5000==0)
@@ -530,15 +420,13 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
   std::ofstream output1 (Form("/home/daq/test_fadc/Voltage_Scans/Cosmics/Calibration_Results_Run%d.txt",run), std::ofstream::out);
   output1<<"These pedestals were generated from run "<<run<<"."<<endl;
   output1<<"They were generated at "<<time.GetHour()<<":"<<time.GetMinute()<<" on "<<time.GetMonth()<<"/"<<time.GetDay()<<"/"<<time.GetYear()<<"."<<endl;
-  output1<<"PMT Module   Average Cosmic RAU (tdc cut)   Target Voltage (tdc cut)   Average Cosmic RAU (adc cut)   Target Voltage (adc cut)   Average Cosmic RAU (adc & tdc cut)   Target Voltage (adc & tdc cut)   TDC Hits   ADC Hits   TDC/ADC Hits   ADC & TDC Hits   Vert TDC Hits   Vert ADC Hits   Vertical TDC/ADC Hits   Vert ADC & TDC Hits"<<endl;
+  output1<<"PMT Module   Average Cosmic RAU (tdc cut)   Target Voltage (tdc cut)   Average Cosmic RAU (adc cut)   Target Voltage (adc cut)   TDC Hits   ADC Hits   TDC/ADC Hits   Vert TDC Hits   Vert ADC Hits   Vertical TDC/ADC Hits"<<endl;
 
   TF1 **func_gaus_fit = new TF1*[channels];
   TF1 **func_gaus_fit_max = new TF1*[channels];
   //TF1 **func_weibull_max = new TF1*[channels];
   TF1 **func_skew_max_tdc = new TF1*[channels];
   TF1 **func_skew_max_adc = new TF1*[channels];
-  TF1 **func_skew_max_adc_tdc = new TF1*[channels];
-  TF1 **func_adc_int = new TF1*[channels];
   TF1 **func_gaus_fit_int = new TF1*[channels];
   for(Int_t i = 0; i<hcalt::ndata; i++)
     {
@@ -546,20 +434,50 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
       r=(i/12)+1;
       c=i-12*(r-1)+1;
 
+      if(use_landau==1)
+	{
+	  func_gaus_fit[i] = new TF1("func_gaus_fit",fit_gaus, pedestal[i]+pedestal[i]*0.05, 8000, 3);
+	  func_gaus_fit[i]->SetLineColor(2);
+	  func_gaus_fit[i]->SetNpx(1000);
+	  
+	  func_gaus_fit[i]->SetRange(750,1400);
+	  func_gaus_fit[i]->SetParameter(0,hpeaks[i]->GetMaximum());;
+	  //func_gaus_fit[i]->SetParLimits(0,0,10000);
+	  func_gaus_fit[i]->SetParameter(1,hpeaks[i]->GetMean());
+	  //func_gaus_fit[i]->SetParLimits(1,0,8000);
+	  func_gaus_fit[i]->SetParameter(2,hpeaks[i]->GetStdDev());
+	  hpeaks[i]->Fit(func_gaus_fit[i],"r");
+	  hpeaks[i]->Write();
+	}
+
+      /*
+      func_gaus_fit_max[i] = new TF1("func_gaus_fit_max",fit_gaus, max_min, max_max, 3);
+      func_gaus_fit_max[i]->SetLineColor(2);
+      func_gaus_fit_max[i]->SetNpx(1000);
+      
+      func_gaus_fit_max[i]->SetRange(hmax_tdc[i]->GetXaxis()->GetBinCenter(hmax_tdc[i]->GetMaximumBin())-1.5*hmax_tdc[i]->GetStdDev(),hmax_tdc[i]->GetXaxis()->GetBinCenter(hmax_tdc[i]->GetMaximumBin())+1.5*hmax_tdc[i]->GetStdDev());
+      func_gaus_fit_max[i]->SetParameter(0,hmax_tdc[i]->GetBinContent(hmax_tdc[i]->GetMaximumBin()));;
+      //func_gaus_fit_max[i]->SetParLimits(0,0,10000);
+      func_gaus_fit_max[i]->SetParameter(1,hmax_tdc[i]->GetXaxis()->GetBinCenter(hmax_tdc[i]->GetMaximumBin()));
+      //func_gaus_fit_max[i]->SetParLimits(1,0,8000);
+      func_gaus_fit_max[i]->SetParameter(2,hmax_tdc[i]->GetStdDev());
+      hmax_tdc[i]->Fit(func_gaus_fit_max[i],"rq");
+*/
+
       func_skew_max_tdc[i] = new TF1(Form("func_skew_max_tdc%d",i),fit_skew, max_min, max_max, 4);
       func_skew_max_tdc[i]->SetLineColor(4);
       func_skew_max_tdc[i]->SetNpx(1000);
 
       func_skew_max_tdc[i]->SetRange(hmax_tdc[i]->GetXaxis()->GetBinCenter(hmax_tdc[i]->GetMaximumBin())-0.5*hmax_tdc[i]->GetStdDev(),hmax_tdc[i]->GetXaxis()->GetBinCenter(hmax_tdc[i]->GetMaximumBin())+1.3*hmax_tdc[i]->GetStdDev());
-      func_skew_max_tdc[i]->SetParameter(0,hmax_tdc[i]->GetBinContent(hmax_tdc[i]->GetMaximumBin()));
+      func_skew_max_tdc[i]->SetParameter(0,hmax_tdc[i]->GetBinContent(hmax_tdc[i]->GetMaximumBin()));;
       //func_skew_max_tdc[i]->SetParLimits(0,0,10000);
       func_skew_max_tdc[i]->SetParameter(1,hmax_tdc[i]->GetXaxis()->GetBinCenter(hmax_tdc[i]->GetMaximumBin()));
       //func_skew_max_tdc[i]->SetParLimits(1,0,8000);
       func_skew_max_tdc[i]->SetParameter(2,hmax_tdc[i]->GetStdDev());
       //func_skew_max_tdc[i]->SetParameter(2,100);
       func_skew_max_tdc[i]->SetParameter(3,2);
-      //cout<<Form("Fit parameters for PMT %d (vertical tdc cut)",i)<<endl;
-      hmax_tdc[i]->Fit(func_skew_max_tdc[i],"rq");
+      cout<<Form("Fit parameters for PMT %d (vertical tdc cut)",i)<<endl;
+      hmax_tdc[i]->Fit(func_skew_max_tdc[i],"r");
       hmax_tdc[i]->Write();
 
       avg_amp_tdc[i] = func_skew_max_tdc[i]->GetMaximumX();
@@ -568,111 +486,47 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
       func_skew_max_adc[i]->SetLineColor(4);
       func_skew_max_adc[i]->SetNpx(1000);
 
-      Double_t hmean_adc = hmax_adc[i]->GetMean();
-      Double_t hstd_dev_adc = hmax_adc[i]->GetStdDev();
-      Int_t range_min_bin = (int) ( (hmean_adc-1.*hstd_dev_adc - max_min)*(max_bins/(max_max-max_min)) );
-      if(range_min_bin<1)
-	{
-	  range_min_bin=1;
-	}
-      Int_t range_max_bin = (int) ( (hmean_adc+1.*hstd_dev_adc - max_min)*(max_bins/(max_max-max_min)) );
-      if(range_max_bin>max_bins)
-	{
-	  range_max_bin = max_bins;
-	}
-      hmax_adc[i]->GetXaxis()->SetRange(range_min_bin,range_max_bin);//Range is in bins!
-      Int_t est_amp_adc = hmax_adc[i]->GetBinContent(hmax_adc[i]->GetMaximumBin());
-      Int_t est_mean_adc = hmax_adc[i]->GetXaxis()->GetBinCenter(hmax_adc[i]->GetMaximumBin());
-      Double_t est_std_dev_adc = hmax_adc[i]->GetStdDev();
-      Int_t func_min_bin_adc = (int) (est_mean_adc - est_std_dev_adc);
-      Int_t func_max_bin_adc = (int) (est_mean_adc + est_std_dev_adc);
-      cout<<Form("PMT %d: histo mean = %f, histo std dev = %f, range min = %f = bin %d, range max = %f = bin %d, est_amp_adc = %d, est_mean_adc = %d, est_std_dev_adc = %f, func_min_bin_adc = %d, func_max_bin_adc = %d",i,hmean_adc,hstd_dev_adc,hmean_adc-1.*hstd_dev_adc,range_min_bin,hmean_adc+1.*hstd_dev_adc,range_max_bin,est_amp_adc,est_mean_adc,est_std_dev_adc,func_min_bin_adc,func_max_bin_adc)<<endl;
-
-      func_skew_max_adc[i]->SetRange(func_min_bin_adc,func_max_bin_adc);
-      //func_skew_max_adc[i]->SetRange(hmax_adc[i]->GetXaxis()->GetBinCenter(hmax_adc[i]->GetMaximumBin())-0.5*hmax_adc[i]->GetStdDev(),hmax_adc[i]->GetXaxis()->GetBinCenter(hmax_adc[i]->GetMaximumBin())+1.3*hmax_adc[i]->GetStdDev());
-      func_skew_max_adc[i]->SetParameter(0,est_amp_adc);
+      func_skew_max_adc[i]->SetRange(hmax_adc[i]->GetXaxis()->GetBinCenter(hmax_adc[i]->GetMaximumBin())-0.5*hmax_adc[i]->GetStdDev(),hmax_adc[i]->GetXaxis()->GetBinCenter(hmax_adc[i]->GetMaximumBin())+1.3*hmax_adc[i]->GetStdDev());
+      func_skew_max_adc[i]->SetParameter(0,hmax_adc[i]->GetBinContent(hmax_adc[i]->GetMaximumBin()));;
       //func_skew_max_adc[i]->SetParLimits(0,0,10000);
-      func_skew_max_adc[i]->SetParameter(1,est_mean_adc);
+      func_skew_max_adc[i]->SetParameter(1,hmax_adc[i]->GetXaxis()->GetBinCenter(hmax_adc[i]->GetMaximumBin()));
       //func_skew_max_adc[i]->SetParLimits(1,0,8000);
-      func_skew_max_adc[i]->SetParameter(2,est_std_dev_adc);
+      func_skew_max_adc[i]->SetParameter(2,hmax_adc[i]->GetStdDev());
       //func_skew_max_adc[i]->SetParameter(2,100);
       func_skew_max_adc[i]->SetParameter(3,2);
-      hmax_adc[i]->GetXaxis()->SetRange(0,max_bins);
       cout<<Form("Fit parameters for PMT %d (vertical adc cut)",i)<<endl;
-      hmax_adc[i]->Fit(func_skew_max_adc[i],"rq");
+      hmax_adc[i]->Fit(func_skew_max_adc[i],"r");
       hmax_adc[i]->Write();
 
       avg_amp_adc[i] = func_skew_max_adc[i]->GetMaximumX();
 
-      func_skew_max_adc_tdc[i] = new TF1(Form("func_skew_max_adc_tdc%d",i),fit_skew, max_min, max_max, 4);
-      func_skew_max_adc_tdc[i]->SetLineColor(4);
-      func_skew_max_adc_tdc[i]->SetNpx(1000);
+      //Calculate the target voltage to set all PMT signals to equal strength for a similar signal.
+      if(c==5||c==6||c==7||c==8)
+	{
+	  target_voltage_tdc[i] = jlab_hv/pow(avg_amp_tdc[i]/target_RAU,1./jlab_exp);
+	}
+      else
+	{
+	  target_voltage_tdc[i] = cmu_hv/pow(avg_amp_tdc[i]/target_RAU,1./cmu_exp);
+	}
 
-      func_skew_max_adc_tdc[i]->SetRange(hmax_adc_tdc[i]->GetXaxis()->GetBinCenter(hmax_adc_tdc[i]->GetMaximumBin())-0.5*hmax_adc_tdc[i]->GetStdDev(),hmax_adc_tdc[i]->GetXaxis()->GetBinCenter(hmax_adc_tdc[i]->GetMaximumBin())+1.3*hmax_adc_tdc[i]->GetStdDev());
-      func_skew_max_adc_tdc[i]->SetParameter(0,hmax_adc_tdc[i]->GetBinContent(hmax_adc_tdc[i]->GetMaximumBin()));
-      //func_skew_max_adc_tdc[i]->SetParLimits(0,0,10000);
-      func_skew_max_adc_tdc[i]->SetParameter(1,hmax_adc_tdc[i]->GetXaxis()->GetBinCenter(hmax_adc_tdc[i]->GetMaximumBin()));
-      //func_skew_max_adc_tdc[i]->SetParLimits(1,0,8000);
-      func_skew_max_adc_tdc[i]->SetParameter(2,hmax_adc_tdc[i]->GetStdDev());
-      //func_skew_max_adc_tdc[i]->SetParameter(2,100);
-      func_skew_max_adc_tdc[i]->SetParameter(3,2);
-      //cout<<Form("Fit parameters for PMT %d (vertical adc and tdc cut)",i)<<endl;
-      hmax_adc_tdc[i]->Fit(func_skew_max_adc_tdc[i],"rq");
-      hmax_adc_tdc[i]->Write();
-
-      avg_amp_adc_tdc[i] = func_skew_max_adc_tdc[i]->GetMaximumX();
-
-      func_adc_int[i] = new TF1(Form("func_adc_int%d",i),fit_gaus, max_min, max_max, 3);
-      func_adc_int[i]->SetLineColor(4);
-      func_adc_int[i]->SetNpx(1000);
-
-      //func_adc_int[i]->SetRange(hadc_int[i]->GetXaxis()->GetBinCenter(hadc_int[i]->GetMaximumBin())-0.5*hadc_int[i]->GetStdDev(),hadc_int[i]->GetXaxis()->GetBinCenter(hadc_int[i]->GetMaximumBin())+1.3*hadc_int[i]->GetStdDev());
-      func_adc_int[i]->SetRange(ped_int[i]+4*ped_int_std_dev[i],hadc_int[i]->GetMean()+1.5*hadc_int[i]->GetStdDev());
-      Int_t func_min_bin = (int) (ped_int[i]+4*ped_int_std_dev[i]-int_min)/((int_max-int_min)/int_bins);
-      Int_t func_min_bin_value = hadc_int[i]->GetBinContent(func_min_bin);
-      Int_t func_max_bin = (int) (hadc_int[i]->GetMean()+1.5*hadc_int[i]->GetStdDev()-int_min)/((int_max-int_min)/int_bins);
-      Int_t func_max_bin_value = hadc_int[i]->GetBinContent(func_max_bin);
-      hadc_int[i]->GetXaxis()->SetRange(func_min_bin,func_max_bin);     //Range is in bins!
-      Int_t est_amp = hadc_int[i]->GetBinContent(hadc_int[i]->GetMaximumBin());
-      func_adc_int[i]->SetParameter(0,est_amp);
-      //cout<<Form("Estimated amplitude = %d",est_amp)<<endl;
-      //func_adc_int[i]->SetParameter(0,hadc_int[i]->GetBinContent(hadc_int[i]->GetMaximumBin(ped_int[i]+4*ped_int_std_dev[i],hadc_int[i]->GetMean()+1.5*hadc_int[i]->GetStdDev()),0));
-      //cout<<Form("Bin at start of fit func = %.2f   value in that bin = %.2f",(ped_int[i]+4*ped_int_std_dev[i]-int_min)/((int_max-int_min)/int_bins),hadc_int[i]->GetBinContent((int) (ped_int[i]+4*ped_int_std_dev[i]-int_min)/((int_max-int_min)/int_bins)) )<<endl;
-      //func_adc_int[i]->SetParLimits(0,0,10000);
-      func_adc_int[i]->SetParameter(1,hadc_int[i]->GetXaxis()->GetBinCenter(hadc_int[i]->GetMaximumBin()));
-      //func_adc_int[i]->SetParLimits(1,0,8000);
-      func_adc_int[i]->SetParameter(2,hadc_int[i]->GetStdDev());
-      //func_adc_int[i]->SetParameter(2,100);
-      func_adc_int[i]->SetParameter(3,2);
-      //cout<<Form("Fit parameters for PMT %d (vertical adc integral cuts)",i)<<endl;
-      hadc_int[i]->GetXaxis()->SetRange(0,int_bins);
-      hadc_int[i]->Fit(func_adc_int[i],"rq");
-      hadc_int[i]->Write();
-
-      avg_amp_adc_int[i] = func_adc_int[i]->GetMaximumX();
+      cout<<Form("Average cosmic amplitude for PMT %d is %.2f.",i,avg_amp_tdc[i])<<endl;
+      output1<<Form("%d         %.2f        %.0f",i,avg_amp_tdc[i],-target_voltage_tdc[i]);
 
       //Calculate the target voltage to set all PMT signals to equal strength for a similar signal.
       if(c==5||c==6||c==7||c==8)
 	{
-	  target_voltage_tdc[i] = hv[i]/pow(avg_amp_tdc[i]/target_RAU,1./jlab_exp);
-	  target_voltage_adc[i] = hv[i]/pow(avg_amp_adc[i]/target_RAU,1./jlab_exp);
+	  target_voltage_adc[i] = jlab_hv/pow(avg_amp_adc[i]/target_RAU,1./jlab_exp);
 	}
       else
 	{
-	  target_voltage_tdc[i] = hv[i]/pow(avg_amp_tdc[i]/target_RAU,1./cmu_exp);
-	  target_voltage_adc[i] = hv[i]/pow(avg_amp_adc[i]/target_RAU,1./cmu_exp);
+	  target_voltage_adc[i] = cmu_hv/pow(avg_amp_adc[i]/target_RAU,1./cmu_exp);
 	}
 
-      cout<<Form("Average cosmic amplitude for PMT %d (tdc cut) is %.2f.",i,avg_amp_tdc[i])<<endl;
-      output1<<Form("%d     %.2f    %.0f",i,avg_amp_tdc[i],-target_voltage_tdc[i]);
+      cout<<Form("Average cosmic amplitude for PMT %d is %.2f.",i,avg_amp_adc[i])<<endl;
+      output1<<Form("        %.2f        %.0f",avg_amp_adc[i],-target_voltage_adc[i]);
 
-      cout<<Form("Average cosmic amplitude for PMT %d (adc cut) is %.2f.",i,avg_amp_adc[i])<<endl;
-      output1<<Form("    %.2f    %.0f",avg_amp_adc[i],-target_voltage_adc[i]);
-
-      cout<<Form("Average cosmic amplitude for PMT %d (adc and tdc cut) is %.2f.",i,avg_amp_adc_tdc[i])<<endl;
-      output1<<Form("    %.2f    %.0f",avg_amp_adc_tdc[i],-target_voltage_adc_tdc[i]);
-
-      output1<<Form("    %d    %d    %.2f    %d    %d    %d    %.2f    %d",ntdc_hits[i],nadc_hits[i],(double)ntdc_hits[i]/(double)nadc_hits[i],nadc_tdc_hits[i],ntdc_hits_vert[i],nadc_hits_vert[i],(double)ntdc_hits_vert[i]/(double)nadc_hits_vert[i],nadc_tdc_hits_vert[i])<<endl;
+      output1<<Form("        %d        %d        %.2f        %d        %d        %.2f",ntdc_hits[i],nadc_hits[i],(double)ntdc_hits[i]/(double)nadc_hits[i],ntdc_hits_vert[i],nadc_hits_vert[i],(double)ntdc_hits_vert[i]/(double)nadc_hits_vert[i])<<endl;
 
       if(use_int==1)
 	{
@@ -682,7 +536,7 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
 	  
 	  //func_gaus_fit_int[i]->SetRange(hint[i]->GetXaxis()->GetBinCenter(hint[i]->GetMaximumBin())-20,hint[i]->GetXaxis()->GetBinCenter(hint[i]->GetMaximumBin())+20);
 	  func_gaus_fit_int[i]->SetRange(hint[i]->GetXaxis()->GetBinCenter(hint[i]->GetMaximumBin())-50,hint[i]->GetXaxis()->GetBinCenter(hint[i]->GetMaximumBin())+50);
-	  func_gaus_fit_int[i]->SetParameter(0,hint[i]->GetBinContent(hint[i]->GetMaximumBin()));
+	  func_gaus_fit_int[i]->SetParameter(0,hint[i]->GetBinContent(hint[i]->GetMaximumBin()));;
       //func_gaus_fit_int[i]->SetParLimits(0,0,10000);
 	  func_gaus_fit_int[i]->SetParameter(1,hint[i]->GetXaxis()->GetBinCenter(hint[i]->GetMaximumBin()));
 	  //func_gaus_fit_int[i]->SetParLimits(1,0,8000);
@@ -696,12 +550,8 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
     {
       hntdc_hits->SetBinContent(i+1,ntdc_hits[i]);
       hnadc_hits->SetBinContent(i+1,nadc_hits[i]);
-      hnadc_tdc_hits->SetBinContent(i+1,nadc_tdc_hits[i]);
       hntdc_hits_vert->SetBinContent(i+1,ntdc_hits_vert[i]);
       hnadc_hits_vert->SetBinContent(i+1,nadc_hits_vert[i]);
-      hnadc_tdc_hits_vert->SetBinContent(i+1,nadc_tdc_hits_vert[i]);
-      hhv->SetBinContent(i+1,hv[i]*-1);
-      hadc_amp_avg->SetBinContent(i+1,avg_amp_adc[i]);
       if(ntdc_hits[i]==0)
 	{
 	  cout<<Form("The TDC for PMT module %d (from zero) never fired!",i)<<endl;
@@ -714,12 +564,8 @@ void Average_Cosmic_Amplitude(Int_t run = 1221)
 
   hntdc_hits->Write();
   hnadc_hits->Write();
-  hnadc_tdc_hits->Write();
   hntdc_hits_vert->Write();
   hnadc_hits_vert->Write();
-  hnadc_tdc_hits_vert->Write();
-  hhv->Write();
-  hadc_amp_avg->Write();
 
   file->Close();
 
