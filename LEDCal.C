@@ -28,14 +28,22 @@ TFile *HistosFile = new TFile("HistosFile.root","RECREATE");  //File for checkin
 void getPedestal(int);
 void pulseSpec(TH1F*, TF1*, double, int, int, int);
 
+TH1F *ADCvChannel[kNLED];
+TH1F *intADCvChannel[kNLED];
+TH1F *NEVvChannel[kNLED];
+TH1F *NPEvChannel[kNLED];
+TH1F *pedvChannel;
+
 TH1F *histos[kNrows][kNcols][kNLED];
 TH1F *PMTIntSpec[kNrows][kNcols][kNLED]; //=new TH1F("","",20,0,5000); //Empirical limits
 TH1F *PMTMaxSpec[kNrows][kNcols][kNLED]; //=new TH1F("","",20,0,1000); //Empirical limits
+TH1F *NPEvLED[kNrows][kNcols];
 TH1F *pedSpec[kNrows][kNcols];
+
 TF1 *f1;
 TF1 *f2;
 TF1 *f3;
-vector<TH1F*> sampleHistos;
+//vector<TH1F*> sampleHistos;
 
 int signalTotal = 1;
 
@@ -73,7 +81,7 @@ TH1F* MakeHisto(int row, int col, int led, int bins){
   return h;
 }
 
-void getPedestal(int entry=-1){
+void getPedestal(int entry=-1){  //Taken only from the set of data where the LEDs are off.
   if(entry == -1) {
     gCurrentEntry++;
   } else {
@@ -91,7 +99,7 @@ void getPedestal(int entry=-1){
   int ledbit = hcalt::ledbit; 
   ledNumber = (int) (ceil(log2(ledbit+1)));  //Verified map
 
-  if(ledNumber==0){
+  if(ledNumber==0){  //When ledNumber == 0, the LEDs are OFF
 
     // Clear old histograms, just in case modules are not in the tree
     for(r = 0; r < kNrows; r++) {
@@ -272,7 +280,7 @@ void processEvent(int entry = -1){
 	histos[r][c][ledNumber]->GetXaxis()->CenterTitle();
 	histos[r][c][ledNumber]->Write(Form("Sample Event Histogram R%d C%d LED%d",r,c,ledNumber));
 	histos[r][c][ledNumber]->Draw("AP");
-	sampleHistos.push_back(histos[r][c][ledNumber]);
+	//sampleHistos.push_back(histos[r][c][ledNumber]);
   
       }
       signalTotal++;
@@ -309,6 +317,30 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
     }
   }
 
+  //Build extra analysis histograms
+  for(int l=0; l<kNLED; l++){
+    ADCvChannel[l] = new TH1F(Form("ADCvChannel LED %d",l), Form("ADCvChannel LED %d",l), kNcols*kNrows, 0, kNcols*kNrows-1);
+    ADCvChannel[l]->GetXaxis()->SetTitle("Channel");
+    ADCvChannel[l]->GetXaxis()->CenterTitle();
+    ADCvChannel[l]->GetYaxis()->SetTitle("<RAU>");
+    ADCvChannel[l]->GetYaxis()->CenterTitle();
+    intADCvChannel[l] = new TH1F(Form("intADCvChannel LED %d",l), Form("intADCvChannel LED %d",l), kNcols*kNrows, 0, kNcols*kNrows-1);
+    intADCvChannel[l]->GetXaxis()->SetTitle("Channel");
+    intADCvChannel[l]->GetXaxis()->CenterTitle();
+    intADCvChannel[l]->GetYaxis()->SetTitle("<RAU>");
+    intADCvChannel[l]->GetYaxis()->CenterTitle();
+    NEVvChannel[l] = new TH1F(Form("NEVvChannel LED %d",l), Form("NEVvChannel LED %d",l), kNcols*kNrows, 0, kNcols*kNrows-1);
+    NEVvChannel[l]->GetXaxis()->SetTitle("Channel");
+    NEVvChannel[l]->GetXaxis()->CenterTitle();
+    NEVvChannel[l]->GetYaxis()->SetTitle("<RAU>");
+    NEVvChannel[l]->GetYaxis()->CenterTitle();
+  }
+  pedvChannel = new TH1F("pedvChannel", "pedvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
+  pedvChannel->GetXaxis()->SetTitle("Channel");
+  pedvChannel->GetXaxis()->CenterTitle();
+  pedvChannel->GetYaxis()->SetTitle("<RAU>");
+  pedvChannel->GetYaxis()->CenterTitle();
+  
   //cout << "1" << endl;
   
   if(!T) { 
@@ -400,6 +432,7 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
   //C1->Update();
   
   //Write all sample histograms to file
+  /*
   cout << "Writing " << sampleHistos.size() << " sample histograms to file.." << endl;
   for(int i=0; i<sampleHistos.size(); i++){
     ledAggFile->cd();
@@ -407,6 +440,7 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
     sampleHistos[i]->Draw("AP");
     DRAWNHISTO++;
   }
+  */
 
   cout << "Writing spectrum histograms to file and creating file to hold fit parameters.." << endl;
   ofstream outFile;
@@ -423,7 +457,11 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
       pedSpec[r][c]->Write(Form("Pedestal Spect R%d C%d",r,c));
       pedSpec[r][c]->Draw("AP");
 
+      pedvChannel->SetBinContent(kNcols*r+c+1,pedestals[r][c]);
+      
+      //Get mean of gaussian fit to pedestals histogram
       outFile << "For row " << r << " and col " << c << ", pedestal is " << f1->GetParameter(1) << endl;
+      
       for(int l=0; l<kNLED; l++){
 	PMTIntSpec[r][c][l]->Fit("gaus","Q");
 	f2=PMTIntSpec[r][c][l]->GetFunction("gaus");
@@ -431,12 +469,18 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
 	PMTIntSpec[r][c][l]->Write(Form("Int ADC Spect R%d C%d LED%d",r,c,l));
 	PMTIntSpec[r][c][l]->Draw("AP");
 
+	intADCvChannel[l]->SetBinContent(kNcols*r+c+1,f2->GetParameter(1));
+
 	PMTMaxSpec[r][c][l]->Fit("gaus","Q");
 	f3=PMTMaxSpec[r][c][l]->GetFunction("gaus");
 	ledAggFile->cd();
 	PMTMaxSpec[r][c][l]->SetTitle(Form("Max ADC Spect R%d C%d LED%d NPE%f",r,c,l,pow(f3->GetParameter(1)/f3->GetParameter(2),2)));
 	PMTMaxSpec[r][c][l]->Write(Form("Max ADC Spect R%d C%d LED%d",r,c,l));
 	PMTMaxSpec[r][c][l]->Draw("AP");
+
+	ADCvChannel[l]->SetBinContent(kNcols*r+c+1,f3->GetParameter(1));
+
+	NEVvChannel[l]->SetBinContent(kNcols*r+c+1,PMTIntSpec[r][c][l]->GetEntries());
 	
 	if(l!=0){
 	  //outFile << r << "  " << c << "  " << l << "  " << PMTMaxSpec[r][c][l]->GetMean() << "  " << PMTIntSpec[r][c][l]->GetMean() << "  " << pow(PMTMaxSpec[r][c][l]->GetMean(),2)/pow(PMTMaxSpec[r][c][l]->GetRMS(),2) << endl;
@@ -448,6 +492,29 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
       }
     }
   }  
+
+  //Draw analysis histograms
+  for(int l=0; l<kNLED; l++){
+    ledAggFile->cd();
+    ADCvChannel[l]->SetTitle(Form("Average Max ADC Val vs Channel LED %d",l));
+    ADCvChannel[l]->Write("ADCvChannel");
+    ADCvChannel[l]->Draw("AP");
+    
+    ledAggFile->cd();
+    intADCvChannel[l]->SetTitle(Form("Average Int ADC Val vs Channel LED %d",l));
+    intADCvChannel[l]->Write("intADCvChannel");
+    intADCvChannel[l]->Draw("AP");
+    
+    ledAggFile->cd();
+    NEVvChannel[l]->SetTitle(Form("Number of Event Pulses vs Channel LED %d",l));
+    NEVvChannel[l]->Write("NEVvChannel");
+    NEVvChannel[l]->Draw("AP");
+  }
+  
+  ledAggFile->cd();
+  pedvChannel->SetTitle("Avg Pedestal vs Channel");
+  pedvChannel->Write("pedvChannel");
+  pedvChannel->Draw("AP");
   
   cout << "ADC spectrum histograms written to file ledSpectFile_run" << run << ".root" << endl;
   cout << "NPE (and other parameters) written to file NPE_run" << run << ".txt." << endl;

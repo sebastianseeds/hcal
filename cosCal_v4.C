@@ -28,11 +28,17 @@ TH1F *ADCvChannel;
 TH1F *TDCvChannel;
 TH1F *intADCvChannel;
 TH1F *intTDCvChannel;
+TH1F *ADCvChannel_l;
+TH1F *TDCvChannel_l;
+TH1F *intADCvChannel_l;
+TH1F *intTDCvChannel_l;
 TH1F *NEVvChannel;
 TH1F *pedvChannel;
 //TH1F *intPedvChannel;
 TH1F *histos[kNrows][kNcols];
 TH1F *pedSpec[kNrows][kNcols];
+TH1F *pedSpecNoCut[kNrows][kNcols];
+TH1F *pedSubtract[kNrows][kNcols];
 TH1F *intPedSpec[kNrows][kNcols];
 TH1F *PMTIntSpec[kNrows][kNcols]; //=new TH1F("","",20,0,5000); //Empirical limits
 TH1F *PMTMaxSpec[kNrows][kNcols]; //=new TH1F("","",20,0,1000); //Empirical limits
@@ -45,8 +51,9 @@ int signalTotal = 1;
 TFile *HistosFile = new TFile("HistosFile.root","RECREATE");  //File for checking histogram fits and integrity
 TFile *HistosFilePedestal = new TFile("HistosFilePedestal.root","RECREATE");  //File for checking histogram fits and integrity
 double pedestals[kNrows][kNcols];
-//double intPedestals[kNrows][kNcols];
+double pedestalsNoCut[kNrows][kNcols];
 double pedSigma[kNrows][kNcols];
+double pedSigmaNoCut[kNrows][kNcols];
 bool gSaturated[kNrows][kNcols];
 //bool gPulse[kNrows+2][kNcols+2]; //Needs to be larger for false-valued buffers (1 per side)
 //bool gPulseTDC[kNrows+2][kNcols+2]; //Needs to be larger for false-valued buffers (1 per side)
@@ -69,29 +76,71 @@ double pmtHV[kNrows][kNcols];
 //double jlab_rHV = 1600.0; //Not used since lHV is the same and referenced instead
 //double cmu_rHV = 1500.0; //Not used since lHV is the same and referenced instead
 //double jlab_lHVset, cmu_lHVset;
-double cmuExp = 10.5; //Exp parameter per gain equation on data sheet. Starting values from LED runs
-double jlabExp = 8.0; //Exp parameter per gain equation on data sheet. Starting values from LED runs
+double cmuExp = 10.5; //Exp parameter per gain equation on data sheet affected by # dynodes.
+double jlabExp = 8.0; //Exp parameter per gain equation on data sheet affected by # dynodes.
 double targetHV[kNrows][kNcols];
 double targetHVTDC[kNrows][kNcols];
+double targetHV_l[kNrows][kNcols];
+double targetHVTDC_l[kNrows][kNcols];
 
-double powFit(double *X,double *p) 
-{
-  double fitval = p[0]*pow(X[0],p[1]);
-  //double fitval = p[0]*pow((X[0]-p[1])/1200,p[2]) + p[3]; //X normalized to lowest HV value
-  return fitval;
+
+////////////////////////////////
+//Create several fit functions// 
+////////////////////////////////
+
+//Gaussian fit (may just use built-in gaussian fit when convenient)
+double gausFit(double *x, double *par) {
+  double amp = par[0];
+  double loc = par[1];
+  double sigma = par[2];
+  double ADC = x[0];
+  return amp * TMath::Exp(-0.5 * pow(((ADC - loc) / sigma), 2));
 }
 
-//Create skewed normal distribution to fit the timing resolution.
-double skewFit(double *X,double *p) 
-{
-  double fitval = p[0]*exp(-0.5*pow((X[0]-p[1])/p[2],2.0))*0.5*(1+erf(p[3]*((X[0]-p[1])/p[2])));
-  return fitval;
+//Landau fit
+double landauFit(double *x, double *par) {
+  double amp = par[0];
+  double mpv = par[1];
+  double sigma = par[2];
+  double offset = par[3];
+  double ADC = x[0];
+  return amp * TMath::Landau(ADC,mpv,sigma) + offset;
+}
+
+//Poisson fit
+double poissonFit(double *x, double *par) {
+  double N = par[0];
+  double mu = par[1];
+  double mu1 = par[2];
+  double ADC = x[0];
+  return N * TMath::Poisson(ADC / mu1, mu);
+}
+
+//Power-law fit
+double powFit(double *x, double *par) {
+  double amp = par[0];
+  double ex = par[1];
+  double loc = par[2];
+  double offset = par[3];
+  double ADC = x[0];
+  return amp * pow(ADC,ex); //No shift, no normalization
+  //return amp*pow(ADC/1200.0,ex); //X normalized to lowest HV value
+  //return amp*pow((ADC-loc)/1200,ex)+offset; //X normalized to lowest HV value, y-offset
+}
+
+//Skewed-normal fit
+double skewFit(double *x, double *par) {
+  double amp = par[0];
+  double loc = par[1];
+  double scale = par[2];
+  double shape = par[3];
+  double ADC = x[0];
+  return amp * exp(-0.5 * pow((ADC - loc) / scale, 2.0)) * 0.5 * (1 + erf(shape * ((ADC - loc) / scale)));
 }
 
 
 TH1F* MakeHisto(int row, int col, int bins){
-  TH1F *h = new TH1F(TString::Format("h%02d%02d",row,col),
-		     TString::Format("%d-%d",row+1,col+1),bins,DISP_MIN_SAMPLE,DISP_MAX_SAMPLE);
+  TH1F *h = new TH1F(Form("h%02d%02d",row,col),Form("%d-%d",row+1,col+1),bins,DISP_MIN_SAMPLE,DISP_MAX_SAMPLE);
   h->SetStats(0);
   h->SetLineWidth(2);
   return h;
@@ -273,9 +322,11 @@ void getPedestal(int entry=-1){
   }
   
   double adc[kNrows][kNcols];
+  double tdc[kNrows][kNcols];
   for(r  = 0; r < kNrows; r++) {
     for(c  = 0; c < kNcols; c++) {
       adc[r][c] = 0.0;
+      tdc[r][c] = 0.0;
     }
   }
   
@@ -293,6 +344,7 @@ void getPedestal(int entry=-1){
     idx = hcalt::samps_idx[m];
     n = hcalt::nsamps[m];
     adc[r][c] = hcalt::a[m];
+    tdc[r][c] = hcalt::tdc[m];
     bool processed = false;
     for(int s = DISP_MIN_SAMPLE; s < DISP_MAX_SAMPLE && s < n; s++) {
       processed = true;
@@ -311,42 +363,18 @@ void getPedestal(int entry=-1){
     for(c = 0; c < kNcols; c++) {
       
       double sum = 0.0;
-
-
-      /*
-      for(int b=1 ; b<5 ; b++) {
-	sum+=histos[r][c]->GetBinContent(b);
+      
+      for(int b=0 ; b<DISP_MAX_SAMPLE ; b++) {
+	pedSpecNoCut[r][c]->Fill(histos[r][c]->GetBinContent(b+1));
       }
       
-      pedSpec[r][c]->Fill(sum/4); //Fill histogram by pmt with the average of the first 4 bins
-      //intPedSpec[r][c]->Fill(sum);
-      */
-
-      //cout << "Max value is " << histos[r][c]->GetMaximum() << "." << endl;
-      
-      if(histos[r][c]->GetMaximum()<320.0){  //eliminating adc pulses from calc of pedestal
-
+      //if(histos[r][c]->GetMaximum()<320.0){  //eliminating adc pulses from calc of pedestal
+      if(tdc[r][c]==0){ //eliminating adc pulses from coincident tdc measurement
+	
 	for(int b=0 ; b<DISP_MAX_SAMPLE ; b++) {
 	  pedSpec[r][c]->Fill(histos[r][c]->GetBinContent(b+1));
 	}
-	
-	/*
-	for(int b=0 ; b<DISP_MAX_SAMPLE ; b++) {
-	  sum+=histos[r][c]->GetBinContent(b+1);
-	}
-	
-	pedSpec[r][c]->Fill(sum/DISP_MAX_SAMPLE); //Fill histogram by pmt with the average of the first 4 bins
-	//intPedSpec[r][c]->Fill(sum);
-	
-	if(sum/DISP_MAX_SAMPLE>320) cout << "Sum OVER range on " << r << "  " << c << "  " << "." << endl;
-
-	if(sum/DISP_MAX_SAMPLE<120) cout << "Sum UNDER range on " << r << "  " << c << "  " << "." << endl;
-
-	//cout << "Huh?" << endl;
-
-	*/
       }
-      
     }
   }
 }
@@ -417,6 +445,12 @@ int cosCal_v4(int run = 989, int event = -1)
       pedSpec[r][c] = new TH1F(Form("Pedestal Spect R%d C%d",r,c),Form("Pedestal Spect R%d C%d",r,c),200,120,320);
       pedSpec[r][c]->GetXaxis()->SetTitle("<RAU>");
       pedSpec[r][c]->GetXaxis()->CenterTitle();
+      pedSpecNoCut[r][c] = new TH1F(Form("Pedestal No Cut Spect R%d C%d",r,c),Form("Pedestal Spect No Cut R%d C%d",r,c),200,120,320);
+      pedSpecNoCut[r][c]->GetXaxis()->SetTitle("<RAU>");
+      pedSpecNoCut[r][c]->GetXaxis()->CenterTitle();
+      pedSubtract[r][c] = new TH1F(Form("Pedestal Difference Cut/No-Cut Spect R%d C%d",r,c),Form("Pedestal Difference Cut/No-Cut Spect No Cut R%d C%d",r,c),200,120,320);
+      pedSubtract[r][c]->GetXaxis()->SetTitle("<RAU>");
+      pedSubtract[r][c]->GetXaxis()->CenterTitle();
       //intPedSpec[r][c] = new TH1F(Form("Sum Pedestal Spect R%d C%d",r,c),Form("Pedestal Spect R%d C%d",r,c),200,550,1200);
       //intPedSpec[r][c]->GetXaxis()->SetTitle("<RAU>");
       //intPedSpec[r][c]->GetXaxis()->CenterTitle();
@@ -425,12 +459,16 @@ int cosCal_v4(int run = 989, int event = -1)
   }
 
   //Build extra analysis histograms
-  ADCvChannel = new TH1F("ADCvChannel", "ADCvChannel", 288, 0, 287);
-  TDCvChannel = new TH1F("TDCvChannel", "TDCvChannel", 288, 0, 287);
-  intADCvChannel = new TH1F("intADCvChannel", "intADCvChannel", 288, 0, 287);
-  intTDCvChannel = new TH1F("intTDCvChannel", "intTDCvChannel", 288, 0, 287);
-  NEVvChannel = new TH1F("NEVvChannel", "NEVvChannel", 288, 0, 287);
-  pedvChannel = new TH1F("pedvChannel", "pedvChannel", 288, 0, 287);
+  ADCvChannel = new TH1F("ADCvChannel", "ADCvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
+  TDCvChannel = new TH1F("TDCvChannel", "TDCvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
+  intADCvChannel = new TH1F("intADCvChannel", "intADCvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
+  intTDCvChannel = new TH1F("intTDCvChannel", "intTDCvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
+  ADCvChannel_l = new TH1F("ADCvChannel landaufit", "ADCvChannel landaufit", kNcols*kNrows, 0, kNcols*kNrows-1);
+  TDCvChannel_l = new TH1F("TDCvChannel landaufit", "TDCvChannel landaufit", kNcols*kNrows, 0, kNcols*kNrows-1);
+  intADCvChannel_l = new TH1F("intADCvChannel landaufit", "intADCvChannel landaufit", kNcols*kNrows, 0, kNcols*kNrows-1);
+  intTDCvChannel_l = new TH1F("intTDCvChannel landaufit", "intTDCvChannel landaufit", kNcols*kNrows, 0, kNcols*kNrows-1);
+  NEVvChannel = new TH1F("NEVvChannel", "NEVvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
+  pedvChannel = new TH1F("pedvChannel", "pedvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
   //intPedvChannel = new TH1F("intPedvChannel", "intPedvChannel", 288, 0, 287);
   
   if(!T) { 
@@ -438,6 +476,8 @@ int cosCal_v4(int run = 989, int event = -1)
     T->Add(TString::Format("fadc_f1tdc_%d_0.root",run));
     
     T->Add(TString::Format("fadc_f1tdc_%d_1.root",run));
+
+    
     T->Add(TString::Format("fadc_f1tdc_%d_2.root",run));
     T->Add(TString::Format("fadc_f1tdc_%d_3.root",run));
     T->Add(TString::Format("fadc_f1tdc_%d_4.root",run));
@@ -536,9 +576,12 @@ int cosCal_v4(int run = 989, int event = -1)
   for(int r=0; r<kNrows; r++){
     for(int c=0; c<kNcols; c++){  
       HistosFilePedestal->cd();
-      pedSpec[r][c]->SetTitle(Form("Sample R%d C%d",r,c));
-      pedSpec[r][c]->Write(Form("sampleHisto_r%d_c%d",r,c));
+      pedSpec[r][c]->SetTitle(Form("Pedestal R%d C%d",r,c));
+      pedSpec[r][c]->Write(Form("pedHisto_r%d_c%d",r,c));
       pedSpec[r][c]->Draw("AP");
+      pedSpecNoCut[r][c]->SetTitle(Form("Pedestal No Cut R%d C%d",r,c));
+      pedSpecNoCut[r][c]->Write(Form("pedNoCutHisto_r%d_c%d",r,c));
+      pedSpecNoCut[r][c]->Draw("AP");
     }
   }
   
@@ -546,12 +589,14 @@ int cosCal_v4(int run = 989, int event = -1)
   for(int r=0; r<kNrows; r++){
     for(int c=0; c<kNcols; c++){  
       pedSpec[r][c]->Fit("gaus","Q");
-      //intPedSpec[r][c]->Fit("gaus","Q");
       f1=pedSpec[r][c]->GetFunction("gaus");
-      //f2=intPedSpec[r][c]->GetFunction("gaus");
       pedestals[r][c]=f1->GetParameter(1);
       pedSigma[r][c]=f1->GetParameter(2);
-      //intPedestals[r][c]=f2->GetParameter(1);
+      
+      pedSpecNoCut[r][c]->Fit("gaus","Q");
+      f2=pedSpec[r][c]->GetFunction("gaus");
+      pedestalsNoCut[r][c]=f2->GetParameter(1);
+      pedSigmaNoCut[r][c]=f2->GetParameter(2);
     }
   }
 
@@ -575,7 +620,7 @@ int cosCal_v4(int run = 989, int event = -1)
   ofstream outFile;
   outFile.open(Form("cosCalOut_run%d.txt",run));
   outFile << "#Target HV settings for run " << run << "." << endl;
-  outFile << "#Row Col targetHV targetHV_TDCCut" << endl;
+  outFile << "#Row Col targetHV targetHV_TDCCut targetHV_landauFit targetHV_landauFit_TDCCut" << endl;
 
   cout << "Writing spectrum histograms and calibration constants to file.." << endl;
 
@@ -583,20 +628,43 @@ int cosCal_v4(int run = 989, int event = -1)
   TF1 *skewFitMaxTDC[kNrows][kNcols] = {};
   TF1 *skewFitInt[kNrows][kNcols] = {};
   TF1 *skewFitIntTDC[kNrows][kNcols] = {};
-  
+
+  TF1 *landauFitMax[kNrows][kNcols] = {};
+  TF1 *landauFitMaxTDC[kNrows][kNcols] = {};
+  TF1 *landauFitInt[kNrows][kNcols] = {};
+  TF1 *landauFitIntTDC[kNrows][kNcols] = {};
+
   double fitMaxX;
   double TDCfitMaxX;
   double fitIntX;
   double TDCfitIntX;
+  double fitMaxX_l;
+  double TDCfitMaxX_l;
+  double fitIntX_l;
+  double TDCfitIntX_l;
+  
   
   for(int r=0; r<kNrows; r++){
     for(int c=0; c<kNcols; c++){
 
       skewFitMax[r][c] = new TF1();
+      skewFitMax[r][c]->SetLineColor(2);
       skewFitMaxTDC[r][c] = new TF1();
+      skewFitMaxTDC[r][c]->SetLineColor(2);
       skewFitInt[r][c] = new TF1();
+      skewFitInt[r][c]->SetLineColor(2);
       skewFitIntTDC[r][c] = new TF1();
-      
+      skewFitIntTDC[r][c]->SetLineColor(2);
+
+      landauFitMax[r][c] = new TF1();
+      landauFitMax[r][c]->SetLineColor(3);
+      landauFitMaxTDC[r][c] = new TF1();
+      landauFitMaxTDC[r][c]->SetLineColor(3);
+      landauFitInt[r][c] = new TF1();
+      landauFitInt[r][c]->SetLineColor(3);
+      landauFitIntTDC[r][c] = new TF1();
+      landauFitIntTDC[r][c]->SetLineColor(3);
+
       //Create skew fit function per r and c
       skewFitMax[r][c] = new TF1(Form("SkewFitMax r%d c%d",r,c),skewFit, 0, 1000, 4);
       skewFitMax[r][c]->SetLineColor(4);
@@ -611,30 +679,79 @@ int cosCal_v4(int run = 989, int event = -1)
       skewFitIntTDC[r][c]->SetLineColor(4);
       skewFitIntTDC[r][c]->SetNpx(1000);
 
+      //Create landau fit function per r and c
+      landauFitMax[r][c] = new TF1(Form("landauFitMax r%d c%d",r,c),landauFit, 0, 1000, 4);
+      landauFitMax[r][c]->SetLineColor(4);
+      landauFitMax[r][c]->SetNpx(1000);
+      landauFitMaxTDC[r][c] = new TF1(Form("landauFitMaxTDC r%d c%d",r,c),landauFit, 0, 1000, 4);
+      landauFitMaxTDC[r][c]->SetLineColor(4);
+      landauFitMaxTDC[r][c]->SetNpx(1000);
+      landauFitInt[r][c] = new TF1(Form("landauFitInt r%d c%d",r,c),landauFit, 0, 4000, 4);
+      landauFitInt[r][c]->SetLineColor(4);
+      landauFitInt[r][c]->SetNpx(1000);
+      landauFitIntTDC[r][c] = new TF1(Form("landauFitIntTDC r%d c%d",r,c),landauFit, 0, 4000, 4);
+      landauFitIntTDC[r][c]->SetLineColor(4);
+      landauFitIntTDC[r][c]->SetNpx(1000);
+
       //Set parameters for function from spectrum histograms
       skewFitMax[r][c]->SetRange(PMTMaxSpec[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpec[r][c]->GetMaximumBin())-0.8*PMTMaxSpec[r][c]->GetStdDev(),PMTMaxSpec[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpec[r][c]->GetMaximumBin())+1.3*PMTMaxSpec[r][c]->GetStdDev());
-      skewFitMax[r][c]->SetParameter(0,PMTMaxSpec[r][c]->GetBinContent(PMTMaxSpec[r][c]->GetMaximumBin()));;
+      skewFitMax[r][c]->SetParameter(0,PMTMaxSpec[r][c]->GetBinContent(PMTMaxSpec[r][c]->GetMaximumBin()));
       skewFitMax[r][c]->SetParameter(1,PMTMaxSpec[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpec[r][c]->GetMaximumBin()));
       skewFitMax[r][c]->SetParameter(2,PMTMaxSpec[r][c]->GetStdDev());
       skewFitMax[r][c]->SetParameter(3,2);
       skewFitMaxTDC[r][c]->SetRange(PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin())-0.8*PMTMaxSpecTDC[r][c]->GetStdDev(),PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin())+1.3*PMTMaxSpecTDC[r][c]->GetStdDev());
-      skewFitMaxTDC[r][c]->SetParameter(0,PMTMaxSpecTDC[r][c]->GetBinContent(PMTMaxSpecTDC[r][c]->GetMaximumBin()));;
+      skewFitMaxTDC[r][c]->SetParameter(0,PMTMaxSpecTDC[r][c]->GetBinContent(PMTMaxSpecTDC[r][c]->GetMaximumBin()));
       skewFitMaxTDC[r][c]->SetParameter(1,PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin()));
       skewFitMaxTDC[r][c]->SetParameter(2,PMTMaxSpecTDC[r][c]->GetStdDev());
       skewFitMaxTDC[r][c]->SetParameter(3,2);
       skewFitInt[r][c]->SetRange(PMTIntSpec[r][c]->GetXaxis()->GetBinCenter(PMTIntSpec[r][c]->GetMaximumBin())-0.5*PMTIntSpec[r][c]->GetStdDev(),PMTIntSpec[r][c]->GetXaxis()->GetBinCenter(PMTIntSpec[r][c]->GetMaximumBin())+1.3*PMTIntSpec[r][c]->GetStdDev());
-      skewFitInt[r][c]->SetParameter(0,PMTIntSpec[r][c]->GetBinContent(PMTIntSpec[r][c]->GetMaximumBin()));;
+      skewFitInt[r][c]->SetParameter(0,PMTIntSpec[r][c]->GetBinContent(PMTIntSpec[r][c]->GetMaximumBin()));
       skewFitInt[r][c]->SetParameter(1,PMTIntSpec[r][c]->GetXaxis()->GetBinCenter(PMTIntSpec[r][c]->GetMaximumBin()));
       skewFitInt[r][c]->SetParameter(2,PMTIntSpec[r][c]->GetStdDev());
       skewFitInt[r][c]->SetParameter(3,2);
       skewFitIntTDC[r][c]->SetRange(PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin())-0.5*PMTIntSpecTDC[r][c]->GetStdDev(),PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin())+1.3*PMTIntSpecTDC[r][c]->GetStdDev());
-      skewFitIntTDC[r][c]->SetParameter(0,PMTIntSpecTDC[r][c]->GetBinContent(PMTIntSpecTDC[r][c]->GetMaximumBin()));;
+      skewFitIntTDC[r][c]->SetParameter(0,PMTIntSpecTDC[r][c]->GetBinContent(PMTIntSpecTDC[r][c]->GetMaximumBin()));
       skewFitIntTDC[r][c]->SetParameter(1,PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin()));
       skewFitIntTDC[r][c]->SetParameter(2,PMTIntSpecTDC[r][c]->GetStdDev());
       skewFitIntTDC[r][c]->SetParameter(3,2);
-      
+
+      //Set parameters for landau fit from spectrum histograms
+      landauFitMax[r][c]->SetRange(PMTMaxSpec[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpec[r][c]->GetMaximumBin())-0.8*PMTMaxSpec[r][c]->GetStdDev(),PMTMaxSpec[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpec[r][c]->GetMaximumBin())+1.3*PMTMaxSpec[r][c]->GetStdDev());
+      landauFitMax[r][c]->SetParameter(0,PMTMaxSpec[r][c]->GetBinContent(PMTMaxSpec[r][c]->GetMaximumBin()));
+      landauFitMax[r][c]->SetParameter(1,PMTMaxSpec[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpec[r][c]->GetMaximumBin()));
+      landauFitMax[r][c]->SetParameter(2,PMTMaxSpec[r][c]->GetStdDev());
+      landauFitMax[r][c]->SetParameter(3,0);
+      landauFitMaxTDC[r][c]->SetRange(PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin())-0.8*PMTMaxSpecTDC[r][c]->GetStdDev(),PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin())+1.3*PMTMaxSpecTDC[r][c]->GetStdDev());
+      landauFitMaxTDC[r][c]->SetParameter(0,PMTMaxSpecTDC[r][c]->GetBinContent(PMTMaxSpecTDC[r][c]->GetMaximumBin()));
+      landauFitMaxTDC[r][c]->SetParameter(1,PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin()));
+      landauFitMaxTDC[r][c]->SetParameter(2,PMTMaxSpecTDC[r][c]->GetStdDev());
+      landauFitMaxTDC[r][c]->SetParameter(3,0);
+      landauFitInt[r][c]->SetRange(PMTIntSpec[r][c]->GetXaxis()->GetBinCenter(PMTIntSpec[r][c]->GetMaximumBin())-0.8*PMTIntSpec[r][c]->GetStdDev(),PMTIntSpec[r][c]->GetXaxis()->GetBinCenter(PMTIntSpec[r][c]->GetMaximumBin())+1.3*PMTIntSpec[r][c]->GetStdDev());
+      landauFitInt[r][c]->SetParameter(0,PMTIntSpec[r][c]->GetBinContent(PMTIntSpec[r][c]->GetMaximumBin()));
+      landauFitInt[r][c]->SetParameter(1,PMTIntSpec[r][c]->GetXaxis()->GetBinCenter(PMTIntSpec[r][c]->GetMaximumBin()));
+      landauFitInt[r][c]->SetParameter(2,PMTIntSpec[r][c]->GetStdDev());
+      landauFitInt[r][c]->SetParameter(3,0);
+      landauFitIntTDC[r][c]->SetRange(PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin())-0.8*PMTIntSpecTDC[r][c]->GetStdDev(),PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin())+1.3*PMTIntSpecTDC[r][c]->GetStdDev());
+      landauFitIntTDC[r][c]->SetParameter(0,PMTIntSpecTDC[r][c]->GetBinContent(PMTIntSpecTDC[r][c]->GetMaximumBin()));
+      landauFitIntTDC[r][c]->SetParameter(1,PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin()));
+      landauFitIntTDC[r][c]->SetParameter(2,PMTIntSpecTDC[r][c]->GetStdDev());
+      landauFitIntTDC[r][c]->SetParameter(3,0);
+
+      //Switch between jlab and cmu pmts for analysis
       int iHV=0; 
       if(c>3&&c<8) iHV=1;
+
+      //Subtract pedestals histogram with TDC cut and pedestals with no cut
+      //pedSpec[r][c]->GetListOfFunctions()->Remove(gaus);
+      //pedSpecNoCut[r][c]->GetListOfFunctions()->Remove(gaus);
+      pedSubtract[r][c]=(TH1F*)pedSpec[r][c]->Clone("pedSubtract");
+      pedSubtract[r][c]->Add(pedSpecNoCut[r][c],-1);
+
+      cosAggFile->cd();
+      pedSubtract[r][c]->GetXaxis()->SetTitle("RAU");
+      pedSubtract[r][c]->GetXaxis()->CenterTitle();
+      pedSubtract[r][c]->Write(Form("Pedestal Difference Cut/No-Cut R%d C%d",r,c));
+      pedSubtract[r][c]->Draw("AP");
 
       pedSpec[r][c]->Fit("gaus","Q");
       f1=pedSpec[r][c]->GetFunction("gaus");
@@ -645,6 +762,17 @@ int cosCal_v4(int run = 989, int event = -1)
       pedSpec[r][c]->GetXaxis()->CenterTitle();
       pedSpec[r][c]->Write(Form("Pedestal Spect R%d C%d",r,c));
       pedSpec[r][c]->Draw("AP");
+
+      pedSpecNoCut[r][c]->Fit("gaus","Q");
+      f2=pedSpecNoCut[r][c]->GetFunction("gaus");
+      
+      cosAggFile->cd();
+      pedSpecNoCut[r][c]->SetTitle(Form("Pedestal Spect No Cut R%d C%d",r,c));
+      pedSpecNoCut[r][c]->GetXaxis()->SetTitle("RAU");
+      pedSpecNoCut[r][c]->GetXaxis()->CenterTitle();
+      pedSpecNoCut[r][c]->Write(Form("Pedestal Spect No Cut R%d C%d",r,c));
+      pedSpecNoCut[r][c]->Draw("AP");
+      
       /*
       intPedSpec[r][c]->Fit("gaus","Q");
       f1=intPedSpec[r][c]->GetFunction("gaus");
@@ -662,28 +790,42 @@ int cosCal_v4(int run = 989, int event = -1)
 	//cout << "PMTIntSpec entries for row " << r << ", col " << c << " = " << PMTIntSpec[r][c]->GetEntries() << "." << endl;
 	PMTIntSpec[r][c]->Fit(skewFitInt[r][c],"RQ");
 	fitIntX = skewFitInt[r][c]->GetMaximumX();
+	PMTIntSpec[r][c]->Fit(landauFitInt[r][c],"+RQ");
+	fitIntX_l = landauFitInt[r][c]->GetParameter(1);
+	skewFitInt[r][c]->SetLineColor(kRed);
+	landauFitInt[r][c]->SetLineColor(kBlue);
 	cosAggFile->cd();
-	PMTIntSpec[r][c]->SetTitle(Form("Int ADC Spect R%d C%d MaxX%f",r,c,fitIntX));
+	PMTIntSpec[r][c]->SetTitle(Form("Int ADC Spect R%d C%d MaxX%f MaxX_l%f",r,c,fitIntX,fitIntX_l));
 	PMTIntSpec[r][c]->Write(Form("Int ADC Spect R%d C%d",r,c));
 	PMTIntSpec[r][c]->Draw("AP");
+	//skewFitInt[r][c]->Draw("SAME");
+	//landauFitInt[r][c]->Draw("SAME");
       }
       
       if( PMTMaxSpec[r][c]->GetEntries() > 0){
 	//cout << "PMTMaxSpec entries for row " << r << ", col " << c << " = " << PMTMaxSpec[r][c]->GetEntries() << "." << endl;
 	PMTMaxSpec[r][c]->Fit(skewFitMax[r][c],"RQ");
 	fitMaxX = skewFitMax[r][c]->GetMaximumX();
+	PMTMaxSpec[r][c]->Fit(landauFitMax[r][c],"+RQ");
+	fitMaxX_l = landauFitMax[r][c]->GetParameter(1);
+	skewFitMax[r][c]->SetLineColor(kRed);
+	landauFitMax[r][c]->SetLineColor(kBlue);
 	cosAggFile->cd();
-	PMTMaxSpec[r][c]->SetTitle(Form("Max ADC Spect R%d C%d MaxX%f",r,c,fitMaxX));
+	PMTMaxSpec[r][c]->SetTitle(Form("Max ADC Spect R%d C%d MaxX%f MaxX_l%f",r,c,fitMaxX,fitMaxX_l));
 	PMTMaxSpec[r][c]->Write(Form("Max ADC Spect R%d C%d",r,c));
 	PMTMaxSpec[r][c]->Draw("AP");
+	//skewFitMax[r][c]->Draw("SAME");
+	//landauFitMax[r][c]->Draw("SAME");
       }
       
       //Calculate target HV from gain equation on data sheet
       
       if(iHV==1){
 	targetHV[r][c] = pmtHV[r][c]/pow(fitMaxX/targetRAU,1.0/jlabExp);
+	targetHV_l[r][c] = pmtHV[r][c]/pow(fitMaxX_l/targetRAU,1.0/jlabExp);
       }else{
 	targetHV[r][c] = pmtHV[r][c]/pow(fitMaxX/targetRAU,1.0/cmuExp);
+	targetHV_l[r][c] = pmtHV[r][c]/pow(fitMaxX_l/targetRAU,1.0/cmuExp);
       }
       
       
@@ -695,35 +837,59 @@ int cosCal_v4(int run = 989, int event = -1)
 	targetHV[r][c] = pmtHV[r][c];
 	}
       */
+      /*
+      cout << endl;
+      cout << "r and c = " << r << "  " << c << endl;
+      cout << "pmtHV = " << pmtHV[r][c] << endl;
       cout << "fitMaxX = " << fitMaxX << endl;
-      
+      cout << "fitMaxX_l = " << fitMaxX_l << endl;
+      cout << "targetRAU = " << targetRAU << endl;
+      cout << "jlabExp = " << jlabExp << endl;
+      cout << "cmuExp = " << cmuExp << endl << endl;
+      cout << "targetHV = " << targetHV[r][c] << endl;
+      cout << "targetHV_l = " << targetHV[r][c] << endl;
+      */
       //Spectra with TDC cut
       if( PMTIntSpecTDC[r][c]->GetEntries() > 0){
 	//cout << "PMTIntSpecTDC entries for row " << r << ", col " << c << " = " << PMTIntSpecTDC[r][c]->GetEntries() << "." << endl;
 	PMTIntSpecTDC[r][c]->Fit(skewFitIntTDC[r][c],"RQ");
 	TDCfitIntX = skewFitIntTDC[r][c]->GetMaximumX();
+	PMTIntSpecTDC[r][c]->Fit(landauFitIntTDC[r][c],"+RQ");
+	TDCfitIntX_l = landauFitIntTDC[r][c]->GetParameter(1);
+	skewFitIntTDC[r][c]->SetLineColor(kRed);
+	landauFitIntTDC[r][c]->SetLineColor(kBlue);
 	cosAggFile->cd();
-	PMTIntSpecTDC[r][c]->SetTitle(Form("Int ADC Spect TDCcut R%d C%d MaxX%f",r,c,TDCfitIntX));
+	PMTIntSpecTDC[r][c]->SetTitle(Form("Int ADC Spect TDCcut R%d C%d MaxX%f MaxX_L%f",r,c,TDCfitIntX,TDCfitIntX_l));
 	PMTIntSpecTDC[r][c]->Write(Form("Int ADC Spect TDC R%d C%d",r,c));
 	PMTIntSpecTDC[r][c]->Draw("AP");
+	//skewFitIntTDC[r][c]->Draw("sames");
+	//landauFitIntTDC[r][c]->Draw("sames");
       }
       
       if( PMTMaxSpecTDC[r][c]->GetEntries() > 0){
 	//cout << "PMTMaxSpecTDC entries for row " << r << ", col " << c << " = " << PMTMaxSpecTDC[r][c]->GetEntries() << "." << endl;
 	PMTMaxSpecTDC[r][c]->Fit(skewFitMaxTDC[r][c],"RQ");
 	TDCfitMaxX = skewFitMaxTDC[r][c]->GetMaximumX();
+	PMTMaxSpecTDC[r][c]->Fit(landauFitMaxTDC[r][c],"+RQ");
+	TDCfitMaxX_l = landauFitMaxTDC[r][c]->GetParameter(1);
+	skewFitMaxTDC[r][c]->SetLineColor(kRed);
+	landauFitMaxTDC[r][c]->SetLineColor(kBlue);
 	cosAggFile->cd();
-	PMTMaxSpecTDC[r][c]->SetTitle(Form("Max ADC Spect TDCcut R%d C%d MaxX%f",r,c,TDCfitMaxX));
+	PMTMaxSpecTDC[r][c]->SetTitle(Form("Max ADC Spect TDCcut R%d C%d MaxX%f MaxX_l%f",r,c,TDCfitMaxX,TDCfitMaxX_l));
 	PMTMaxSpecTDC[r][c]->Write(Form("Max ADC Spect TDC R%d C%d",r,c));
 	PMTMaxSpecTDC[r][c]->Draw("AP");
+	//skewFitMaxTDC[r][c]->Draw("sames");
+	//landauFitMaxTDC[r][c]->Draw("sames");
       }
 
       //Calculate target HV with TDC cut from gain equation on data sheet
 
       if(iHV==1){
 	targetHVTDC[r][c] = pmtHV[r][c]/pow(TDCfitMaxX/targetRAU,1.0/jlabExp);
+	targetHVTDC_l[r][c] = pmtHV[r][c]/pow(TDCfitMaxX_l/targetRAU,1.0/jlabExp);
       }else{
 	targetHVTDC[r][c] = pmtHV[r][c]/pow(TDCfitMaxX/targetRAU,1.0/cmuExp);
+	targetHVTDC_l[r][c] = pmtHV[r][c]/pow(TDCfitMaxX_l/targetRAU,1.0/cmuExp);
       }
 
       //Fill Max ADC vs Channel Histogram
@@ -731,6 +897,10 @@ int cosCal_v4(int run = 989, int event = -1)
       TDCvChannel->SetBinContent(kNcols*r+c+1,TDCfitMaxX);
       intADCvChannel->SetBinContent(kNcols*r+c+1,fitIntX);
       intTDCvChannel->SetBinContent(kNcols*r+c+1,TDCfitIntX);
+      ADCvChannel_l->SetBinContent(kNcols*r+c+1,fitMaxX_l);
+      TDCvChannel_l->SetBinContent(kNcols*r+c+1,TDCfitMaxX_l);
+      intADCvChannel_l->SetBinContent(kNcols*r+c+1,fitIntX_l);
+      intTDCvChannel_l->SetBinContent(kNcols*r+c+1,TDCfitIntX_l);
 
       //Fill Number of events per module histogram
       //int NEV = PMTIntSpec[r][c]->GetEntries();
@@ -740,8 +910,8 @@ int cosCal_v4(int run = 989, int event = -1)
       pedvChannel->SetBinContent(kNcols*r+c+1,pedestals[r][c]);
       //intPedvChannel->SetBinContent(kNcols*r+c,intPedestals[r][c]);
 
-      cout << "For row " << r << " and col " << c << ", target HV is " << targetHV[r][c] << " and target HV (TDC cut) is " << targetHVTDC[r][c] << "." << endl;
-      outFile << r << "  " << c << "  " << targetHV[r][c] << "  " << targetHVTDC[r][c] << endl;
+      cout << "For row " << r << " and col " << c << ", target HV is " << targetHV[r][c] << ", target HV (TDC cut) is " << targetHVTDC[r][c] << ", target HV with landau fit is " << targetHV_l[r][c] << ", and target HV (TDC cut) with landau fit is " << targetHVTDC_l[r][c] << "." << endl;
+      outFile << r << "  " << c << "  " << targetHV[r][c] << "  " << targetHVTDC[r][c] << "  " << targetHV_l[r][c] << "  " << targetHVTDC_l[r][c] << "  " << endl;
       
     }
   }
@@ -753,9 +923,19 @@ int cosCal_v4(int run = 989, int event = -1)
   ADCvChannel->Draw("AP");
   
   cosAggFile->cd();
+  ADCvChannel_l->SetTitle("Average Max ADC Val vs Channel, Landau Fit");
+  ADCvChannel_l->Write("ADCvChannel_l");
+  ADCvChannel_l->Draw("AP");
+  
+  cosAggFile->cd();
   TDCvChannel->SetTitle("Average Max ADC Val with TDC Cut vs Channel");
   TDCvChannel->Write("TDCvChannel");
   TDCvChannel->Draw("AP");
+    
+  cosAggFile->cd();
+  TDCvChannel_l->SetTitle("Average Max ADC Val with TDC Cut vs Channel, Landau Fit");
+  TDCvChannel_l->Write("TDCvChannel_l");
+  TDCvChannel_l->Draw("AP");
   
   cosAggFile->cd();
   intADCvChannel->SetTitle("Average Int ADC Val vs Channel");
@@ -763,9 +943,19 @@ int cosCal_v4(int run = 989, int event = -1)
   intADCvChannel->Draw("AP");
   
   cosAggFile->cd();
+  intADCvChannel_l->SetTitle("Average Int ADC Val vs Channel, Landau Fit");
+  intADCvChannel_l->Write("intADCvChannel_l");
+  intADCvChannel_l->Draw("AP");
+  
+  cosAggFile->cd();
   intTDCvChannel->SetTitle("Average Int ADC Val with TDC Cut vs Channel");
   intTDCvChannel->Write("intTDCvChannel");
   intTDCvChannel->Draw("AP");
+    
+  cosAggFile->cd();
+  intTDCvChannel_l->SetTitle("Average Int ADC Val with TDC Cut vs Channel, Landau Fit");
+  intTDCvChannel_l->Write("intTDCvChannel_l");
+  intTDCvChannel_l->Draw("AP");
   
   cosAggFile->cd();
   NEVvChannel->SetTitle("Number of Event Pulses vs Channel");
