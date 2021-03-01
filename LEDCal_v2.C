@@ -7,7 +7,7 @@
 #include <TSystem.h>
 #include "hcal.h"
 
-const int kNrows = 12; //All available rows for HCAL
+const int kNrows = 24; //All available rows for HCAL
 const int kNcols = 12; //Half of HCAL has 12 columns
 const int kNLED = 6; //For 5 LEDs and an off position at zero
 
@@ -19,11 +19,6 @@ int gCurrentEntry = -1;
 
 TChain *T = 0;
 TFile *HistosFile = new TFile("HistosFile.root","RECREATE");  //File for checking histogram fits and integrity
-//TCanvas *C1 = new TCanvas();
-//TCanvas *C2 = new TCanvas();
-//TCanvas *C3 = new TCanvas();
-//TCanvas *C4 = new TCanvas();
-//TCanvas *C5 = new TCanvas();
 
 void getPedestal(int);
 void pulseSpec(TH1F*, TF1*, double, int, int, int);
@@ -37,8 +32,11 @@ TH1F *pedvChannel;
 TH1F *histos[kNrows][kNcols][kNLED];
 TH1F *PMTIntSpec[kNrows][kNcols][kNLED]; //=new TH1F("","",20,0,5000); //Empirical limits
 TH1F *PMTMaxSpec[kNrows][kNcols][kNLED]; //=new TH1F("","",20,0,1000); //Empirical limits
-TH1F *NPEvLED[kNrows][kNcols];
 TH1F *pedSpec[kNrows][kNcols];
+
+double NPE[kNrows][kNcols][kNLED-1];
+double LED[kNLED-1];
+TGraph *NPEvLED[kNrows][kNcols];
 
 TF1 *f1;
 TF1 *f2;
@@ -68,7 +66,17 @@ double fit_gaus(double *x,double *p)
 }
 */
 
-
+//Power-law fit
+double powFit(double *x, double *par) {
+  double amp = par[0];
+  double ex = par[1];
+  double loc = par[2];
+  double offset = par[3];
+  double ADC = x[0];
+  return amp * pow(ADC,ex); //No shift, no normalization
+  //return amp*pow(ADC/1200.0,ex); //X normalized to lowest HV value
+  //return amp*pow((ADC-loc)/1200,ex)+offset; //X normalized to lowest HV value, y-offset
+}
 
 int pInc = 0;
 
@@ -235,12 +243,7 @@ void processEvent(int entry = -1){
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
       histos[r][c][ledNumber]->SetTitle(TString::Format("%d-%d LED-%d (ADC=%g,TDC=%g)",r+1,c+1,ledNumber,adc[r][c],tdc[r][c]));
-      //Check for saturation
-      if(gSaturated[r][c][ledNumber])
-	histos[r][c][ledNumber]->SetLineColor(kRed+1);
-      else
-	histos[r][c][ledNumber]->SetLineColor(kBlue+1);
-	
+
       //Pedestal subtract
       //Get pedestal value and std dev for the event 
       pedVal = pedestals[r][c];
@@ -249,18 +252,19 @@ void processEvent(int entry = -1){
       //Subtract pedestal value from each bin
       for(int b=1 ; b<=histos[r][c][ledNumber]->GetNbinsX() ; b++) {
 	histos[r][c][ledNumber]->SetBinContent(b,histos[r][c][ledNumber]->GetBinContent(b)-pedVal);
-	//histos[r][c][ledNumber]->SetBinError(b,pedSig);
       }
 	
       //Obtain maximum and integrated value from the histogram
-      maxy = peak[r][c];
-	
-      PMTIntSpec[r][c][ledNumber]->Fill(histos[r][c][ledNumber]->Integral(1,30)); //Integral from total bin content
-      PMTMaxSpec[r][c][ledNumber]->Fill(maxy);
-	
+      maxy = histos[r][c][ledNumber]->GetMaximum();
+
+      
+      if(ledNumber!=0 && r>11 && gSaturated[r][c][ledNumber]==false){ //Right half is shut off, hence r > 12, and cut all saturated events
+	PMTIntSpec[r][c][ledNumber]->Fill(histos[r][c][ledNumber]->Integral(1,30)); //Integral from total bin content
+	PMTMaxSpec[r][c][ledNumber]->Fill(maxy);
+      }
 	
       //Write out regular histograms - LED bit changes every 1000 events.
-      if (signalTotal % 130000 == 0){
+      if (ledNumber!=0 && signalTotal % 35000 == 0 && r>11 && gSaturated[r][c][ledNumber]==false){ //Right half is shut off, hence r > 12, and cut all saturated events
 	cout << "Saving a reference good fit histogram to write to file.." << endl;
 	cout << "Integrated value for this histogram = " << histos[r][c][ledNumber]->Integral(1,30) << "." << endl;
 	cout << "Maximum value for this histogram = " << maxy << "." << endl;
@@ -268,10 +272,7 @@ void processEvent(int entry = -1){
 	cout << "TDC value for this histogram = " << tdc[r][c] << "." << endl;
 	cout << "LED number for this histogram = " << ledNumber << "." << endl << endl;
 	histos[r][c][ledNumber]->SetTitle(Form("Sample Histo R%d C%d LED%d",r,c,ledNumber));
-	//C2->cd();
-	//C2->Update();
 	histos[r][c][ledNumber]->Draw();
-	//C1->cd();
 	HistosFile->cd();
 	histos[r][c][ledNumber]->SetTitle(Form("Sample Event Histogram R%d C%d LED%d",r,c,ledNumber));
 	histos[r][c][ledNumber]->GetYaxis()->SetTitle("RAU");
@@ -280,7 +281,6 @@ void processEvent(int entry = -1){
 	histos[r][c][ledNumber]->GetXaxis()->CenterTitle();
 	histos[r][c][ledNumber]->Write(Form("Sample Event Histogram R%d C%d LED%d",r,c,ledNumber));
 	histos[r][c][ledNumber]->Draw("AP");
-	//sampleHistos.push_back(histos[r][c][ledNumber]);
   
       }
       signalTotal++;
@@ -288,21 +288,21 @@ void processEvent(int entry = -1){
   }
 }
 
-int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 events
+int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 events
 {
   //Declare outfile
-  TFile *ledAggFile = new TFile(Form("ledSpectFile_run%d.root",run),"RECREATE");
+  TFile *ledAggFile = new TFile(Form("outFiles/ledSpectFile_run%d.root",run),"RECREATE");
 
   //Build spectra histograms. Empirical limits.
   cout << "Building spectrum histograms.." << endl;
   for(int r=0; r<kNrows; r++){
     for(int c=0; c<kNcols; c++){
       for(int l=0; l<kNLED; l++){
-	PMTIntSpec[r][c][l] = new TH1F(Form("Int ADC Spect R%d C%d LED%d",r,c,l),Form("Int ADC Spect R%d C%d LED%d",r,c,l),30,0,0);
+	PMTIntSpec[r][c][l] = new TH1F(Form("Int ADC Spect R%d C%d LED%d",r,c,l),Form("Int ADC Spect R%d C%d LED%d",r,c,l),20,0,0);
 	PMTIntSpec[r][c][l]->GetXaxis()->SetTitle("sRAU");
 	PMTIntSpec[r][c][l]->GetXaxis()->CenterTitle();
 
-	PMTMaxSpec[r][c][l] = new TH1F(Form("Max ADC Spect R%d C%d LED%d",r,c,l),Form("Max ADC Spect R%d C%d LED%d",r,c,l),30,0,0);
+	PMTMaxSpec[r][c][l] = new TH1F(Form("Max ADC Spect R%d C%d LED%d",r,c,l),Form("Max ADC Spect R%d C%d LED%d",r,c,l),20,0,0);
 	PMTMaxSpec[r][c][l]->GetXaxis()->SetTitle("RAU");
 	PMTMaxSpec[r][c][l]->GetXaxis()->CenterTitle();
 
@@ -310,15 +310,16 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
 	  PMTIntSpec[r][c][l]->Fill(-404);  //l=0 corresponds to no led on, used only for extracting pedestals
 	  PMTMaxSpec[r][c][l]->Fill(-404);  //l=0 corresponds to no led on, used only for extracting pedestals
 	}
-      }
-      pedSpec[r][c] = new TH1F(Form("Pedestal Spect R%d C%d",r,c),Form("Pedestal Spect R%d C%d",r,c),30,0,0);
+      }      
+      pedSpec[r][c] = new TH1F(Form("Pedestal Spect R%d C%d",r,c),Form("Pedestal Spect R%d C%d",r,c),25,0,0);
       pedSpec[r][c]->GetXaxis()->SetTitle("<RAU>");
       pedSpec[r][c]->GetXaxis()->CenterTitle();
+      
     }
   }
 
-  //Build extra analysis histograms
-  for(int l=0; l<kNLED; l++){
+  //Build extra analysis histograms and array for NPEvLED TGraph
+  for(int l=1; l<kNLED; l++){
     ADCvChannel[l] = new TH1F(Form("ADCvChannel LED %d",l), Form("ADCvChannel LED %d",l), kNcols*kNrows, 0, kNcols*kNrows-1);
     ADCvChannel[l]->GetXaxis()->SetTitle("Channel");
     ADCvChannel[l]->GetXaxis()->CenterTitle();
@@ -334,18 +335,20 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
     NEVvChannel[l]->GetXaxis()->CenterTitle();
     NEVvChannel[l]->GetYaxis()->SetTitle("<RAU>");
     NEVvChannel[l]->GetYaxis()->CenterTitle();
+
+    if(l!=0){
+      LED[l-1]=l;
+    }
   }
   pedvChannel = new TH1F("pedvChannel", "pedvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
   pedvChannel->GetXaxis()->SetTitle("Channel");
   pedvChannel->GetXaxis()->CenterTitle();
   pedvChannel->GetYaxis()->SetTitle("<RAU>");
   pedvChannel->GetYaxis()->CenterTitle();
-  
-  //cout << "1" << endl;
-  
+    
   if(!T) { 
     T = new TChain("T");
-    T->Add(TString::Format("fadc_f1tdc_%d.root",run));
+    T->Add(TString::Format("rootFiles/fadc_f1tdc_%d.root",run));
     T->SetBranchStatus("*",0);
     T->SetBranchStatus("sbs.hcal.*",1);
     T->SetBranchAddress("sbs.hcal.ledbit",&hcalt::ledbit);
@@ -373,8 +376,6 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
   gCurrentEntry = event;
 
   cout << "Total events to process " << T->GetEntries() << endl;
-
-  //TF1 *gaus1 = new TF1("gaus");
   
   //Obtain pedestal histograms from all entries for each led
   cout << "Looping over events to populate pedestal histograms from LED bit 00.." << endl;
@@ -399,12 +400,9 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
 
 	pedSpec[r][c]->Fit("gaus","Q");
 	f1=pedSpec[r][c]->GetFunction("gaus");
-	//pedestals[r][c]=pedSpec[r][c]->GetMean(); //Get the mean
-	//pedSigma[r][c]=pedSpec[r][c]->GetRMS(); //Get std dev
 	pedestals[r][c]=f1->GetParameter(1); //Get the mean
 	pedSigma[r][c]=f1->GetParameter(2); //Get std dev
-	
-	//cout << "Pedestals: row col mean sigma -> " << r << " " << c << " " << pedestals[r][c] << " " << pedSigma[r][c] << endl;
+
       }
     }
   }
@@ -428,27 +426,13 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
   cout << "Finished loop over run " << run << "." << endl;
   cout << "Total good signals = " << signalTotal << "." << endl;
 
-  //C1->cd();
-  //C1->Update();
-  
-  //Write all sample histograms to file
-  /*
-  cout << "Writing " << sampleHistos.size() << " sample histograms to file.." << endl;
-  for(int i=0; i<sampleHistos.size(); i++){
-    ledAggFile->cd();
-    sampleHistos[i]->Write(Form("sampleHisto %d",DRAWNHISTO));
-    sampleHistos[i]->Draw("AP");
-    DRAWNHISTO++;
-  }
-  */
-
   cout << "Writing spectrum histograms to file and creating file to hold fit parameters.." << endl;
   ofstream outFile;
   outFile.open(Form("NPE_run%d.txt",run));
   outFile << "#All information for run " << run << "." << endl;
   outFile << "#Row Col LED <Max> <Int> NPE" << endl;
   
-  for(int r=0; r<kNrows; r++){
+  for(int r=12; r<kNrows; r++){ //Only left half of HCal on for these tests
     for(int c=0; c<kNcols; c++){
       pedSpec[r][c]->Fit("gaus","Q");
       f1=pedSpec[r][c]->GetFunction("gaus");
@@ -462,39 +446,63 @@ int LEDCal(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 e
       //Get mean of gaussian fit to pedestals histogram
       outFile << "For row " << r << " and col " << c << ", pedestal is " << f1->GetParameter(1) << endl;
       
-      for(int l=0; l<kNLED; l++){
-	PMTIntSpec[r][c][l]->Fit("gaus","Q");
-	f2=PMTIntSpec[r][c][l]->GetFunction("gaus");
-	ledAggFile->cd();
-	PMTIntSpec[r][c][l]->Write(Form("Int ADC Spect R%d C%d LED%d",r,c,l));
-	PMTIntSpec[r][c][l]->Draw("AP");
+      for(int l=1; l<kNLED; l++){
+	if(PMTIntSpec[r][c][l]->GetEntries()!=0){
+	  PMTIntSpec[r][c][l]->Fit("gaus","Q");
+	  f2=PMTIntSpec[r][c][l]->GetFunction("gaus");
+	  ledAggFile->cd();
+	  PMTIntSpec[r][c][l]->Write(Form("Int ADC Spect R%d C%d LED%d",r,c,l));
+	  PMTIntSpec[r][c][l]->Draw("AP");
+	
+	  intADCvChannel[l]->SetBinContent(kNcols*r+c+1,f2->GetParameter(1));
+	}
 
-	intADCvChannel[l]->SetBinContent(kNcols*r+c+1,f2->GetParameter(1));
+	if(PMTMaxSpec[r][c][l]->GetEntries()!=0){
+	  PMTMaxSpec[r][c][l]->Fit("gaus","Q");
+	  f3=PMTMaxSpec[r][c][l]->GetFunction("gaus");
+	  ledAggFile->cd();
+	  PMTMaxSpec[r][c][l]->SetTitle(Form("Max ADC Spect R%d C%d LED%d NPE%f",r,c,l,pow(f3->GetParameter(1)/f3->GetParameter(2),2)));
+	  PMTMaxSpec[r][c][l]->Write(Form("Max ADC Spect R%d C%d LED%d",r,c,l));
+	  PMTMaxSpec[r][c][l]->Draw("AP");
 
-	PMTMaxSpec[r][c][l]->Fit("gaus","Q");
-	f3=PMTMaxSpec[r][c][l]->GetFunction("gaus");
-	ledAggFile->cd();
-	PMTMaxSpec[r][c][l]->SetTitle(Form("Max ADC Spect R%d C%d LED%d NPE%f",r,c,l,pow(f3->GetParameter(1)/f3->GetParameter(2),2)));
-	PMTMaxSpec[r][c][l]->Write(Form("Max ADC Spect R%d C%d LED%d",r,c,l));
-	PMTMaxSpec[r][c][l]->Draw("AP");
-
-	ADCvChannel[l]->SetBinContent(kNcols*r+c+1,f3->GetParameter(1));
-
+	  ADCvChannel[l]->SetBinContent(kNcols*r+c+1,f3->GetParameter(1));
+	}
+	
 	NEVvChannel[l]->SetBinContent(kNcols*r+c+1,PMTIntSpec[r][c][l]->GetEntries());
 	
-	if(l!=0){
-	  //outFile << r << "  " << c << "  " << l << "  " << PMTMaxSpec[r][c][l]->GetMean() << "  " << PMTIntSpec[r][c][l]->GetMean() << "  " << pow(PMTMaxSpec[r][c][l]->GetMean(),2)/pow(PMTMaxSpec[r][c][l]->GetRMS(),2) << endl;
-	  //outFile << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/f3->GetParameter(2),2) << endl;
+	if(PMTMaxSpec[r][c][l]->GetEntries()!=0){
 
 	  outFile << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0) << endl;  //Sigma error in quadrature, mean already pedestal subtracted
+
+	  cout << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0) << endl;  //Sigma error in quadrature, mean already pedestal subtracted
+
+	  NPE[r][c][l-1]=pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0);
 	  
 	}
       }
     }
   }  
 
+  //Draw NPE by pmt histograms
+  for(int r=12; r<kNrows; r++){
+    for(int c=0; c<kNcols; c++){      
+      NPEvLED[r][c]=new TGraph(kNLED-1,LED,NPE[r][c]);
+      ledAggFile->cd();
+      NPEvLED[r][c]->SetTitle(Form("Avg NPE vs LED r %d c %d",r,c));
+      NPEvLED[r][c]->GetXaxis()->SetTitle("LED Setting");
+      NPEvLED[r][c]->GetXaxis()->CenterTitle();
+      NPEvLED[r][c]->GetYaxis()->SetTitle("<NPE>");
+      NPEvLED[r][c]->GetYaxis()->CenterTitle();
+      NPEvLED[r][c]->SetMinimum(0.0);
+      NPEvLED[r][c]->SetLineColor(kWhite);
+      NPEvLED[r][c]->SetMarkerStyle(8);
+      NPEvLED[r][c]->Draw("P same");
+      NPEvLED[r][c]->Write(Form("NPEvLEDr%dc%d",r,c));
+    }
+  }
+      
   //Draw analysis histograms
-  for(int l=0; l<kNLED; l++){
+  for(int l=1; l<kNLED; l++){
     ledAggFile->cd();
     ADCvChannel[l]->SetTitle(Form("Average Max ADC Val vs Channel LED %d",l));
     ADCvChannel[l]->Write("ADCvChannel");
