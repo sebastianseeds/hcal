@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <TSystem.h>
+#include <TStopwatch.h>
 #include "hcal.h"
 
 const int kNrows = 24; //All available rows for HCAL
@@ -125,7 +126,7 @@ void getPedestal(int entry=-1){  //Taken only from the set of data where the LED
       r = hcalt::row[m]-1;
       c = hcalt::col[m]-1;
       if(r < 0 || c < 0) {
-	cout << "Why is row negative? Or col?" << endl;
+        cerr << "Row/Col error: R" << r << " C" << c << "." << endl;
 	continue;
       }
       
@@ -142,14 +143,14 @@ void getPedestal(int entry=-1){  //Taken only from the set of data where the LED
       if(!processed) {
 	cout << "Skipping empty module: " << m << endl;
 	for(int s = 0;  s < totSample; s++) {
-	  histos[r][c][ledNumber]->SetBinContent(s+1,-404);
+	  histos[r][c][ledNumber]->SetBinContent(s+1,-404); //CORRECT minsample
 	}
       }
       
       sampSum = 0.0;
       sampSumN = 0.0;
       
-      for (int i=minSample; i<maxSample; i++){  //Obtain pedestal from first five bins only where no pulse exists. Will expect pulse from every pmt on every event.
+      for (int i=minSample; i<maxSample; i++){  
 	sampSum+=histos[r][c][ledNumber]->GetBinContent(i+1); //Data starts at bin 1, not zero (underflow)
       }
       sampSumN = sampSum/maxSample; //Normalize by number of bins used per event
@@ -242,7 +243,7 @@ void processEvent(int entry = -1){
   //Perform basic checks on histograms and fill integrated/max pulse histograms
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
-      histos[r][c][ledNumber]->SetTitle(TString::Format("%d-%d LED-%d (ADC=%g,TDC=%g)",r+1,c+1,ledNumber,adc[r][c],tdc[r][c]));
+      histos[r][c][ledNumber]->SetTitle(Form("%d-%d LED-%d (ADC=%g,TDC=%g)",r+1,c+1,ledNumber,adc[r][c],tdc[r][c]));
 
       //Pedestal subtract
       //Get pedestal value and std dev for the event 
@@ -290,6 +291,10 @@ void processEvent(int entry = -1){
 
 int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 events
 {
+  // Define a clock to check macro processing time
+  TStopwatch *st = new TStopwatch();
+  st->Start(kTRUE);
+  
   //Declare outfile
   TFile *ledAggFile = new TFile(Form("outFiles/ledSpectFile_run%d.root",run),"RECREATE");
 
@@ -348,7 +353,11 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
     
   if(!T) { 
     T = new TChain("T");
-    T->Add(TString::Format("rootFiles/fadc_f1tdc_%d.root",run));
+
+    T->Add(TString::Format("rootFiles/LED/fadc_f1tdc_%d*.root",run));
+    
+
+    
     T->SetBranchStatus("*",0);
     T->SetBranchStatus("sbs.hcal.*",1);
     T->SetBranchAddress("sbs.hcal.ledbit",&hcalt::ledbit);
@@ -408,7 +417,6 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
   }
   
   cout << "Total pedestal events processed: " << pInc << "." << endl;
-  
   
   gCurrentEntry = event; //Reset event count for Int/Max calculation
   
@@ -523,11 +531,16 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
   pedvChannel->SetTitle("Avg Pedestal vs Channel");
   pedvChannel->Write("pedvChannel");
   pedvChannel->Draw("AP");
-  
+
+  cout << "Alpha parameters written to alphas.txt" << endl;
   cout << "ADC spectrum histograms written to file ledSpectFile_run" << run << ".root" << endl;
   cout << "NPE (and other parameters) written to file NPE_run" << run << ".txt." << endl;
   cout << "Total sample histograms drawn to file ledSpectFile_run" << run << ".root = " << DRAWNHISTO << "." << endl;
-  
+
+  st->Stop();
+
+  cout << "CPU time elapsed = " << st->CpuTime() << " s = " << st->CpuTime()/60.0 << " min. Real time = " << st->RealTime() << " s = " << st->RealTime()/60.0 << " min." << endl;
+
   return 0;
 }
 

@@ -79,7 +79,7 @@ void cosCalPlots(int run1 = 1235, int run2 = 1239, int run3 = 1263, int run4 = 1
   //Loop over runs and populate ADC and TDC histograms
   cout<< "Filling histograms with average ADC and TDC values by run.." << endl;
   for(int i=0; i<runT; i++){
-    TFile *f = TFile::Open(Form("cosmicHistograms_run%d_TEST.root",runs[i]));  //Read in file
+    TFile *f = TFile::Open(Form("outFiles/cosmicHistograms_run%d_TEST.root",runs[i]));  //Read in file
 
     TH1F *h0 = (TH1F*)f->Get("pedvChannel");
     

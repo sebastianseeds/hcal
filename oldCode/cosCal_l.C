@@ -34,6 +34,8 @@ TH1F *intADCvChannel_l;
 TH1F *intTDCvChannel_l;
 TH1F *NEVvChannel;
 TH1F *pedvChannel;
+TH1F *PPvCh;
+TH1F *PPSDvCh;
 //TH1F *intPedvChannel;
 TH1F *histos[kNrows][kNcols];
 TH1F *pedSpec[kNrows][kNcols];
@@ -44,12 +46,16 @@ TH1F *PMTIntSpec[kNrows][kNcols]; //=new TH1F("","",20,0,5000); //Empirical limi
 TH1F *PMTMaxSpec[kNrows][kNcols]; //=new TH1F("","",20,0,1000); //Empirical limits
 TH1F *PMTIntSpecTDC[kNrows][kNcols]; //=new TH1F("","",20,0,5000); //Empirical limits, cut on tdc coincidence
 TH1F *PMTMaxSpecTDC[kNrows][kNcols]; //=new TH1F("","",20,0,1000); //Empirical limits, cut on tdc coincidence
+TH1F *PMTMaxPP[kNrows][kNcols];
 TF1 *f1;
 TF1 *f2;
+TF1 *f3;
 
 int signalTotal = 1;
-TFile *HistosFile = new TFile("HistosFile.root","RECREATE");  //File for checking histogram fits and integrity
-TFile *HistosFilePedestal = new TFile("HistosFilePedestal.root","RECREATE");  //File for checking histogram fits and integrity
+TFile *HistosFile = new TFile("outFiles/HistosFile.root","RECREATE");  //File for checking histogram fits and integrity
+TFile *HistosFilePedestal = new TFile("outFiles/HistosFilePedestal.root","RECREATE");  //File for checking histogram fits and integrity
+double PPmean[kNrows][kNcols];
+double PPsd[kNrows][kNcols];
 double pedestals[kNrows][kNcols];
 double pedestalsNoCut[kNrows][kNcols];
 double pedSigma[kNrows][kNcols];
@@ -66,7 +72,7 @@ int rejectNoteTDC = 0;
 int passNoteTDC = 0;
 int histNote = 0;
 
-double targetRAU = 61.425; //Taken from Scott B.
+double targetRAU = 61.425; //4095*3.0/2.0*0.5*14/700 or (digMaxADC)*(dynRanAmp/dynRanADC)*(cosEdep/maxGMnEdep)
 int runN[9] = {989,988,987,984,983,981,980,978,1235}; //All run numbers
 //double jlab_lHV[9] = {1600.0,1650.0,1750.0,1850.0,2000.0,1900.0,1800.0,1700.0,1600.0}; //For all runs, left half jlab pmt HV
 //double cmu_lHV[9] = {1500.0,1550.0,1650.0,1750.0,1900.0,1800.0,1700.0,1600.0,1500.0}; //For all runs, left half cmu pmt HV
@@ -78,6 +84,7 @@ double pmtHV[kNrows][kNcols];
 //double jlab_lHVset, cmu_lHVset;
 double cmuExp = 10.5; //Exp parameter per gain equation on data sheet affected by # dynodes.
 double jlabExp = 8.0; //Exp parameter per gain equation on data sheet affected by # dynodes.
+double alphas[kNrows][kNcols];
 double targetHV[kNrows][kNcols];
 double targetHVTDC[kNrows][kNcols];
 double targetHV_l[kNrows][kNcols];
@@ -138,6 +145,16 @@ double skewFit(double *x, double *par) {
   return amp * exp(-0.5 * pow((ADC - loc) / scale, 2.0)) * 0.5 * (1 + erf(shape * ((ADC - loc) / scale)));
 }
 
+//Skewed-landau fit
+double skewLanFit(double *x, double *par) {
+  double amp = par[0];
+  double loc = par[1];
+  double scale = par[2];
+  double shape = par[3];
+  double ADC = x[0];
+  return amp * exp(-0.5 * pow((ADC - loc) / scale, 2.0)) * (1 + TMath::Landau(ADC,loc,scale));
+}
+
 
 TH1F* MakeHisto(int row, int col, int bins){
   TH1F *h = new TH1F(Form("h%02d%02d",row,col),Form("%d-%d",row+1,col+1),bins,DISP_MIN_SAMPLE,DISP_MAX_SAMPLE);
@@ -194,8 +211,10 @@ void processEvent(int entry = -1){
       continue;
     }
     
-    if(r>= kNrows || c >= kNcols)
-      continue;
+    if(r>= kNrows || c >= kNcols) continue;
+
+    if(r==6||r==9) continue; //Temporary as fADC is in shop
+    
     idx = hcalt::samps_idx[m];
     n = hcalt::nsamps[m];
     adc[r][c] = hcalt::a[m];
@@ -228,16 +247,18 @@ void processEvent(int entry = -1){
   }
 
   //Vertical line test - remember to shift all values up by one due to intialization of gPulse/gPulseTDC and 'false' buffer. Only building functionality for straight vertical line test, leaving diagonal test machinery for potential implementation.
+
+   //Commented until fADC back from shop
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
       if(gPulse[r+2][c+2]==true){
-	if((gPulse[r][c+2]==true&&gPulse[r+1][c+2]==true)||(gPulse[r+1][c+2]==true&&gPulse[r+3][c+2]==true)||(gPulse[r+3][c+2]==true&&gPulse[r+4][c+2]==true)){
-	  if(passNote<10) cout << "Pulse r" << r << " c" << c << " passes verticality cut." << endl;
+	if((gPulse[r][c+2]==true&&gPulse[r+1][c+2]==true)||(gPulse[r+1][c+2]==true&&gPulse[r+3][c+2]==true)||(gPulse[r+3][c+2]==true&&gPulse[r+4][c+2]==true)){ //Checks if two pulses exist above, below, or one above and below every given pulse to ensure a track exists
+	  //if(passNote<10) cout << "Pulse r" << r << " c" << c << " passes verticality cut." << endl;
 	  passNote++;
 	  continue;
 	}else{
 	  gPulse[r+2][c+2]=false;
-	  if(rejectNote<10) cout << "Pulse r" << r << " c" << c << " REJECTED on verticality cut." << endl;
+	  //if(rejectNote<10) cout << "Pulse r" << r << " c" << c << " REJECTED on verticality cut." << endl;
 	  rejectNote++;
 	}
       }
@@ -284,10 +305,15 @@ void processEvent(int entry = -1){
     for(c = 0; c < kNcols; c++) {
       //if(gPulse[r+1][c+1]==true){
 
-      if(gPulse[r+2][c+2]==true){
+      if(r==6||r==9) continue; //Temporary as fADC is in shop
+      
+      if(gPulse[r+2][c+2]==true){ 
 	
 	PMTIntSpec[r][c]->Fill(histos[r][c]->Integral(1,DISP_MAX_SAMPLE)); //Integral from total bin content
 	PMTMaxSpec[r][c]->Fill(histos[r][c]->GetMaximum());
+	PMTMaxPP[r][c]->Fill((double)(histos[r][c]->GetMaximumBin()));
+	
+	//cout << (double)(histos[r][c]->GetMaximumBin()) << endl;
 
 	//Only fill TDC if both ADC and TDC pulses present
 	if(gPulseTDC[r+2][c+2]==true){
@@ -339,8 +365,10 @@ void getPedestal(int entry=-1){
       continue;
     }
     
-    if(r>= kNrows || c >= kNcols)
-      continue;
+    if(r>= kNrows || c >= kNcols) continue;
+
+    if(r==6||r==9) continue; //Temporary as fADC is in shop
+    
     idx = hcalt::samps_idx[m];
     n = hcalt::nsamps[m];
     adc[r][c] = hcalt::a[m];
@@ -423,9 +451,13 @@ void goodHistoTest(TH1F *testHisto, double tdcVal, int row, int col){
 int cosCal_l(int run = 989, int event = -1)
 {
 
+  // Define a clock to check macro processing time
+  TStopwatch *st = new TStopwatch();
+  st->Start(kTRUE);
+  
   //Declare outfile
-  //TFile *cosAggFile = new TFile(Form("cosmicHistograms_run%d.root",run),"RECREATE");
-  TFile *cosAggFile = new TFile(Form("cosmicHistograms_run%d_TEST.root",run),"RECREATE");
+  TFile *cosAggFile = new TFile(Form("outFiles/cosmicHistograms_run%d.root",run),"RECREATE");
+  //TFile *cosAggFile = new TFile(Form("cosmicHistograms_run%d_TEST.root",run),"RECREATE");
   
   //Build spectrum histograms. Empirical limits.
   cout << "Building spectrum histograms.." << endl;
@@ -434,27 +466,37 @@ int cosCal_l(int run = 989, int event = -1)
       PMTIntSpec[r][c] = new TH1F(Form("Int ADC Spect R%d C%d",r,c),Form("Int ADC Spect R%d C%d",r,c),100,0,4000);
       PMTIntSpec[r][c]->GetXaxis()->SetTitle("sRAU");
       PMTIntSpec[r][c]->GetXaxis()->CenterTitle();
+      
       PMTMaxSpec[r][c] = new TH1F(Form("Max ADC Spect R%d C%d",r,c),Form("Max ADC Spect R%d C%d",r,c),100,0,1000);
       PMTMaxSpec[r][c]->GetXaxis()->SetTitle("RAU");
       PMTMaxSpec[r][c]->GetXaxis()->CenterTitle();
+      
       PMTIntSpecTDC[r][c] = new TH1F(Form("Int ADC Spect R%d C%d, TDC Cut",r,c),Form("Int ADC Spect R%d C%d",r,c),100,0,4000);
       PMTIntSpecTDC[r][c]->GetXaxis()->SetTitle("sRAU");
       PMTIntSpecTDC[r][c]->GetXaxis()->CenterTitle();
+      
       PMTMaxSpecTDC[r][c] = new TH1F(Form("Max ADC Spect R%d C%d, TDC Cut",r,c),Form("Max ADC Spect R%d C%d",r,c),100,0,1000);
       PMTMaxSpecTDC[r][c]->GetXaxis()->SetTitle("RAU");
       PMTMaxSpecTDC[r][c]->GetXaxis()->CenterTitle();
+      
       pedSpec[r][c] = new TH1F(Form("Pedestal Spect R%d C%d",r,c),Form("Pedestal Spect R%d C%d",r,c),200,120,320);
       pedSpec[r][c]->GetXaxis()->SetTitle("<RAU>");
       pedSpec[r][c]->GetXaxis()->CenterTitle();
+      
       pedSpecNoCut[r][c] = new TH1F(Form("Pedestal No Cut Spect R%d C%d",r,c),Form("Pedestal Spect No Cut R%d C%d",r,c),200,120,320);
       pedSpecNoCut[r][c]->GetXaxis()->SetTitle("<RAU>");
       pedSpecNoCut[r][c]->GetXaxis()->CenterTitle();
+      
       pedSubtract[r][c] = new TH1F(Form("Pedestal Difference Cut/No-Cut Spect R%d C%d",r,c),Form("Pedestal Difference Cut/No-Cut Spect No Cut R%d C%d",r,c),200,120,320);
       pedSubtract[r][c]->GetXaxis()->SetTitle("<RAU>");
       pedSubtract[r][c]->GetXaxis()->CenterTitle();
       //intPedSpec[r][c] = new TH1F(Form("Sum Pedestal Spect R%d C%d",r,c),Form("Pedestal Spect R%d C%d",r,c),200,550,1200);
       //intPedSpec[r][c]->GetXaxis()->SetTitle("<RAU>");
       //intPedSpec[r][c]->GetXaxis()->CenterTitle();
+
+      PMTMaxPP[r][c] = new TH1F(Form("Max ADC Peak Position R%d C%d",r,c),Form("Max ADC Peak Position R%d C%d",r,c),100,0,1000);
+      PMTMaxPP[r][c]->GetXaxis()->SetTitle("ADC Sample");
+      PMTMaxPP[r][c]->GetXaxis()->CenterTitle();
       
     }
   }
@@ -470,29 +512,32 @@ int cosCal_l(int run = 989, int event = -1)
   intTDCvChannel_l = new TH1F("intTDCvChannel landaufit", "intTDCvChannel landaufit", kNcols*kNrows, 0, kNcols*kNrows-1);
   NEVvChannel = new TH1F("NEVvChannel", "NEVvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
   pedvChannel = new TH1F("pedvChannel", "pedvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
+  PPvCh = new TH1F("peakPosvChannel", "peakPosvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
+  PPSDvCh = new TH1F("peakPosSDvChannel", "peakPosSDvChannel", kNcols*kNrows, 0, kNcols*kNrows-1);
+  
   //intPedvChannel = new TH1F("intPedvChannel", "intPedvChannel", 288, 0, 287);
   
   if(!T) { 
     T = new TChain("T");
-    T->Add(TString::Format("fadc_f1tdc_%d_0.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_0.root",run));
     
-    T->Add(TString::Format("fadc_f1tdc_%d_1.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_1.root",run));
 
+    /*
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_2.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_3.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_4.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_5.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_6.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_7.root",run));
     
-    T->Add(TString::Format("fadc_f1tdc_%d_2.root",run));
-    T->Add(TString::Format("fadc_f1tdc_%d_3.root",run));
-    T->Add(TString::Format("fadc_f1tdc_%d_4.root",run));
-    T->Add(TString::Format("fadc_f1tdc_%d_5.root",run));
-    T->Add(TString::Format("fadc_f1tdc_%d_6.root",run));
-    T->Add(TString::Format("fadc_f1tdc_%d_7.root",run));
     
-    
-    T->Add(TString::Format("fadc_f1tdc_%d_8.root",run));
-    T->Add(TString::Format("fadc_f1tdc_%d_9.root",run));
-    T->Add(TString::Format("fadc_f1tdc_%d_10.root",run));
-    T->Add(TString::Format("fadc_f1tdc_%d_11.root",run));
-    T->Add(TString::Format("fadc_f1tdc_%d_12.root",run));
-    
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_8.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_9.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_10.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_11.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_12.root",run));
+    */
     T->SetBranchStatus("*",0);
     T->SetBranchStatus("sbs.hcal.*",1);
     T->SetBranchAddress("sbs.hcal.nsamps",hcalt::nsamps);
@@ -522,9 +567,9 @@ int cosCal_l(int run = 989, int event = -1)
   }
   */
 
-  //Set appropriate HVs for run. Settings from HCAL wiki. Must have accompanying text file, one double per line by module number. Assuming negative voltage inputs.
+  //Set appropriate HV and alphas for run. HV settings from HCAL wiki. Alphas from LED analysis. Must have accompanying text file, one double per line by module number. Assuming negative voltage inputs.
 
-  ifstream file(Form("HV_run%d.txt",run));
+  ifstream file(Form("setFiles/HV_run%d.txt",run));
 
   cout << "Getting HV settings for each pmt for run " << run << "." << endl;
 
@@ -534,24 +579,46 @@ int cosCal_l(int run = 989, int event = -1)
   int rval, cval;
   string line;
     
-  while (getline(file,line))
-    {
-      if(line.at(0) == '#'){
-	continue;
-      }
-
-      stringstream ss(line);
-      ss >> d1;
-      
-      rval = floor(n1/kNcols);
-      cval = n1 % kNcols;
-      
-      pmtHV[rval][cval] = -d1; //Are the numbers in pedFile counting rows first then columns?---------------*
-      
-      cout << "row = " << rval << ", col = " << cval << ", array val = " << pmtHV[rval][cval] << endl;
-
-      n1++;
+  while(getline(file,line)){
+    if(line.at(0) == '#'){
+      continue;
     }
+    
+    stringstream ss(line);
+    ss >> d1;
+    
+    rval = floor(n1/kNcols);
+    cval = n1 % kNcols;
+    
+    pmtHV[rval][cval] = -d1; 
+    
+    cout << "row = " << rval << ", col = " << cval << ", HV val = " << pmtHV[rval][cval] << endl;
+    
+    n1++;
+  }
+
+  ifstream file2("setFiles/alphas.txt");
+  
+  n1=0;
+  string line2;
+
+  while(getline(file2,line2)){
+    if(line2.at(0)=='#'){
+      continue;
+    }
+
+    stringstream ss(line2);
+    ss >> d1;
+
+    rval = floor(n1/kNcols);
+    cval = n1 % kNcols;
+
+    alphas[rval][cval] = d1;
+    
+    cout << "row = " << rval << ", col = " << cval << ", alphas val = " << alphas[rval][cval] << endl;
+
+    n1++;
+  }
   
   //Set default values for pulse check histograms. Arrays contain false-valued buffer on all sides
   for(int r = 0; r < kNrows+4; r++) {
@@ -590,7 +657,10 @@ int cosCal_l(int run = 989, int event = -1)
   
   cout << "Fitting pedestal histos and extracting mean/sigma.." << endl;
   for(int r=0; r<kNrows; r++){
-    for(int c=0; c<kNcols; c++){  
+    for(int c=0; c<kNcols; c++){
+
+      if(r==6||r==9) continue; //Temporary as fADC is in shop
+
       pedSpec[r][c]->Fit("gaus","Q");
       f1=pedSpec[r][c]->GetFunction("gaus");
       pedestals[r][c]=f1->GetParameter(1);
@@ -621,7 +691,7 @@ int cosCal_l(int run = 989, int event = -1)
 
   cout << "Creating file to hold fit parameters.." << endl;
   ofstream outFile;
-  outFile.open(Form("cosCalOut_run%d.txt",run));
+  outFile.open(Form("outFiles/cosCalOut_run%d.txt",run));
   outFile << "#Target HV settings for run " << run << "." << endl;
   outFile << "#Row Col targetHV_landauFit targetHV_landauFit_TDCCut" << endl;
 
@@ -730,9 +800,10 @@ int cosCal_l(int run = 989, int event = -1)
       landauFitIntTDC[r][c]->SetParameter(3,0);
 
       //Switch between jlab and cmu pmts for analysis
+      /*
       int iHV=0; 
-      if(c>3&&c<8) iHV=1;
-
+      if(c>3&&c<8) iHV=1; //iHV=1 for jlab
+      */
       //Subtract pedestals histogram with TDC cut and pedestals with no cut
       //pedSpec[r][c]->GetListOfFunctions()->Remove(gaus);
       //pedSpecNoCut[r][c]->GetListOfFunctions()->Remove(gaus);
@@ -812,12 +883,25 @@ int cosCal_l(int run = 989, int event = -1)
 	//landauFitMax[r][c]->Draw("SAME");
       }
 
+      if(PMTMaxPP[r][c]->GetEntries()>0){
+	PMTMaxPP[r][c]->Fit("gaus","Q");
+	f3=PMTMaxPP[r][c]->GetFunction("gaus");
+	PMTMaxPP[r][c]->SetTitle(Form("Max ADC Peak Pos R%d C%d Mean%f SD%f",r,c,f3->GetParameter(1),f3->GetParameter(2)));
+	//PPmean[r][c] = f3->GetParameter(1);
+	//PPsd[r][c] = f3->GetParameter(2);
+	PPmean[r][c] = PMTMaxPP[r][c]->GetMean();
+	PPsd[r][c] = PMTMaxPP[r][c]->GetRMS();
+	cosAggFile->cd();
+	PMTMaxPP[r][c]->Write(Form("PP R%d C%d",r,c));
+	PMTMaxPP[r][c]->Draw("AP");
+      }
+	
       //cout << fitMaxX_l << "!!!" << endl;
       
       ADCvChannel_l->SetBinContent(kNcols*r+c+1,fitMaxX_l);
       
       //Calculate target HV from gain equation on data sheet
-      
+      /*
       if(iHV==1){
 	//targetHV[r][c] = pmtHV[r][c]/pow(fitMaxX/targetRAU,1.0/jlabExp);
 	targetHV_l[r][c] = pmtHV[r][c]/pow(fitMaxX_l/targetRAU,1.0/jlabExp);
@@ -825,7 +909,9 @@ int cosCal_l(int run = 989, int event = -1)
 	//targetHV[r][c] = pmtHV[r][c]/pow(fitMaxX/targetRAU,1.0/cmuExp);
 	targetHV_l[r][c] = pmtHV[r][c]/pow(fitMaxX_l/targetRAU,1.0/cmuExp);
       }
-
+      */
+      targetHV_l[r][c] = pmtHV[r][c]/pow(fitMaxX_l/targetRAU,1.0/alphas[r][c]);
+      
       cout << targetHV_l[r][c] << endl;
 
       //Spectra with TDC cut
@@ -875,7 +961,7 @@ int cosCal_l(int run = 989, int event = -1)
       }
 
       //Calculate target HV with TDC cut from gain equation on data sheet
-
+      /*
       if(iHV==1){
 	targetHVTDC[r][c] = pmtHV[r][c]/pow(TDCfitMaxX/targetRAU,1.0/jlabExp);
 	targetHVTDC_l[r][c] = pmtHV[r][c]/pow(TDCfitMaxX_l/targetRAU,1.0/jlabExp);
@@ -883,7 +969,10 @@ int cosCal_l(int run = 989, int event = -1)
 	targetHVTDC[r][c] = pmtHV[r][c]/pow(TDCfitMaxX/targetRAU,1.0/cmuExp);
 	targetHVTDC_l[r][c] = pmtHV[r][c]/pow(TDCfitMaxX_l/targetRAU,1.0/cmuExp);
       }
+      */
 
+      targetHVTDC_l[r][c] = pmtHV[r][c]/pow(TDCfitMaxX_l/targetRAU,1.0/alphas[r][c]);
+      
       //Fill Max ADC vs Channel Histogram
 
       //cout << TDCfitMaxX_l << "!!!" << endl;
@@ -896,11 +985,17 @@ int cosCal_l(int run = 989, int event = -1)
 
       //Fill Number of events per module histogram
       //int NEV = PMTIntSpec[r][c]->GetEntries();
-      NEVvChannel->SetBinContent(kNcols*r+c+1,PMTIntSpec[r][c]->GetEntries());
+      //NEVvChannel->SetBinContent(kNcols*r+c+1,PMTIntSpec[r][c]->GetEntries());
+
+      NEVvChannel->SetBinContent(kNcols*r+c+1,PMTMaxSpec[r][c]->GetEntries());
 
       //Fill average pedestal value per module histograms
       pedvChannel->SetBinContent(kNcols*r+c+1,pedestals[r][c]);
       //intPedvChannel->SetBinContent(kNcols*r+c,intPedestals[r][c]);
+
+      	
+      PPvCh->SetBinContent(kNcols*r+c+1,PPmean[r][c]);
+      PPSDvCh->SetBinContent(kNcols*r+c+1,PPsd[r][c]);
 
       cout << "For row " << r << " and col " << c << ", target HV with landau fit is " << targetHV_l[r][c] << ", and target HV (TDC cut) with landau fit is " << targetHVTDC_l[r][c] << "." << endl;
       outFile << r << "  " << c << "  " << targetHV_l[r][c] << "  " << targetHVTDC_l[r][c] << "  " << endl;
@@ -919,6 +1014,16 @@ int cosCal_l(int run = 989, int event = -1)
   ADCvChannel_l->SetTitle("Average Max ADC Val vs Channel, Landau Fit");
   ADCvChannel_l->Write("ADCvChannel_l");
   ADCvChannel_l->Draw("AP");
+
+  cosAggFile->cd();
+  PPvCh->SetTitle("Average ADC Sample Peak Position vs Channel");
+  PPvCh->Write("PPvCh");
+  PPvCh->Draw("AP");
+
+  cosAggFile->cd();
+  PPSDvCh->SetTitle("Average ADC Sample Peak Pos Stand Dev vs Channel");
+  PPSDvCh->Write("PPSDvCh");
+  PPSDvCh->Draw("AP");
   /*
   cosAggFile->cd();
   TDCvChannel->SetTitle("Average Max ADC Val with TDC Cut vs Channel");
@@ -978,6 +1083,11 @@ int cosCal_l(int run = 989, int event = -1)
   cout << "ADC spectrum histograms written to file cosSpectFile_run" << run << ".root" << endl;
   cout << "Sample histograms drawn to file HistosFile.root" << endl;
   cout << "Target HV settings written to cosCalOut_run" << run << ".txt" << endl;
+
+  st->Stop();
+
+  cout << "CPU time elapsed = " << st->CpuTime() << " s = " << st->CpuTime()/60.0 << " min. Real time = " << st->RealTime() << " s = " << st->RealTime()/60.0 << " min." << endl;
+
   
   return 0;
 }

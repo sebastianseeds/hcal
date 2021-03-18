@@ -169,7 +169,7 @@ void getPedestal(int run = 989){  //is 0-12 in file along the row or column?----
       stringstream ss(line);
       ss >> n1 >> d1 >> d2;
       
-      rval = floor(n1/kNrows);
+      rval = floor(n1/kNcols);
       cval = n1 % kNcols;
       
       pedestals[rval][cval] = d1; //Are the numbers in pedFile counting rows first then columns?---------------*
