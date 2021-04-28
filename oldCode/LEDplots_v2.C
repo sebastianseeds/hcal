@@ -37,12 +37,14 @@ double maxMean[kNrows][kNcols][kNLED][runT];
 double intSD[kNrows][kNcols][kNLED][runT];
 double maxSD[kNrows][kNcols][kNLED][runT];
 double HVset[kNrows][kNcols][runT];
-double NPE[kNrows][kNcols][kNLED][runT];
+double NPE[kNrows][kNcols][kNLED][runT]; //For use plotting NPE v Run
+double NPE2[kNrows][kNcols][runT][kNLED]; //For use plotting NPE v LED
 double maxRes[kNrows][kNcols][kNLED][runT];
 double intRes[kNrows][kNcols][kNLED][runT];
 double rChiSqrMax[kNrows][kNcols][kNLED];
 double rChiSqrInt[kNrows][kNcols][kNLED];
 double alpha[kNrows][kNcols];
+double LED[5] = {1,2,3,4,5};
 
 //double maxMean_jlab[kNrows][kNcols][kNLED][runT];
 //double maxMean_cmu[kNrows][kNcols][kNLED][runT];
@@ -57,6 +59,8 @@ TH1F *maxAlphaVsChannel;
 TH1F *intAlphaVsChannel;
 TH1F *maxSdVsChannel;
 TH1F *intSdVsChannel;
+TH1F *jlabAlphas;
+TH1F *cmuAlphas;
 
 double powFit(double *X,double *p) 
 {
@@ -64,6 +68,14 @@ double powFit(double *X,double *p)
   double fitval = p[0]*pow((X[0]-p[1])/1200,p[2]) + p[3]; //X normalized to lowest HV value
   return fitval;
 }
+
+double powFit2(double *X,double *p) //Single parameter fits - GOING FOR THE GOLD!
+{
+  //Double_t fitval = par[0]*pow(X[0],par[1]);
+  double fitval = p[0]*pow(X[0]/p[1],p[2]); //X normalized to lowest HV value
+  return fitval;
+}
+
 /*
 double powFit(double *X,double *p) 
 {
@@ -157,6 +169,8 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
   cout << "Using master array to draw graphs and obtaining fit parameters.." << endl;
   for(int r=12; r<kNrows; r++){
     for(int c=0; c<kNcols; c++){
+
+      /*
       intAlpha[r][c] = new TH1F(Form("R%dC%dIntAlpha",r,c),Form("R%dC%dIntAlpha",r,c),50,0,0);
       for(int l=1; l<kNLED; l++){ //LED zero is where all LEDs are off
 	double HV[runT];
@@ -174,7 +188,7 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
 	  SD[i]=intSD[r][c][l][i]/sqrt(5000);  //Error is (std dev)/sqrt(N). Hardcoded for now; can use h1->GetEntries() to obtain N
 	}
 	TGraph *G1 = new TGraphErrors(runT,HV,Sum,0,SD);
-	TF1 *pFit = new TF1("pFit",powFit,1100,1500,4);
+	TF1 *pFit = new TF1("pFit",powFit,1100,1500,4);	
 
 	//pFit->SetParLimits(0,0,0.01);
 	if(c>3&&c<8){
@@ -217,7 +231,7 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
 	  intRes[r][c][l][i] = Sum[i]-pFit->Eval(HV[i]);
 	}
       }
-
+      */
 
       //Use maxMean to draw graphs
       maxAlpha[r][c] = new TH1F(Form("R%dC%dMaxAlpha",r,c),Form("R%dC%dMaxAlpha",r,c),50,0,0);
@@ -226,9 +240,9 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
 	double Max[runT];
 	double SD[runT];
 	for(int i=0; i<runT; i++){
-	  if(c>3&&c<8){
+	  if(c>3&&c<8){ //jlab tubes
 	    HV[i]=runHV_jlab[i];
-	  }else{
+	  }else{ //cmu tubes
 	    HV[i]=runHV_cmu[i];
 	  }	  
 	  Max[i]=maxMean[r][c][l][i];
@@ -237,27 +251,50 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
 	TGraph *G1 = new TGraphErrors(runT,HV,Max,0,SD);	
 	//TF1 *pFit = new TF1("pFit",powFit,1100,1500,4);
 	TF1 *pFit = new TF1("pFit",powFit,1300,2100,4);
+	TF1 *pFit2 = new TF1("pFit2",powFit2,1300,2100,3);
+	
 
 	//pFit->SetParLimits(61,1000,5);
 	
 	
 	//pFit->SetParLimits(0,0,0.01);
-	if(c>3&&c<8){
+	if(c>3&&c<8){ //jlab tubes
 	  pFit->SetParameters(0,10,8,0);
 	  pFit->SetParLimits(1,0,1500);
 	  pFit->SetParLimits(2,1,100);
-	}else{
+
+	  pFit2->FixParameter(0,maxMean[r][c][l][0]);
+	  pFit2->FixParameter(1,runHV_jlab[0]);
+	  //pFit2->SetParLimits(1,runHV_jlab[0]-1,runHV_jlab[0]+1);
+	  pFit2->SetParameter(2,5);
+	  pFit2->SetParLimits(2,1,10);
+	  
+	}else{ //cmu tubes
 	  pFit->SetParameters(0,800,10,10);
 	  //pFit->SetParLimits(1,0,1500);
 	  //pFit->SetParLimits(2,1,100);
+
+	  pFit2->FixParameter(0,maxMean[r][c][l][0]);
+	  pFit2->FixParameter(1,runHV_cmu[0]);
+	  //pFit2->SetParLimits(1,runHV_cmu[0]-1,runHV_cmu[0]+1);
+	  pFit2->SetParameter(2,22);
+	  pFit2->SetParLimits(2,1,30);
+
 	}
-	
+
+	//cout << "Fixed parameters for row " << r << " col " << c << " led " << l << ": " << maxMean[r][c][l][0] << " and " << runHV_cmu[0] << " and " << runHV_jlab[0] << endl;
 
 	//pFit->SetParameters();
 	
 	//G1->Fit("pol2","QR"); //options M to improve minimum and fit
-	G1->Fit("pFit","Q");
-	rChiSqrMax[r][c][l] = pFit->GetChisquare()/(runT-1); //reduced chi square added with dof = runT - 1 and error set by SD[i]
+	//G1->Fit("pFit","Q");
+	G1->Fit("pFit2","Q");
+
+	//cout << "Row " << r << " col " << c << " led " << l << ": pFit2 p[0] = " << pFit2->GetParameter(0) << ", p[1] = " << pFit2->GetParameter(1) << endl;
+
+	
+	//rChiSqrMax[r][c][l] = pFit->GetChisquare()/(runT-1); //reduced chi square added with dof = runT - 1 and error set by SD[i]
+	rChiSqrMax[r][c][l] = pFit2->GetChisquare()/(runT-1);
 	/*
 	if(rChiSqrMax[r][c][l]>100){
 	  TF1 *pFit2 = new TF1("pFit2",powFit,1345,1655,4);
@@ -266,8 +303,13 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
 	}
 	*/
 	//G1->SetMinimum(0.0);
+	
 	//G1->SetTitle(Form("MAX R%d-C%d LED%d: coeff=%g shift=%f alpha=%f offset=%f rChiSqr=%f",r,c,l,pFit->GetParameter(0),pFit->GetParameter(1),pFit->GetParameter(2),pFit->GetParameter(3),rChiSqrMax[r][c][l]));
-	G1->SetTitle(Form("MAX R%d-C%d LED%d: coeff=%g alpha=%f rChiSqr=%f",r,c,l,pFit->GetParameter(0),pFit->GetParameter(2),rChiSqrMax[r][c][l]));
+	
+	//G1->SetTitle(Form("MAX R%d-C%d LED%d: coeff=%g alpha=%f rChiSqr=%f",r,c,l,pFit->GetParameter(0),pFit->GetParameter(2),rChiSqrMax[r][c][l]));
+
+	G1->SetTitle(Form("MAX R%d-C%d LED%d: ADCref=%f HVref=%f alpha=%f rChiSqr=%f",r,c,l,pFit2->GetParameter(0),pFit2->GetParameter(1),pFit2->GetParameter(2),rChiSqrMax[r][c][l]));
+	
 
 	//outFile << pFit->GetParameter(2) << endl;
 	//G1->SetTitle(Form("MAX R%d-C%d LED%d: coeff=%g shift=%f alpha=%f",r,c,l,pFit->GetParameter(0),pFit->GetParameter(1),pFit->GetParameter(2)));
@@ -289,14 +331,15 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
 
 	//G1->Write(Form("MAX R%d-C%d LED%d: coeff=%g shift=%f alpha=%f",r,c,l,pFit->GetParameter(0),pFit->GetParameter(1),pFit->GetParameter(2)));
 	//G1->Write(Form("%d-%d LED%d: alpha=%f",r,c,l,pFit->GetParameter(0)));
-	maxAlpha[r][c]->Fill(pFit->GetParameter(2));
 
-	if(l==1) alpha[r][c]=pFit->GetParameter(2); //Obtain exponent from LED 1 only
+	maxAlpha[r][c]->Fill(pFit2->GetParameter(2));
+
+	if(l==1) alpha[r][c]=pFit2->GetParameter(2); //Obtain exponent from LED 1 only
 	
 	G1->Draw("AP");
 
 	for(int i=0; i<runT; i++){
-	  maxRes[r][c][l][i] = Max[i]-pFit->Eval(HV[i]);
+	  maxRes[r][c][l][i] = Max[i]-pFit2->Eval(HV[i]);
 	}
       }
 
@@ -305,6 +348,17 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
     }
   }
 
+  for(int r=12; r<kNrows; r++){
+    for(int c=0; c<kNcols; c++){
+      for(int run=0; run<runT; run++){	
+	for(int l=1; l<kNLED; l++){
+	  NPE2[r][c][run][l-1]=NPE[r][c][l][run];
+	  
+	}
+      }
+    }
+  }
+  
   // Draw NPE v HV graphs to look for plateau region
   for(int r=12; r<kNrows; r++){
     for(int c=0; c<kNcols; c++){
@@ -336,6 +390,23 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
 	G4->Write(Form("R%d-C%d LED %d Max Residuals",r,c,l));
 	G4->Draw("AP");
       }
+
+      for(int run=0; run<runT; run++){
+	TGraph *G5 = new TGraph(kNLED, LED, NPE2[r][c][run]);
+	G5->SetTitle(Form("R%d-C%d run %d NPE v LED",r,c,runs[run]));
+	G5->GetYaxis()->SetTitle("NPE");
+	G5->GetYaxis()->CenterTitle();
+	G5->GetXaxis()->SetTitle("LED");
+	G5->GetXaxis()->CenterTitle();
+	G5->SetLineColor(kWhite);
+	G5->SetMarkerStyle(8);
+	G5->SetMarkerSize(1);
+	LEDpulse_HVcal->cd();
+	G5->Write(Form("R%d-C%d run %d NPE v LED",r,c,runs[run]));
+	G5->Draw("AP");
+
+      }
+      /*
       intAlpha[r][c]->SetTitle(Form("R%d C%d Int Alphas",r,c));
       LEDpulse_HVcal->cd();
       intAlpha[r][c]->Write(Form("R%d C%d Int Alphas",r,c));
@@ -345,6 +416,7 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
       LEDpulse_HVcal->cd();
       maxAlpha[r][c]->Write(Form("R%d C%d Max Alphas",r,c));
       maxAlpha[r][c]->Draw("AP");
+      */
     }
   }
 
@@ -354,6 +426,11 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
   intAlphaVsChannel = new TH1F("Average Int Alpha vs Channel","Average Int Alpha vs Channel",kNrows*kNcols,0,kNrows*kNcols-1);
   maxSdVsChannel = new TH1F("Max SD vs Channel","Max SD vs Channel",kNrows*kNcols,0,kNrows*kNcols-1);
   intSdVsChannel = new TH1F("Int SD vs Channel","Int SD vs Channel",kNrows*kNcols,0,kNrows*kNcols-1);
+
+  jlabAlphas = new TH1F("Jlab Alphas","Jlab Alphas",40,0,15);
+  cmuAlphas = new TH1F("CMU Alphas","CMU Alphas",40,15,30);
+ 
+  
   for(int l=0; l<kNLED; l++){
     maxVar[l] = new TH1F(Form("MaxADC Chi Sqr vs Channel, LED %d",l),Form("MaxADC Chi Sqr vs Channel, LED %d",l),kNrows*kNcols,0,kNrows*kNcols-1);
     intVar[l] = new TH1F(Form("IntADC Chi Sqr vs Channel, LED %d",l),Form("IntADC Chi Sqr vs Channel, LED %d",l),kNrows*kNcols,0,kNrows*kNcols-1);
@@ -388,12 +465,12 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
       cmuSum+=alpha[rval][cval];
     }
     
-    intAlphaVsChannel->SetBinContent(c,intAlpha[rval][cval]->GetMean());
+    //intAlphaVsChannel->SetBinContent(c,intAlpha[rval][cval]->GetMean());
     maxSdVsChannel->SetBinContent(c,maxAlpha[rval][cval]->GetRMS());
-    intSdVsChannel->SetBinContent(c,intAlpha[rval][cval]->GetRMS());
+    //intSdVsChannel->SetBinContent(c,intAlpha[rval][cval]->GetRMS());
     for(int l=0; l<kNLED; l++){
       maxVar[l]->SetBinContent(c,rChiSqrMax[rval][cval][l]);
-      intVar[l]->SetBinContent(c,rChiSqrInt[rval][cval][l]);
+      //intVar[l]->SetBinContent(c,rChiSqrInt[rval][cval][l]);
     }
   }
 
@@ -411,6 +488,13 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
     int rval = floor(c/kNcols);
     int cval = c%kNcols;
     outFile << alpha[rval][cval] << endl;
+
+    if(cval>3&&cval<8){
+      jlabAlphas->Fill(alpha[rval][cval]);
+    }else{
+      cmuAlphas->Fill(alpha[rval][cval]);
+    }
+    
   }
   
   
@@ -419,29 +503,39 @@ void LEDplots_v2(int run1 = 1288, int run2 = 1289, int run3 = 1290, int run4 = 1
   maxAlphaVsChannel->Write("maxAlphaVsChannel");
   maxAlphaVsChannel->Draw("AP");
   
-  LEDpulse_HVcal->cd();
-  intAlphaVsChannel->SetTitle("Average Int Alpha vs Channel");
-  intAlphaVsChannel->Write("intAlphaVsChannel");
-  intAlphaVsChannel->Draw("AP");
+  //LEDpulse_HVcal->cd();
+  //intAlphaVsChannel->SetTitle("Average Int Alpha vs Channel");
+  //intAlphaVsChannel->Write("intAlphaVsChannel");
+  //intAlphaVsChannel->Draw("AP");
   
   LEDpulse_HVcal->cd();
   maxSdVsChannel->SetTitle("Max SD vs Channel");
   maxSdVsChannel->Write("maxSdVsChannel");
   maxSdVsChannel->Draw("AP");
   
+  //LEDpulse_HVcal->cd();
+  //intSdVsChannel->SetTitle("Int SD vs Channel");
+  //intSdVsChannel->Write("intSdVsChannel");
+  //intSdVsChannel->Draw("AP");
+
   LEDpulse_HVcal->cd();
-  intSdVsChannel->SetTitle("Int SD vs Channel");
-  intSdVsChannel->Write("intSdVsChannel");
-  intSdVsChannel->Draw("AP");
+  jlabAlphas->SetTitle("Jlab Tube Alpha Values, LED 1");
+  jlabAlphas->Write("jlabAlphas");
+  jlabAlphas->Draw("AP");
+  
+  LEDpulse_HVcal->cd();
+  cmuAlphas->SetTitle("CMU Tube Alpha Values, LED 1");
+  cmuAlphas->Write("cmuAlphas");
+  cmuAlphas->Draw("AP");
 
   for(int l=1; l<kNLED; l++){
     LEDpulse_HVcal->cd();
     maxVar[l]->Write(Form("maxVar LED%d",l));
     maxVar[l]->Draw("AP");
     
-    LEDpulse_HVcal->cd();
-    intVar[l]->Write(Form("intVar LED%d",l));
-    intVar[l]->Draw("AP");
+    //LEDpulse_HVcal->cd();
+    //intVar[l]->Write(Form("intVar LED%d",l));
+    //intVar[l]->Draw("AP");
   }
   //%g, %e
   

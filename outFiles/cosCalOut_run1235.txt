@@ -1,580 +1,580 @@
 #Target HV settings for run 1235.
-#Row Col targetHV_landauFit targetHV_landauFit_TDCCut
-0  0  1598.49  1569.46  
-0  1  1439.65  1427.86  
-0  2  1499.85  1489.17  
-0  3  1503.97  1477.01  
-0  4  1891.81  1841.59  
-0  5  1866.86  1790.28  
-0  6  1983.53  1862.37  
-0  7  1936.01  1829.81  
-0  8  1638.71  1605.04  
-0  9  1651.15  1594.14  
-0  10  1563.53  1544.41  
-0  11  1621.7  1582.49  
-1  0  1612.6  1582.26  
-1  1  1605.13  1583.42  
-1  2  1493.03  1493.62  
-1  3  1622.35  1594.83  
-1  4  1828.65  1761.57  
-1  5  1880.55  1835.95  
-1  6  1824.21  1759.32  
-1  7  1862.96  1814.74  
-1  8  1582.62  1564.01  
-1  9  1685.39  1621.27  
-1  10  1551.52  1536.82  
-1  11  1523.94  1510.05  
-2  0  1439.11  1428.2  
-2  1  1254.94  1325.82  
-2  2  1595.12  1560.7  
-2  3  1516.42  1506.14  
-2  4  1855.5  1779.01  
-2  5  1854.53  1810.89  
-2  6  1879.41  1811.28  
-2  7  1902.13  1815.01  
-2  8  1557.77  1531.96  
-2  9  1519.09  1566.78  
-2  10  1611.1  1559.58  
-2  11  1577.43  1521.73  
-3  0  1597.74  1573.34  
-3  1  1698.1  1599.68  
-3  2  1623.71  1611.48  
-3  3  1494.78  1478.13  
-3  4  1886.21  1825.31  
-3  5  1863.54  1778.98  
-3  6  1847.33  1789.86  
-3  7  1882.63  1764.15  
-3  8  1456.02  1446.37  
-3  9  1529.79  1512.89  
-3  10  1589.33  1544.56  
-3  11  1641.77  1607.03  
-4  0  1525.12  1504.85  
-4  1  1534.48  1492.18  
-4  2  1488.44  1478.56  
-4  3  1516.82  1516.59  
-4  4  1878.75  1813.98  
-4  5  1847.88  1784.43  
-4  6  1884.32  1786.31  
-4  7  1914.09  1806.39  
-4  8  1649.26  1596.41  
-4  9  1575.12  1557.19  
-4  10  1640.76  1595.26  
-4  11  1590.14  1534.27  
-5  0  1522.84  1496.2  
-5  1  1369.93  1385.43  
-5  2  1634.21  1602.63  
-5  3  1469.1  1448.75  
-5  4  1865.27  1775.52  
-5  5  1824.5  1782.23  
-5  6  1819.45  1748.48  
-5  7  1930.8  1849.6  
-5  8  1691.69  1647.24  
-5  9  1600.26  1593.16  
-5  10  1685.77  1633.6  
-5  11  1557.5  1529.66  
-6  0  1669.29  1622.94  
-6  1  1226.25  1325.66  
-6  2  1683.56  1633.99  
-6  3  1557.49  1553.7  
-6  4  1848.72  1805.86  
-6  5  1729.84  1781.82  
-6  6  1850.28  1801.43  
-6  7  1858.92  1802.85  
-6  8  1704.5  1627.14  
-6  9  1584.45  1563.3  
-6  10  1688.21  1630.32  
-6  11  1652.58  1592.57  
-7  0  1624.32  1595.98  
-7  1  1706.65  1862.18  
-7  2  1592.43  1585.95  
-7  3  1492.54  1482.83  
-7  4  1875.7  1819.13  
-7  5  1815.3  1741.86  
-7  6  1880.85  1781.54  
-7  7  1940.25  1835.6  
-7  8  1523.55  1521.74  
-7  9  1520.95  1577.59  
-7  10  1600.89  1585.67  
-7  11  1621.93  1579.38  
-8  0  1445.08  1422.5  
-8  1  1550.05  1514.55  
-8  2  1661.79  1614.31  
-8  3  1432.55  1416.12  
-8  4  1736.04  1773.02  
-8  5  1796.03  1765.9  
-8  6  1877.11  1798.13  
-8  7  1877.49  1822.32  
-8  8  1626.2  1603.36  
-8  9  1394.94  1388.52  
-8  10  1655.96  1527.78  
-8  11  1551.05  1564.12  
-9  0  1476.82  1422.67  
-9  1  1439.35  1418.14  
-9  2  1723.15  1621.51  
-9  3  1724.21  1618  
-9  4  1832.92  1760.73  
-9  5  1760.24  1738.59  
-9  6  1847.02  1709.82  
-9  7  1861.34  1821.84  
-9  8  1616.58  1580.2  
-9  9  1698.09  1599.73  
-9  10  1673.8  1597.1  
-9  11  1791.06  1629.09  
-10  0  1474.61  1473.43  
-10  1  1756.19  1624.37  
-10  2  1698.18  1633.07  
-10  3  1634.3  1591.37  
-10  4  1823.52  1767.15  
-10  5  1783.15  1745.6  
-10  6  1857.59  1761.68  
-10  7  1883.18  1821.3  
-10  8  1730  1654.43  
-10  9  1699.65  1623.93  
-10  10  1627.63  1588.24  
-10  11  1628.46  1567.95  
-11  0  1717.01  1625.04  
-11  1  1399.17  1379.86  
-11  2  1559.37  1550.79  
-11  3  1410.19  1422.92  
-11  4  1842.76  1785.2  
-11  5  1839.92  1771.65  
-11  6  1853.86  1807.86  
-11  7  1864.55  1753.36  
-11  8  1493.81  1483.86  
-11  9  1661.07  1583.41  
-11  10  1805.46  1508.54  
-11  11  1617.21  1562.19  
-12  0  1506.5  1504.67  
-12  1  1487.06  1513.64  
-12  2  1517.63  1514.23  
-12  3  1471.2  1471.2  
-12  4  1809.39  1806.06  
-12  5  1637.16  1621.79  
-12  6  1688.04  1674.84  
-12  7  1678.76  1642.97  
-12  8  1318.22  1318.22  
-12  9  1271.96  1271.96  
-12  10  1286.41  1308.29  
-12  11  1397.83  1396.62  
-13  0  1305.01  1289.22  
-13  1  1305.42  1309.77  
-13  2  1366.36  1366.35  
-13  3  1284.31  1258.69  
-13  4  1595.38  1563.07  
-13  5  1582.34  1646.88  
-13  6  1508.19  1274.1  
-13  7  1799.29  1378.51  
-13  8  1273.36  1269.63  
-13  9  1352.39  1337.63  
-13  10  1471.74  1469.6  
-13  11  1693.93  1650.6  
-14  0  1485.66  1433.26  
-14  1  1582.2  1252.19  
-14  2  1443.89  1270.8  
-14  3  1362.58  1323.72  
-14  4  1669.93  1229.56  
-14  5  1511.17  1199.49  
-14  6  1619.56  1321.88  
-14  7  1737.68  1235.87  
-14  8  1445.75  1294.03  
-14  9  1520.28  1479.14  
-14  10  1326.12  1325.84  
-14  11  1331.41  1337.12  
-15  0  1386.2  1385.99  
-15  1  1471.09  1471.07  
-15  2  1240.51  1211.17  
-15  3  1519.72  1504.42  
-15  4  1517.85  1508.68  
-15  5  1616.51  1606.26  
-15  6  1483.42  1477.7  
-15  7  1589.01  1570.07  
-15  8  1428.11  1464.02  
-15  9  1419.64  1419.64  
-15  10  1424.25  1424.25  
-15  11  1383.32  1371.5  
-16  0  1416.26  1455.23  
-16  1  1414.78  1480.12  
-16  2  1606.78  1560.65  
-16  3  1437.6  1454.8  
-16  4  1554.37  1573.68  
-16  5  1396.54  1486.22  
-16  6  1697.23  1674.73  
-16  7  1748.22  1706.05  
-16  8  1300.3  1296.98  
-16  9  1461.82  1464.91  
-16  10  1347.8  1324.63  
-16  11  1764.91  1739.3  
-17  0  1489.91  1347.1  
-17  1  1527.55  1437.12  
-17  2  1407.01  1397.49  
-17  3  1490.38  1490.44  
-17  4  1652.32  1564.23  
-17  5  1448.54  1449.54  
-17  6  1416.13  1229.59  
-17  7  1763.26  1276.5  
-17  8  1206.7  1285  
-17  9  1441.77  1425.58  
-17  10  1412.79  1397.58  
-17  11  1436.82  1432.44  
-18  0  1586.89  1502.99  
-18  1  1915.25  1834.27  
-18  2  1505.96  1483.23  
-18  3  1620.77  1580.05  
-18  4  1546.46  1473.15  
-18  5  1856.17  1445.89  
-18  6  1493  1551.77  
-18  7  1595.87  1550.95  
-18  8  1091.71  1145.38  
-18  9  1351.56  1351.85  
-18  10  1255.52  1308.38  
-18  11  1390.48  1374.53  
-19  0  1273.18  1260.67  
-19  1  1209.09  1220.95  
-19  2  1423.48  1408.46  
-19  3  1327.91  1359.91  
-19  4  1633.37  1629.83  
-19  5  1562.61  1554.76  
-19  6  1504.79  1512.54  
-19  7  1668.62  1667.57  
-19  8  1382.58  1382.58  
-19  9  1378.82  1374.63  
-19  10  1453.46  1447.31  
-19  11  1454.68  1447.99  
-20  0  1638.52  1637.06  
-20  1  1295.07  1314.88  
-20  2  1391.38  1380.52  
-20  3  1436.97  1448.64  
-20  4  1792.82  1746.35  
-20  5  1437.21  1428.19  
-20  6  1792.87  1696.43  
-20  7  1808.32  1745.55  
-20  8  1235.89  1186.64  
-20  9  1385.92  1385.92  
-20  10  1345.33  1370.37  
-20  11  1485.93  1453.83  
-21  0  1822.83  1751.41  
-21  1  1437.73  1537.23  
-21  2  1172.96  1172.99  
-21  3  1244.72  1244.72  
-21  4  1480.28  1476.27  
-21  5  1327.37  1323.78  
-21  6  1427.36  1416.03  
-21  7  1484.49  1528.25  
-21  8  1179.41  1203.34  
-21  9  1311.39  1311.39  
-21  10  1238.12  1230.16  
-21  11  1220.68  1213.09  
-22  0  1503.39  1493.54  
-22  1  1307.88  1243.7  
-22  2  1352.92  1241.22  
-22  3  1293.49  1267  
-22  4  1397.02  1326.55  
-22  5  1326.85  1169.53  
-22  6  1628.41  1436.72  
-22  7  1458.05  1327.31  
-22  8  1179.82  1176.6  
-22  9  1128.66  1124.77  
-22  10  1523.79  1313.7  
-22  11  1473.36  1264.22  
-23  0  1430.96  1424.89  
-23  1  1429.39  1426.9  
-23  2  1350.69  1347.15  
-23  3  1365.73  1369.45  
-23  4  1597.46  1568.54  
-23  5  1468.83  1438.7  
-23  6  1670.12  1629.39  
-23  7  1669.1  1636.51  
-23  8  1386.65  1371.08  
-23  9  1294.01  1313.7  
-23  10  1239.18  1235.27  
-23  11  1340.91  1408.11  
+#Row Col targetHV targetHV_TDCCut
+0  0  1546.65  1533.04  
+0  1  1470.42  1464.82  
+0  2  1499.84  1494.77  
+0  3  1501.62  1488.64  
+0  4  2061.5  1981.03  
+0  5  2020.82  1896.59  
+0  6  2209.6  2008.65  
+0  7  2133.67  1958.8  
+0  8  1565.02  1550.11  
+0  9  1571.27  1544.2  
+0  10  1531.45  1521.77  
+0  11  1557.77  1539.44  
+1  0  1553.42  1539.15  
+1  1  1550.25  1539.88  
+1  2  1496.64  1496.96  
+1  3  1557.98  1545.1  
+1  4  1957.28  1853.16  
+1  5  2044.64  1974.61  
+1  6  1949.93  1844.98  
+1  7  2012.58  1900  
+1  8  1539.65  1530.84  
+1  9  1587.3  1557.26  
+1  10  1525.95  1518.72  
+1  11  1510.68  1504.36  
+2  0  1470.36  1464.37  
+2  1  1378.28  1413.85  
+2  2  1545.41  1529.07  
+2  3  1508.19  1503.14  
+2  4  2002.72  1902.8  
+2  5  2002.61  1930.97  
+2  6  2013.99  1931.77  
+2  7  2081.2  1938.02  
+2  8  1529.08  1516.35  
+2  9  1510.84  1536.2  
+2  10  1550.35  1528.21  
+2  11  1542.46  1511.73  
+3  0  1546.86  1535.47  
+3  1  1592.75  1547.45  
+3  2  1558.56  1553.12  
+3  3  1497.32  1489.21  
+3  4  2054.01  1953.04  
+3  5  2012.03  1878.7  
+3  6  1989.36  1893.63  
+3  7  2047.94  1909.19  
+3  8  1480.72  1470.99  
+3  9  1514.06  1506.08  
+3  10  1547.84  1523.41  
+3  11  1568.91  1554.61  
+4  0  1511.91  1502.51  
+4  1  1516.13  1496.34  
+4  2  1516.24  1515.92  
+4  3  1508.71  1508.72  
+4  4  2087.72  1932.59  
+4  5  1990.48  1885.78  
+4  6  2131.87  1890.63  
+4  7  2102.42  1917.67  
+4  8  1569.83  1545.5  
+4  9  1533.02  1526.29  
+4  10  1566.83  1545.43  
+4  11  1542.08  1511.14  
+5  0  1512.27  1499.49  
+5  1  1437.12  1443.01  
+5  2  1564.59  1548.78  
+5  3  1485.54  1475.11  
+5  4  2017.58  1890.84  
+5  5  1949.87  1879.97  
+5  6  1946.48  1826.97  
+5  7  2130.43  1998.4  
+5  8  1591.51  1568.17  
+5  9  1548.68  1544.92  
+5  10  1587.27  1562.53  
+5  11  1530.45  1514.72  
+6  0  1582.09  1532.79  
+6  1  1356.25  1413.26  
+6  2  1586.14  1541.24  
+6  3  1528.57  1525.89  
+6  4  1990.78  1922.27  
+6  5  1972.57  1881.1  
+6  6  1993.07  1913.5  
+6  7  2022.18  1922.02  
+6  8  1599.36  1577.14  
+6  9  1537.99  1528.35  
+6  10  1594.11  1561.1  
+6  11  1573.31  1545.77  
+7  0  1558.62  1545.27  
+7  1  1596.51  1560.01  
+7  2  1544.56  1541.22  
+7  3  1495.38  1491.21  
+7  4  2037.56  1940.83  
+7  5  1928.91  1817.32  
+7  6  2044.99  1884.71  
+7  7  2142.48  1969.89  
+7  8  1511.22  1510.06  
+7  9  1548.37  1533.21  
+7  10  1550.08  1541.7  
+7  11  1557.36  1539.61  
+8  0  1473.13  1460.73  
+8  1  1524.45  1505.9  
+8  2  1575.5  1555.52  
+8  3  1467.14  1460.39  
+8  4  1810.82  1870.26  
+8  5  1910.61  1859.09  
+8  6  2039.27  1910.42  
+8  7  2013.59  1947.59  
+8  8  1559.51  1521.23  
+8  9  1445.01  1444.62  
+8  10  1571.87  1513.95  
+8  11  1518.41  1530.36  
+9  0  1488.81  1461.11  
+9  1  1469.76  1459  
+9  2  1600.87  1556.16  
+9  3  1598.04  1557.69  
+9  4  1963.04  1852.04  
+9  5  1846.92  1814.08  
+9  6  1989.7  1799.25  
+9  7  2009.78  1943.98  
+9  8  1555.39  1538.28  
+9  9  1600.83  1547.09  
+9  10  1580.57  1548.37  
+9  11  1634.4  1556.52  
+10  0  1489.23  1487.96  
+10  1  1602.14  1558.92  
+10  2  1587.06  1562.68  
+10  3  1562.04  1543.56  
+10  4  1988.78  1858.38  
+10  5  1894.2  1835.82  
+10  6  2004.27  1852.6  
+10  7  2047.31  1946.54  
+10  8  1606.71  1572.84  
+10  9  1593.26  1571.11  
+10  10  1560.86  1542.6  
+10  11  1569.46  1532.12  
+11  0  1599.04  1555.39  
+11  1  1448.42  1439.19  
+11  2  1526.27  1523.58  
+11  3  1458.78  1462.91  
+11  4  1842.4  1860.49  
+11  5  1976.18  1863.38  
+11  6  2000.86  1927.73  
+11  7  2017.31  1844.88  
+11  8  1499.86  1492.69  
+11  9  1574.9  1539.06  
+11  10  1631.18  1520.9  
+11  11  1565.24  1527.89  
+12  0  1520.95  1520.07  
+12  1  1538.74  1554.09  
+12  2  1531.76  1530.01  
+12  3  1518.39  1518.39  
+12  4  1936.02  1915.68  
+12  5  1695.08  1672.84  
+12  6  1735.38  1717.31  
+12  7  1741.81  1691.58  
+12  8  1354.21  1354.21  
+12  9  1349.55  1349.55  
+12  10  1563.32  1536.64  
+12  11  1418.6  1417.88  
+13  0  1360.58  1352.65  
+13  1  1362.58  1365.99  
+13  2  1432.28  1432.28  
+13  3  1346.32  1346.33  
+13  4  1688.98  1641.14  
+13  5  1603.45  1701.29  
+13  6  1574.03  1245.06  
+13  7  1984.04  1332.35  
+13  8  1358.52  1358.52  
+13  9  1367.33  1360.32  
+13  10  1477.97  1477.99  
+13  11  1600.43  1580.7  
+14  0  1552.74  1527.48  
+14  1  1494.74  1335.37  
+14  2  1442.39  1356.11  
+14  3  1430.09  1411.13  
+14  4  1745.44  1131.55  
+14  5  1580.24  1144.53  
+14  6  1711.07  1202.95  
+14  7  1646.6  1131.79  
+14  8  1453.53  1377.77  
+14  9  1637.92  1576.7  
+14  10  1405.33  1405.33  
+14  11  1399.32  1388.41  
+15  0  1402.25  1402.25  
+15  1  1503.05  1503.01  
+15  2  1317.34  1324.58  
+15  3  1505.13  1497.35  
+15  4  1561.97  1549.43  
+15  5  1674.84  1659  
+15  6  1523.09  1514.63  
+15  7  1701.17  1668.96  
+15  8  1519.59  1519.6  
+15  9  1463.52  1463.52  
+15  10  1452.85  1452.85  
+15  11  1392.18  1386.37  
+16  0  1443.47  1471.63  
+16  1  1450.42  1482.72  
+16  2  1539.72  1517.98  
+16  3  1458.74  1467.07  
+16  4  1560.71  1586.38  
+16  5  1518.71  2098.83  
+16  6  1857.59  1825.91  
+16  7  1872.56  1803.39  
+16  8  1343.33  1341.83  
+16  9  1475.97  1474.85  
+16  10  1377.65  1366.5  
+16  11  1704.78  1691.79  
+17  0  1497.46  1432.38  
+17  1  1532.47  1485.56  
+17  2  1399.06  1394.69  
+17  3  1502.56  1500.38  
+17  4  1807.4  1657.24  
+17  5  1490.02  1490.74  
+17  6  1452.66  1178.36  
+17  7  1904.79  1162.34  
+17  8  1282.23  1311.07  
+17  9  1434.34  1426.91  
+17  10  1383.1  1376.38  
+17  11  1469.01  1466.06  
+18  0  1472.31  1436.45  
+18  1  1784.83  1750.1  
+18  2  1422.35  1412.43  
+18  3  1533.93  1515.52  
+18  4  1666.47  1546.51  
+18  5  2008.03  1395.56  
+18  6  1639.7  1643.94  
+18  7  1705.79  1637.46  
+18  8  1175.89  1204.74  
+18  9  1399.2  1399.3  
+18  10  1317.68  1342.2  
+18  11  1420.49  1412.47  
+19  0  1341.24  1357.95  
+19  1  1248.51  1254.66  
+19  2  1425.02  1417.61  
+19  3  1409.33  1426.68  
+19  4  1693.04  1688  
+19  5  1592.88  1580.63  
+19  6  1512.54  1525.13  
+19  7  1769.75  1768.39  
+19  8  1430.13  1430.13  
+19  9  1396.02  1393.81  
+19  10  1450.86  1447.94  
+19  11  1453.96  1450.57  
+20  0  1633.39  1632.63  
+20  1  1379.21  1392.39  
+20  2  1358.63  1354.37  
+20  3  1512.3  1517.34  
+20  4  1951.91  1873.03  
+20  5  1493.27  1478.97  
+20  6  2005.56  1826.06  
+20  7  1967.98  1876.69  
+20  8  1308.98  1307  
+20  9  1452.86  1452.86  
+20  10  1398.41  1397.34  
+20  11  1492.28  1476.67  
+21  0  1706.81  1673.38  
+21  1  1473.96  1518.82  
+21  2  1270.38  1257.57  
+21  3  1281.94  1281.94  
+21  4  1487.17  1491.59  
+21  5  1347.36  1342.37  
+21  6  1488.44  1470.59  
+21  7  1523.43  1594.38  
+21  8  1302.66  1296.66  
+21  9  1333.07  1333.07  
+21  10  1299.02  1298.9  
+21  11  1259.76  1256.05  
+22  0  1558.98  1551.94  
+22  1  1324.57  1293.15  
+22  2  1344.29  1291.49  
+22  3  1330.26  1316.86  
+22  4  1369.45  1262.77  
+22  5  1356.75  1139.65  
+22  6  1683.87  1387.32  
+22  7  1469.66  1299.82  
+22  8  1251.35  1250.28  
+22  9  1223.65  1223.62  
+22  10  1462.77  1367.31  
+22  11  1421.19  1317.98  
+23  0  1408.31  1405.4  
+23  1  1380.85  1514.51  
+23  2  1391.17  1414.39  
+23  3  1426.18  1427.69  
+23  4  1674.16  1632.75  
+23  5  1569.08  1526.88  
+23  6  1848.17  1768.41  
+23  7  1811.51  1749.99  
+23  8  1414.73  1374.72  
+23  9  1334.66  1344.57  
+23  10  1264.72  1262.84  
+23  11  1278.16  1397.71  
 
 
-Pedestal for row 0 and col 0 = 237.963
-Pedestal for row 0 and col 1 = 193.954
-Pedestal for row 0 and col 2 = 214.183
+Pedestal for row 0 and col 0 = 237.957
+Pedestal for row 0 and col 1 = 193.959
+Pedestal for row 0 and col 2 = 214.188
 Pedestal for row 0 and col 3 = 216.169
-Pedestal for row 0 and col 4 = 231.181
-Pedestal for row 0 and col 5 = 207.87
-Pedestal for row 0 and col 6 = 203.758
-Pedestal for row 0 and col 7 = 194.704
+Pedestal for row 0 and col 4 = 231.186
+Pedestal for row 0 and col 5 = 207.879
+Pedestal for row 0 and col 6 = 203.764
+Pedestal for row 0 and col 7 = 194.71
 Pedestal for row 0 and col 8 = 234.698
-Pedestal for row 0 and col 9 = 231.082
-Pedestal for row 0 and col 10 = 214.763
-Pedestal for row 0 and col 11 = 183.64
-Pedestal for row 1 and col 0 = 168.871
-Pedestal for row 1 and col 1 = 199.242
-Pedestal for row 1 and col 2 = 214.738
-Pedestal for row 1 and col 3 = 195.339
-Pedestal for row 1 and col 4 = 204.833
-Pedestal for row 1 and col 5 = 203.912
-Pedestal for row 1 and col 6 = 149.979
-Pedestal for row 1 and col 7 = 196.66
-Pedestal for row 1 and col 8 = 224.662
-Pedestal for row 1 and col 9 = 214.3
-Pedestal for row 1 and col 10 = 196.652
-Pedestal for row 1 and col 11 = 211.202
-Pedestal for row 2 and col 0 = 202.57
-Pedestal for row 2 and col 1 = 227.165
-Pedestal for row 2 and col 2 = 188.475
-Pedestal for row 2 and col 3 = 211.63
-Pedestal for row 2 and col 4 = 185.137
-Pedestal for row 2 and col 5 = 217.603
-Pedestal for row 2 and col 6 = 181.14
-Pedestal for row 2 and col 7 = 228.157
-Pedestal for row 2 and col 8 = 201.324
-Pedestal for row 2 and col 9 = 212.937
-Pedestal for row 2 and col 10 = 238.045
-Pedestal for row 2 and col 11 = 209.08
-Pedestal for row 3 and col 0 = 231.749
-Pedestal for row 3 and col 1 = 199.932
-Pedestal for row 3 and col 2 = 220.654
-Pedestal for row 3 and col 3 = 173.883
-Pedestal for row 3 and col 4 = 211.542
-Pedestal for row 3 and col 5 = 179.903
-Pedestal for row 3 and col 6 = 219.333
-Pedestal for row 3 and col 7 = 224.248
-Pedestal for row 3 and col 8 = 175.179
-Pedestal for row 3 and col 9 = 189.172
-Pedestal for row 3 and col 10 = 184.458
-Pedestal for row 3 and col 11 = 205.999
-Pedestal for row 4 and col 0 = 182.122
-Pedestal for row 4 and col 1 = 217.507
-Pedestal for row 4 and col 2 = 208.988
-Pedestal for row 4 and col 3 = 202.971
-Pedestal for row 4 and col 4 = 228.276
-Pedestal for row 4 and col 5 = 193.267
-Pedestal for row 4 and col 6 = 189.633
-Pedestal for row 4 and col 7 = 220.348
-Pedestal for row 4 and col 8 = 191.996
-Pedestal for row 4 and col 9 = 217.171
-Pedestal for row 4 and col 10 = 211.345
-Pedestal for row 4 and col 11 = 206.696
-Pedestal for row 5 and col 0 = 192.124
-Pedestal for row 5 and col 1 = 200.709
-Pedestal for row 5 and col 2 = 197.528
-Pedestal for row 5 and col 3 = 225.614
-Pedestal for row 5 and col 4 = 208.834
-Pedestal for row 5 and col 5 = 175.216
-Pedestal for row 5 and col 6 = 219.894
-Pedestal for row 5 and col 7 = 231.186
-Pedestal for row 5 and col 8 = 213.351
-Pedestal for row 5 and col 9 = 217.378
-Pedestal for row 5 and col 10 = 205.131
-Pedestal for row 5 and col 11 = 242.313
-Pedestal for row 6 and col 0 = 209.13
-Pedestal for row 6 and col 1 = 216.471
+Pedestal for row 0 and col 9 = 231.087
+Pedestal for row 0 and col 10 = 214.774
+Pedestal for row 0 and col 11 = 183.65
+Pedestal for row 1 and col 0 = 168.873
+Pedestal for row 1 and col 1 = 199.24
+Pedestal for row 1 and col 2 = 214.75
+Pedestal for row 1 and col 3 = 195.342
+Pedestal for row 1 and col 4 = 204.844
+Pedestal for row 1 and col 5 = 203.903
+Pedestal for row 1 and col 6 = 149.981
+Pedestal for row 1 and col 7 = 196.655
+Pedestal for row 1 and col 8 = 224.671
+Pedestal for row 1 and col 9 = 214.301
+Pedestal for row 1 and col 10 = 196.665
+Pedestal for row 1 and col 11 = 211.204
+Pedestal for row 2 and col 0 = 202.566
+Pedestal for row 2 and col 1 = 227.162
+Pedestal for row 2 and col 2 = 188.473
+Pedestal for row 2 and col 3 = 211.626
+Pedestal for row 2 and col 4 = 185.141
+Pedestal for row 2 and col 5 = 217.591
+Pedestal for row 2 and col 6 = 181.137
+Pedestal for row 2 and col 7 = 228.16
+Pedestal for row 2 and col 8 = 201.319
+Pedestal for row 2 and col 9 = 212.933
+Pedestal for row 2 and col 10 = 238.037
+Pedestal for row 2 and col 11 = 209.082
+Pedestal for row 3 and col 0 = 231.754
+Pedestal for row 3 and col 1 = 199.943
+Pedestal for row 3 and col 2 = 220.665
+Pedestal for row 3 and col 3 = 173.881
+Pedestal for row 3 and col 4 = 211.541
+Pedestal for row 3 and col 5 = 179.906
+Pedestal for row 3 and col 6 = 219.339
+Pedestal for row 3 and col 7 = 224.249
+Pedestal for row 3 and col 8 = 175.189
+Pedestal for row 3 and col 9 = 189.178
+Pedestal for row 3 and col 10 = 184.459
+Pedestal for row 3 and col 11 = 206
+Pedestal for row 4 and col 0 = 182.106
+Pedestal for row 4 and col 1 = 217.504
+Pedestal for row 4 and col 2 = 209.014
+Pedestal for row 4 and col 3 = 202.975
+Pedestal for row 4 and col 4 = 228.282
+Pedestal for row 4 and col 5 = 193.274
+Pedestal for row 4 and col 6 = 189.624
+Pedestal for row 4 and col 7 = 220.34
+Pedestal for row 4 and col 8 = 191.983
+Pedestal for row 4 and col 9 = 217.174
+Pedestal for row 4 and col 10 = 211.35
+Pedestal for row 4 and col 11 = 206.702
+Pedestal for row 5 and col 0 = 192.113
+Pedestal for row 5 and col 1 = 200.711
+Pedestal for row 5 and col 2 = 197.535
+Pedestal for row 5 and col 3 = 225.62
+Pedestal for row 5 and col 4 = 208.837
+Pedestal for row 5 and col 5 = 175.214
+Pedestal for row 5 and col 6 = 219.899
+Pedestal for row 5 and col 7 = 231.181
+Pedestal for row 5 and col 8 = 213.346
+Pedestal for row 5 and col 9 = 217.381
+Pedestal for row 5 and col 10 = 205.134
+Pedestal for row 5 and col 11 = 242.309
+Pedestal for row 6 and col 0 = 209.123
+Pedestal for row 6 and col 1 = 216.476
 Pedestal for row 6 and col 2 = 210.016
-Pedestal for row 6 and col 3 = 241.547
-Pedestal for row 6 and col 4 = 194.348
-Pedestal for row 6 and col 5 = 187.622
-Pedestal for row 6 and col 6 = 209.651
-Pedestal for row 6 and col 7 = 230.088
-Pedestal for row 6 and col 8 = 239.577
-Pedestal for row 6 and col 9 = 232.148
-Pedestal for row 6 and col 10 = 217.771
-Pedestal for row 6 and col 11 = 182.902
-Pedestal for row 7 and col 0 = 189.284
-Pedestal for row 7 and col 1 = 220.556
-Pedestal for row 7 and col 2 = 249.811
-Pedestal for row 7 and col 3 = 230.722
-Pedestal for row 7 and col 4 = 203.566
-Pedestal for row 7 and col 5 = 218.935
-Pedestal for row 7 and col 6 = 219.044
-Pedestal for row 7 and col 7 = 236.747
-Pedestal for row 7 and col 8 = 208.411
-Pedestal for row 7 and col 9 = 183
-Pedestal for row 7 and col 10 = 199.702
-Pedestal for row 7 and col 11 = 195.098
-Pedestal for row 8 and col 0 = 240.203
-Pedestal for row 8 and col 1 = 233.718
-Pedestal for row 8 and col 2 = 211.926
-Pedestal for row 8 and col 3 = 214.089
-Pedestal for row 8 and col 4 = 170.965
-Pedestal for row 8 and col 5 = 185.898
-Pedestal for row 8 and col 6 = 220.805
-Pedestal for row 8 and col 7 = 193.788
-Pedestal for row 8 and col 8 = 213.098
-Pedestal for row 8 and col 9 = 209.642
-Pedestal for row 8 and col 10 = 223.826
-Pedestal for row 8 and col 11 = 208.715
-Pedestal for row 9 and col 0 = 220.688
-Pedestal for row 9 and col 1 = 292.999
-Pedestal for row 9 and col 2 = 213.576
-Pedestal for row 9 and col 3 = 254.208
-Pedestal for row 9 and col 4 = 204.522
-Pedestal for row 9 and col 5 = 186.977
-Pedestal for row 9 and col 6 = 240.174
-Pedestal for row 9 and col 7 = 247.106
+Pedestal for row 6 and col 3 = 241.542
+Pedestal for row 6 and col 4 = 194.358
+Pedestal for row 6 and col 5 = 187.633
+Pedestal for row 6 and col 6 = 209.655
+Pedestal for row 6 and col 7 = 230.091
+Pedestal for row 6 and col 8 = 239.584
+Pedestal for row 6 and col 9 = 232.145
+Pedestal for row 6 and col 10 = 217.786
+Pedestal for row 6 and col 11 = 182.909
+Pedestal for row 7 and col 0 = 189.283
+Pedestal for row 7 and col 1 = 220.562
+Pedestal for row 7 and col 2 = 249.81
+Pedestal for row 7 and col 3 = 230.731
+Pedestal for row 7 and col 4 = 203.569
+Pedestal for row 7 and col 5 = 218.933
+Pedestal for row 7 and col 6 = 219.038
+Pedestal for row 7 and col 7 = 236.749
+Pedestal for row 7 and col 8 = 208.405
+Pedestal for row 7 and col 9 = 182.993
+Pedestal for row 7 and col 10 = 199.697
+Pedestal for row 7 and col 11 = 195.107
+Pedestal for row 8 and col 0 = 240.214
+Pedestal for row 8 and col 1 = 233.723
+Pedestal for row 8 and col 2 = 211.923
+Pedestal for row 8 and col 3 = 214.091
+Pedestal for row 8 and col 4 = 170.968
+Pedestal for row 8 and col 5 = 185.909
+Pedestal for row 8 and col 6 = 220.802
+Pedestal for row 8 and col 7 = 193.782
+Pedestal for row 8 and col 8 = 213.108
+Pedestal for row 8 and col 9 = 209.647
+Pedestal for row 8 and col 10 = 223.821
+Pedestal for row 8 and col 11 = 208.728
+Pedestal for row 9 and col 0 = 220.68
+Pedestal for row 9 and col 1 = 292.996
+Pedestal for row 9 and col 2 = 213.582
+Pedestal for row 9 and col 3 = 254.21
+Pedestal for row 9 and col 4 = 204.533
+Pedestal for row 9 and col 5 = 186.976
+Pedestal for row 9 and col 6 = 240.156
+Pedestal for row 9 and col 7 = 247.109
 Pedestal for row 9 and col 8 = 239.173
-Pedestal for row 9 and col 9 = 248.213
-Pedestal for row 9 and col 10 = 233.538
-Pedestal for row 9 and col 11 = 219.476
-Pedestal for row 10 and col 0 = 266.571
-Pedestal for row 10 and col 1 = 224.204
-Pedestal for row 10 and col 2 = 245.049
-Pedestal for row 10 and col 3 = 253.972
-Pedestal for row 10 and col 4 = 217.855
-Pedestal for row 10 and col 5 = 230.529
-Pedestal for row 10 and col 6 = 250.509
-Pedestal for row 10 and col 7 = 246.107
-Pedestal for row 10 and col 8 = 236.12
-Pedestal for row 10 and col 9 = 207.299
-Pedestal for row 10 and col 10 = 230.506
-Pedestal for row 10 and col 11 = 223.972
-Pedestal for row 11 and col 0 = 230.844
-Pedestal for row 11 and col 1 = 202.345
-Pedestal for row 11 and col 2 = 226.625
-Pedestal for row 11 and col 3 = 239.066
-Pedestal for row 11 and col 4 = 230.634
-Pedestal for row 11 and col 5 = 231.295
-Pedestal for row 11 and col 6 = 223.986
-Pedestal for row 11 and col 7 = 189.861
-Pedestal for row 11 and col 8 = 214.573
+Pedestal for row 9 and col 9 = 248.211
+Pedestal for row 9 and col 10 = 233.531
+Pedestal for row 9 and col 11 = 219.469
+Pedestal for row 10 and col 0 = 266.567
+Pedestal for row 10 and col 1 = 224.2
+Pedestal for row 10 and col 2 = 245.056
+Pedestal for row 10 and col 3 = 253.974
+Pedestal for row 10 and col 4 = 217.871
+Pedestal for row 10 and col 5 = 230.522
+Pedestal for row 10 and col 6 = 250.518
+Pedestal for row 10 and col 7 = 246.106
+Pedestal for row 10 and col 8 = 236.121
+Pedestal for row 10 and col 9 = 207.289
+Pedestal for row 10 and col 10 = 230.508
+Pedestal for row 10 and col 11 = 223.965
+Pedestal for row 11 and col 0 = 230.843
+Pedestal for row 11 and col 1 = 202.343
+Pedestal for row 11 and col 2 = 226.621
+Pedestal for row 11 and col 3 = 239.064
+Pedestal for row 11 and col 4 = 230.633
+Pedestal for row 11 and col 5 = 231.301
+Pedestal for row 11 and col 6 = 223.991
+Pedestal for row 11 and col 7 = 189.872
+Pedestal for row 11 and col 8 = 214.571
 Pedestal for row 11 and col 9 = 194.778
-Pedestal for row 11 and col 10 = 197.206
-Pedestal for row 11 and col 11 = 248.661
-Pedestal for row 12 and col 0 = 221.463
-Pedestal for row 12 and col 1 = 215.622
-Pedestal for row 12 and col 2 = 214.489
-Pedestal for row 12 and col 3 = 208.384
-Pedestal for row 12 and col 4 = 218.517
-Pedestal for row 12 and col 5 = 217.164
-Pedestal for row 12 and col 6 = 215.413
-Pedestal for row 12 and col 7 = 185.805
-Pedestal for row 12 and col 8 = 187.622
-Pedestal for row 12 and col 9 = 208.479
-Pedestal for row 12 and col 10 = 217.739
-Pedestal for row 12 and col 11 = 198.511
-Pedestal for row 13 and col 0 = 235.685
-Pedestal for row 13 and col 1 = 219.974
-Pedestal for row 13 and col 2 = 222.544
-Pedestal for row 13 and col 3 = 221.69
-Pedestal for row 13 and col 4 = 207.794
-Pedestal for row 13 and col 5 = 204.859
-Pedestal for row 13 and col 6 = 215.493
-Pedestal for row 13 and col 7 = 196.423
-Pedestal for row 13 and col 8 = 228.767
-Pedestal for row 13 and col 9 = 201.706
-Pedestal for row 13 and col 10 = 216.894
-Pedestal for row 13 and col 11 = 221.412
+Pedestal for row 11 and col 10 = 197.204
+Pedestal for row 11 and col 11 = 248.667
+Pedestal for row 12 and col 0 = 221.48
+Pedestal for row 12 and col 1 = 215.615
+Pedestal for row 12 and col 2 = 214.49
+Pedestal for row 12 and col 3 = 208.394
+Pedestal for row 12 and col 4 = 218.515
+Pedestal for row 12 and col 5 = 217.179
+Pedestal for row 12 and col 6 = 215.414
+Pedestal for row 12 and col 7 = 185.816
+Pedestal for row 12 and col 8 = 187.635
+Pedestal for row 12 and col 9 = 208.482
+Pedestal for row 12 and col 10 = 217.748
+Pedestal for row 12 and col 11 = 198.51
+Pedestal for row 13 and col 0 = 235.693
+Pedestal for row 13 and col 1 = 219.983
+Pedestal for row 13 and col 2 = 222.552
+Pedestal for row 13 and col 3 = 221.706
+Pedestal for row 13 and col 4 = 207.807
+Pedestal for row 13 and col 5 = 204.877
+Pedestal for row 13 and col 6 = 215.509
+Pedestal for row 13 and col 7 = 196.436
+Pedestal for row 13 and col 8 = 228.769
+Pedestal for row 13 and col 9 = 201.715
+Pedestal for row 13 and col 10 = 216.917
+Pedestal for row 13 and col 11 = 221.42
 Pedestal for row 14 and col 0 = 183.076
-Pedestal for row 14 and col 1 = 207.977
-Pedestal for row 14 and col 2 = 202.449
-Pedestal for row 14 and col 3 = 219.39
-Pedestal for row 14 and col 4 = 226.357
-Pedestal for row 14 and col 5 = 207.434
-Pedestal for row 14 and col 6 = 232.662
-Pedestal for row 14 and col 7 = 212.433
-Pedestal for row 14 and col 8 = 228.149
-Pedestal for row 14 and col 9 = 197.71
-Pedestal for row 14 and col 10 = 401.593
-Pedestal for row 14 and col 11 = 190.154
-Pedestal for row 15 and col 0 = 165.96
-Pedestal for row 15 and col 1 = 226.13
-Pedestal for row 15 and col 2 = 204.892
-Pedestal for row 15 and col 3 = 187.844
-Pedestal for row 15 and col 4 = 218.491
-Pedestal for row 15 and col 5 = 189.631
-Pedestal for row 15 and col 6 = 228.855
-Pedestal for row 15 and col 7 = 198.515
-Pedestal for row 15 and col 8 = 237.369
-Pedestal for row 15 and col 9 = 219.689
-Pedestal for row 15 and col 10 = 217.414
-Pedestal for row 15 and col 11 = 197.222
+Pedestal for row 14 and col 1 = 207.98
+Pedestal for row 14 and col 2 = 202.452
+Pedestal for row 14 and col 3 = 219.394
+Pedestal for row 14 and col 4 = 226.358
+Pedestal for row 14 and col 5 = 207.439
+Pedestal for row 14 and col 6 = 232.672
+Pedestal for row 14 and col 7 = 212.446
+Pedestal for row 14 and col 8 = 228.157
+Pedestal for row 14 and col 9 = 199.375
+Pedestal for row 14 and col 10 = 694.546
+Pedestal for row 14 and col 11 = 190.146
+Pedestal for row 15 and col 0 = 165.961
+Pedestal for row 15 and col 1 = 226.136
+Pedestal for row 15 and col 2 = 204.902
+Pedestal for row 15 and col 3 = 187.848
+Pedestal for row 15 and col 4 = 218.5
+Pedestal for row 15 and col 5 = 189.629
+Pedestal for row 15 and col 6 = 228.856
+Pedestal for row 15 and col 7 = 198.512
+Pedestal for row 15 and col 8 = 237.376
+Pedestal for row 15 and col 9 = 219.697
+Pedestal for row 15 and col 10 = 217.421
+Pedestal for row 15 and col 11 = 197.223
 Pedestal for row 16 and col 0 = 213.999
-Pedestal for row 16 and col 1 = 188.327
-Pedestal for row 16 and col 2 = 188.003
-Pedestal for row 16 and col 3 = 204.195
-Pedestal for row 16 and col 4 = 175.578
-Pedestal for row 16 and col 5 = 193.627
+Pedestal for row 16 and col 1 = 188.333
+Pedestal for row 16 and col 2 = 188.004
+Pedestal for row 16 and col 3 = 204.204
+Pedestal for row 16 and col 4 = 175.572
+Pedestal for row 16 and col 5 = 193.642
 Pedestal for row 16 and col 6 = 235.338
-Pedestal for row 16 and col 7 = 206.117
-Pedestal for row 16 and col 8 = 242.408
-Pedestal for row 16 and col 9 = 210.253
-Pedestal for row 16 and col 10 = 234.525
-Pedestal for row 16 and col 11 = 202.08
-Pedestal for row 17 and col 0 = 231.126
-Pedestal for row 17 and col 1 = 200.09
-Pedestal for row 17 and col 2 = 213.598
-Pedestal for row 17 and col 3 = 202.931
-Pedestal for row 17 and col 4 = 225.982
-Pedestal for row 17 and col 5 = 179.637
-Pedestal for row 17 and col 6 = 217.036
-Pedestal for row 17 and col 7 = 235.566
-Pedestal for row 17 and col 8 = 212.775
-Pedestal for row 17 and col 9 = 209.616
-Pedestal for row 17 and col 10 = 186.611
-Pedestal for row 17 and col 11 = 211.345
-Pedestal for row 18 and col 0 = 196.929
-Pedestal for row 18 and col 1 = 195.083
-Pedestal for row 18 and col 2 = 202.16
-Pedestal for row 18 and col 3 = 221.719
-Pedestal for row 18 and col 4 = 221.875
-Pedestal for row 18 and col 5 = 214.154
-Pedestal for row 18 and col 6 = 189.397
-Pedestal for row 18 and col 7 = 228.18
-Pedestal for row 18 and col 8 = 222.606
-Pedestal for row 18 and col 9 = 188.638
-Pedestal for row 18 and col 10 = 187.989
-Pedestal for row 18 and col 11 = 190.465
-Pedestal for row 19 and col 0 = 226.914
-Pedestal for row 19 and col 1 = 269.865
-Pedestal for row 19 and col 2 = 218.214
-Pedestal for row 19 and col 3 = 215.804
-Pedestal for row 19 and col 4 = 199.913
+Pedestal for row 16 and col 7 = 206.128
+Pedestal for row 16 and col 8 = 242.411
+Pedestal for row 16 and col 9 = 210.254
+Pedestal for row 16 and col 10 = 234.529
+Pedestal for row 16 and col 11 = 202.084
+Pedestal for row 17 and col 0 = 231.123
+Pedestal for row 17 and col 1 = 200.101
+Pedestal for row 17 and col 2 = 213.611
+Pedestal for row 17 and col 3 = 202.945
+Pedestal for row 17 and col 4 = 225.988
+Pedestal for row 17 and col 5 = 179.649
+Pedestal for row 17 and col 6 = 217.045
+Pedestal for row 17 and col 7 = 235.564
+Pedestal for row 17 and col 8 = 212.78
+Pedestal for row 17 and col 9 = 209.629
+Pedestal for row 17 and col 10 = 186.622
+Pedestal for row 17 and col 11 = 211.351
+Pedestal for row 18 and col 0 = 196.944
+Pedestal for row 18 and col 1 = 195.079
+Pedestal for row 18 and col 2 = 202.167
+Pedestal for row 18 and col 3 = 221.725
+Pedestal for row 18 and col 4 = 221.884
+Pedestal for row 18 and col 5 = 214.164
+Pedestal for row 18 and col 6 = 189.408
+Pedestal for row 18 and col 7 = 228.183
+Pedestal for row 18 and col 8 = 222.614
+Pedestal for row 18 and col 9 = 188.641
+Pedestal for row 18 and col 10 = 187.999
+Pedestal for row 18 and col 11 = 190.475
+Pedestal for row 19 and col 0 = 226.916
+Pedestal for row 19 and col 1 = 269.877
+Pedestal for row 19 and col 2 = 218.224
+Pedestal for row 19 and col 3 = 215.802
+Pedestal for row 19 and col 4 = 199.911
 Pedestal for row 19 and col 5 = 244.609
-Pedestal for row 19 and col 6 = 213.452
-Pedestal for row 19 and col 7 = 225.981
-Pedestal for row 19 and col 8 = 246.755
-Pedestal for row 19 and col 9 = 233.465
-Pedestal for row 19 and col 10 = 244.131
-Pedestal for row 19 and col 11 = 234.134
-Pedestal for row 20 and col 0 = 193.555
-Pedestal for row 20 and col 1 = 210.437
-Pedestal for row 20 and col 2 = 225.78
-Pedestal for row 20 and col 3 = 222.536
-Pedestal for row 20 and col 4 = 208.981
-Pedestal for row 20 and col 5 = 220.062
-Pedestal for row 20 and col 6 = 200.177
-Pedestal for row 20 and col 7 = 192.592
-Pedestal for row 20 and col 8 = 196.483
-Pedestal for row 20 and col 9 = 228.58
-Pedestal for row 20 and col 10 = 199.706
-Pedestal for row 20 and col 11 = 198.501
-Pedestal for row 21 and col 0 = 190.86
-Pedestal for row 21 and col 1 = 197.914
-Pedestal for row 21 and col 2 = 239.249
-Pedestal for row 21 and col 3 = 220.66
-Pedestal for row 21 and col 4 = 216.861
-Pedestal for row 21 and col 5 = 238.869
-Pedestal for row 21 and col 6 = 230.204
-Pedestal for row 21 and col 7 = 189.877
-Pedestal for row 21 and col 8 = 230.909
-Pedestal for row 21 and col 9 = 240.525
-Pedestal for row 21 and col 10 = 242.755
-Pedestal for row 21 and col 11 = 183.509
-Pedestal for row 22 and col 0 = 244.446
-Pedestal for row 22 and col 1 = 196.515
-Pedestal for row 22 and col 2 = 217.264
-Pedestal for row 22 and col 3 = 215.486
-Pedestal for row 22 and col 4 = 224.77
-Pedestal for row 22 and col 5 = 193.221
-Pedestal for row 22 and col 6 = 219.363
-Pedestal for row 22 and col 7 = 230.916
-Pedestal for row 22 and col 8 = 203.488
-Pedestal for row 22 and col 9 = 198.171
-Pedestal for row 22 and col 10 = 238.274
-Pedestal for row 22 and col 11 = 230.592
-Pedestal for row 23 and col 0 = 207.429
-Pedestal for row 23 and col 1 = 193.72
-Pedestal for row 23 and col 2 = 237.514
-Pedestal for row 23 and col 3 = 193.213
-Pedestal for row 23 and col 4 = 222.781
-Pedestal for row 23 and col 5 = 223.283
-Pedestal for row 23 and col 6 = 196.212
+Pedestal for row 19 and col 6 = 213.453
+Pedestal for row 19 and col 7 = 225.986
+Pedestal for row 19 and col 8 = 246.751
+Pedestal for row 19 and col 9 = 233.464
+Pedestal for row 19 and col 10 = 244.134
+Pedestal for row 19 and col 11 = 234.139
+Pedestal for row 20 and col 0 = 193.556
+Pedestal for row 20 and col 1 = 210.444
+Pedestal for row 20 and col 2 = 225.791
+Pedestal for row 20 and col 3 = 222.545
+Pedestal for row 20 and col 4 = 208.989
+Pedestal for row 20 and col 5 = 220.071
+Pedestal for row 20 and col 6 = 200.195
+Pedestal for row 20 and col 7 = 192.591
+Pedestal for row 20 and col 8 = 196.495
+Pedestal for row 20 and col 9 = 228.589
+Pedestal for row 20 and col 10 = 199.708
+Pedestal for row 20 and col 11 = 198.511
+Pedestal for row 21 and col 0 = 190.856
+Pedestal for row 21 and col 1 = 197.919
+Pedestal for row 21 and col 2 = 239.257
+Pedestal for row 21 and col 3 = 220.676
+Pedestal for row 21 and col 4 = 216.865
+Pedestal for row 21 and col 5 = 238.878
+Pedestal for row 21 and col 6 = 230.213
+Pedestal for row 21 and col 7 = 189.885
+Pedestal for row 21 and col 8 = 230.903
+Pedestal for row 21 and col 9 = 240.532
+Pedestal for row 21 and col 10 = 242.762
+Pedestal for row 21 and col 11 = 183.523
+Pedestal for row 22 and col 0 = 244.444
+Pedestal for row 22 and col 1 = 196.529
+Pedestal for row 22 and col 2 = 217.27
+Pedestal for row 22 and col 3 = 215.497
+Pedestal for row 22 and col 4 = 224.779
+Pedestal for row 22 and col 5 = 193.22
+Pedestal for row 22 and col 6 = 219.366
+Pedestal for row 22 and col 7 = 230.92
+Pedestal for row 22 and col 8 = 203.478
+Pedestal for row 22 and col 9 = 198.173
+Pedestal for row 22 and col 10 = 238.272
+Pedestal for row 22 and col 11 = 230.593
+Pedestal for row 23 and col 0 = 207.44
+Pedestal for row 23 and col 1 = 193.727
+Pedestal for row 23 and col 2 = 237.513
+Pedestal for row 23 and col 3 = 193.227
+Pedestal for row 23 and col 4 = 222.786
+Pedestal for row 23 and col 5 = 223.293
+Pedestal for row 23 and col 6 = 196.211
 Pedestal for row 23 and col 7 = 214.159
-Pedestal for row 23 and col 8 = 195.604
-Pedestal for row 23 and col 9 = 196.281
-Pedestal for row 23 and col 10 = 227.407
-Pedestal for row 23 and col 11 = 188.005
+Pedestal for row 23 and col 8 = 195.609
+Pedestal for row 23 and col 9 = 196.285
+Pedestal for row 23 and col 10 = 227.419
+Pedestal for row 23 and col 11 = 188.007

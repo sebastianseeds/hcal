@@ -1,4 +1,4 @@
-#Alpha parameters obtained from LEDplots_v2 on Fri Apr 16 13:16:07 2021
+#Alpha parameters obtained from LEDplots_v2 on Tue Apr 27 15:20:57 2021
 #
 21.7361
 21.7361

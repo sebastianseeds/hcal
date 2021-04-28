@@ -1,3 +1,4 @@
+
 #include <TH2F.h>
 #include <TChain.h>
 #include <TCanvas.h>
@@ -11,7 +12,7 @@ const Int_t kNcols = 12;
 
 const Int_t kNumModules = kNrows*kNcols;
 const Int_t DISP_MIN_SAMPLE = 0;
-const Int_t DISP_MAX_SAMPLE = 30;
+const Int_t DISP_MAX_SAMPLE = 50;
 //const Int_t DISP_MAX_SAMPLE = 30;
 //const Int_t DISP_FADC_SAMPLES = 200;
 const Int_t DISP_FADC_SAMPLES = (DISP_MAX_SAMPLE-DISP_MIN_SAMPLE);
@@ -251,7 +252,8 @@ Int_t display(Int_t run = 1198, Int_t event = -1)
 
   if(!T) { 
     T = new TChain("T");
-    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_0.root",run));
+    //T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_*.root",run));
+    T->Add(TString::Format("rootFiles/LED/fadc_f1tdc_%d.root",run));
     T->SetBranchStatus("*",0);
     T->SetBranchStatus("sbs.hcal.*",1);
     T->SetBranchAddress("sbs.hcal.nsamps",hcalt::nsamps);

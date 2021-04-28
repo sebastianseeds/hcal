@@ -8,20 +8,19 @@
 #include <TStopwatch.h>
 #include "hcal.h"
 
-const int rmin = 0;
-const int rmax = 12;
+const int rmin = 12;
 const int kNrows = 24; //All available rows for HCAL
 const int kNcols = 12; //Half of HCAL has 12 columns
 const int kNLED = 6; //For 5 LEDs and an off position at zero
 
 const int minSample = 0; //Initialize histogram minimum
-const int maxSample = 50; //Initialize histogram maximum - cannot exceed hcalt::nsamps per pmt per event
+const int maxSample = 30; //Initialize histogram maximum - cannot exceed hcalt::nsamps per pmt per event
 const int totSample = (maxSample-minSample);
 
 int gCurrentEntry = -1;
 
 TChain *T = 0;
-TFile *HistosFile = new TFile("HistosFile.root","RECREATE");  //File for checking histogram fits and integrity
+TFile *HistosFile = new TFile("Comparisons/HistosFile.root","RECREATE");  //File for checking histogram fits and integrity
 
 void getPedestal(int);
 void pulseSpec(TH1F*, TF1*, double, int, int, int);
@@ -50,6 +49,7 @@ int signalTotal = 1;
 int pedTotal = 1;
 
 double pedestals[kNrows][kNcols];
+double Vpedestals[kNrows][kNcols];
 double pedSigma[kNrows][kNcols];
 bool gSaturated[kNrows][kNcols][kNLED];
 
@@ -173,12 +173,13 @@ void getPedestal(int entry=-1){  //Taken only from the set of data where the LED
 	  pedSpec[r][c]->Fill(histos[r][c][ledNumber]->GetBinContent(b+1));
 	}
 	
-	if (ledNumber==0 && pedTotal % 35000 == 0 && gSaturated[r][c][ledNumber]==false){
-	  cout << "Saving a reference pedestal histogram to write to file.." << endl;
-	  cout << "Row " << r << ", col " << c << "." << endl;
-	  cout << "Maximum value for this histogram = " << histos[r][c][ledNumber]->GetMaximum() << "." << endl;
-	  cout << "LED number for this histogram = " << ledNumber << "." << endl << endl;
-	  histos[r][c][ledNumber]->SetTitle(Form("Sample Histo R%d C%d LED%d",r,c,ledNumber));
+	if (ledNumber==0 && pedTotal % 35000 == 0 && r>11 && gSaturated[r][c][ledNumber]==false){ //Right half is shut off, hence r > 12, and cut all saturated events
+	  //cout << "Saving a reference pedestal histogram to write to file.." << endl;
+	  //cout << "Integrated value for this histogram = " << histos[r][c][ledNumber]->Integral(1,30) << "." << endl;
+	  //cout << "Maximum value for this histogram = " << maxy << "." << endl;
+	  //cout << "Pedestal for this histogram = " << pedestals[r][c] << "." << endl;
+	  //cout << "LED number for this histogram = " << ledNumber << "." << endl << endl;
+	  histos[r][c][ledNumber]->SetTitle(Form("Pedestal Histogram R%d C%d LED%d",r,c,ledNumber));
 	  histos[r][c][ledNumber]->Draw();
 	  HistosFile->cd();
 	  histos[r][c][ledNumber]->SetTitle(Form("Pedestal Histogram R%d C%d LED%d",r,c,ledNumber));
@@ -302,19 +303,19 @@ void processEvent(int entry = -1){
       maxy = histos[r][c][ledNumber]->GetMaximum();
 
       
-      if(ledNumber!=0 && gSaturated[r][c][ledNumber]==false){ //Right half is shut off, hence r > 12, and cut all saturated events
+      if(ledNumber!=0 && r>11 && gSaturated[r][c][ledNumber]==false){ //Right half is shut off, hence r > 12, and cut all saturated events
 	PMTIntSpec[r][c][ledNumber]->Fill(histos[r][c][ledNumber]->Integral(1,30)); //Integral from total bin content
 	PMTMaxSpec[r][c][ledNumber]->Fill(maxy);
       }
 	
       //Write out regular histograms - LED bit changes every 1000 events.
-      if (ledNumber!=0 && signalTotal % 35000 == 0 && gSaturated[r][c][ledNumber]==false){ 
-	cout << "Saving a reference good fit histogram to write to file.." << endl;
-	cout << "Integrated value for this histogram = " << histos[r][c][ledNumber]->Integral(1,30) << "." << endl;
-	cout << "Maximum value for this histogram = " << maxy << "." << endl;
-	cout << "Pedestal for this histogram = " << pedestals[r][c] << "." << endl;
-	cout << "TDC value for this histogram = " << tdc[r][c] << "." << endl;
-	cout << "LED number for this histogram = " << ledNumber << "." << endl << endl;
+      if (ledNumber!=0 && signalTotal % 35000 == 0 && r>11 && gSaturated[r][c][ledNumber]==false){ //Right half is shut off, hence r > 12, and cut all saturated events
+	//cout << "Saving a reference good fit histogram to write to file.." << endl;
+	//cout << "Integrated value for this histogram = " << histos[r][c][ledNumber]->Integral(1,30) << "." << endl;
+	//cout << "Maximum value for this histogram = " << maxy << "." << endl;
+	//cout << "Pedestal for this histogram = " << pedestals[r][c] << "." << endl;
+	//cout << "TDC value for this histogram = " << tdc[r][c] << "." << endl;
+	//cout << "LED number for this histogram = " << ledNumber << "." << endl << endl;
 	histos[r][c][ledNumber]->SetTitle(Form("Sample Histo R%d C%d LED%d",r,c,ledNumber));
 	histos[r][c][ledNumber]->Draw();
 	HistosFile->cd();
@@ -332,14 +333,14 @@ void processEvent(int entry = -1){
   }
 }
 
-int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 events
+int Sebastian_led3(int run = 1205, int event = 1000)  //Start after LEDs warm up ~1000 events
 {
   // Define a clock to check macro processing time
   TStopwatch *st = new TStopwatch();
   st->Start(kTRUE);
   
   //Declare outfile
-  TFile *ledAggFile = new TFile(Form("outFiles/ledSpectFile_run%d.root",run),"RECREATE");
+  TFile *ledAggFile = new TFile(Form("Comparisons/ledSpectFile_run%d.root",run),"RECREATE");
 
   //Build spectra histograms. Empirical limits.
   cout << "Building spectrum histograms.." << endl;
@@ -384,7 +385,6 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
     NEVvChannel[l]->GetYaxis()->SetTitle("<RAU>");
     NEVvChannel[l]->GetYaxis()->CenterTitle();
 
-    //Make simple array of all LED on values
     if(l!=0){
       LED[l-1]=l;
     }
@@ -480,9 +480,36 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
   cout << "Finished loop over run " << run << "." << endl;
   cout << "Total good signals = " << signalTotal << "." << endl;
 
+  cout << "Reading in output parameter from Vanessa's code for comparison.." << endl;
+
+  ifstream file1(Form("Comparisons/VPed_%d.txt",run));
+
+  int n1=0;
+  double d1;
+  int rval, cval;
+  string line;
+
+  while(getline(file1,line)){
+    if(line.at(0) == '#'){
+      continue;
+    }
+    
+    stringstream ss(line);
+    ss >> d1;
+    
+    rval = floor(n1/kNcols);
+    cval = n1 % kNcols;
+    
+    Vpedestals[rval][cval] = d1; 
+    
+    //cout << "row = " << rval << ", col = " << cval << ", HV val = " << pmtHV[rval][cval] << endl;
+    
+    n1++;
+  }
+  
   cout << "Writing spectrum histograms to file and creating file to hold fit parameters.." << endl;
   ofstream outFile;
-  outFile.open(Form("NPE_run%d.txt",run));
+  outFile.open(Form("Comparisons/NPE_run%d.txt",run));
   outFile << "#All information for run " << run << "." << endl;
   outFile << "#Row Col LED <Max> <Int> NPE" << endl;
   
@@ -528,8 +555,12 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
 
 	  outFile << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0) << endl;  //Sigma error in quadrature, mean already pedestal subtracted
 
-	  cout << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0) << endl;  //Sigma error in quadrature, mean already pedestal subtracted
+	  //cout << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0) << endl;  //Sigma error in quadrature, mean already pedestal subtracted
 
+	  //if(l==1) cout << "Module: " << r*12+c << ",  Pedestal: " << pedestals[r][c] << endl;
+
+	  if(l==1) cout << "Module: " << r*12+c << ", Pedestal Difference (V-S): " << Vpedestals[r][c]-pedestals[r][c] << endl;
+	  
 	  NPE[r][c][l-1]=pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0);
 	  
 	}
@@ -578,6 +609,7 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
   pedvChannel->Write("pedvChannel");
   pedvChannel->Draw("AP");
 
+  cout << "Alpha parameters written to alphas.txt" << endl;
   cout << "ADC spectrum histograms written to file ledSpectFile_run" << run << ".root" << endl;
   cout << "NPE (and other parameters) written to file NPE_run" << run << ".txt." << endl;
   cout << "Total sample histograms drawn to file ledSpectFile_run" << run << ".root = " << DRAWNHISTO << "." << endl;
