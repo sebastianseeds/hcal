@@ -41,8 +41,8 @@ TF1 *f1;
 int signalTotal = 1;
 
 //Create files to keep temporary histograms for integrity checks
-TFile *HistosFile = new TFile("outFiles/HistosFile.root","RECREATE");  //File for checking histogram fits and integrity
-TFile *HistosFilePedestal = new TFile("outFiles/HistosFilePedestal.root","RECREATE");  //File for checking histogram fits and integrity
+TFile *HistosFile = new TFile("outFiles/CosHistosFile.root","RECREATE");  //File for checking histogram fits and integrity
+TFile *HistosFilePedestal = new TFile("outFiles/CosHistosFilePedestal.root","RECREATE");  //File for checking histogram fits and integrity
 
 //Declare necessary arrays
 double pedestals[kNrows][kNcols];
@@ -51,16 +51,13 @@ bool gSaturated[kNrows][kNcols];
 bool gPulse[kNrows+4][kNcols+4]; //Needs to be larger for false-valued buffers (2 per side)
 bool gPulseTDC[kNrows+4][kNcols+4]; //Needs to be larger for false-valued buffers (2 per side)
 
+//double targetRAU = 48.15; //4095*3.0/2.0*0.39*14/700 or (digMaxADC)*(dynRanAmp/dynRanADC)*(long cable attenuation)*(cosEdep/maxGMnEdep). Attenuation average over all channels current April 2021 pending effective gain measurements in Hall.
 
-double targetRAU = 48.15; //4095*3.0/2.0*0.39*14/700 or (digMaxADC)*(dynRanAmp/dynRanADC)*(long cable attenuation)*(cosEdep/maxGMnEdep). Attenuation average over all channels current April 2021 pending effective gain measurements in Hall.
+double targetRAU = 78.355; //Previous value of 61.425*(2.55/2) or targetRAU_prev*(attLongCable_newMeas/attLongCable_oldMeas)
 
 double pmtHV[kNrows][kNcols];
 double alphas[kNrows][kNcols];
 double targetHV[kNrows][kNcols];
-
-////////////////////////////////
-//Create several fit functions// 
-////////////////////////////////
 
 //Landau fit. May improve with convolution with dying exponential to deal with low amplitude EM effects.
 double landauFit(double *x, double *par) {
@@ -72,6 +69,7 @@ double landauFit(double *x, double *par) {
   return amp * TMath::Landau(ADC,mpv,sigma) + offset;
 }
 
+//Create generic histogram function
 TH1F* MakeHisto(int row, int col, int bins){
   TH1F *h = new TH1F(Form("h%02d%02d",row,col),Form("%d-%d",row+1,col+1),bins,minSample,maxSample);
   h->SetStats(0);
@@ -79,8 +77,9 @@ TH1F* MakeHisto(int row, int col, int bins){
   return h;
 }
 
-//Rows and Columns start at zero and go to kNrows-1 and kNcols-1
+//
 void processEvent(int entry = -1){
+  //Check event increment and increment
   if(entry == -1) {
     gCurrentEntry++;
   } else {
@@ -91,10 +90,11 @@ void processEvent(int entry = -1){
     gCurrentEntry = 0;
   }
 
+  //Get the event from the TTree
   T->GetEntry(gCurrentEntry);
   
   int r,c,idx,n,sub;
-  // Clear old histograms, just in case modules are not in the tree
+  // Clear old signal histograms, just in case modules are not in the tree
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
       histos[r][c]->Reset("ICES M");
@@ -103,7 +103,8 @@ void processEvent(int entry = -1){
       gPulseTDC[r+2][c+2] = false;
     }
   }
-  
+
+  //Reset signal peak, adc, and tdc arrays
   float peak[kNrows][kNcols];
   double adc[kNrows][kNcols];
   double tdc[kNrows][kNcols];
@@ -114,22 +115,27 @@ void processEvent(int entry = -1){
       tdc[r][c] = 0.0;
     }
   }
-  
+
+  //Process event with m data
   for(int m = 0; m < hcalt::ndata; m++) {
+    //Define row and column
     r = hcalt::row[m]-1;
     c = hcalt::col[m]-1;
     if(r < 0 || c < 0) {
-      std::cerr << "Why is row negative? Or col?" << std::endl;
+      cerr << "Why is row negative? Or col?" << endl;
       continue;
     }
     
     if(r>= kNrows || c >= kNcols) continue;
-    
+
+    //Define index, number of samples, fill adc and tdc arrays, and switch processed marker for error reporting
     idx = hcalt::samps_idx[m];
     n = hcalt::nsamps[m];
     adc[r][c] = hcalt::a[m];
     tdc[r][c] = hcalt::tdc[m];
     bool processed = false;
+
+    //Fill signal histogram from samps and mark saturated array if applicable
     for(int s = minSample; s < maxSample && s < n; s++) {
       processed = true;
       histos[r][c]->SetBinContent(s+1-minSample,hcalt::samps[idx+s]);
@@ -139,6 +145,7 @@ void processEvent(int entry = -1){
         gSaturated[r][c] = true;
       }
     }
+    //Report error if module is empty
     if(!processed) {
       std::cerr << "Skipping empty module: " << m << std::endl;
       for(int s = 0;  s < totSample; s++) {
@@ -146,10 +153,11 @@ void processEvent(int entry = -1){
       }
     }
   }
-  
+
+  //Pass unsaturated signal histos to goodHistoTest to see if a signal pulse exists there. gPulse array value  marked true if test passed.
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
-      histos[r][c]->SetTitle(TString::Format("%d-%d (ADC=%g,TDC=%g)",r+1,c+1,adc[r][c],tdc[r][c]));
+      histos[r][c]->SetTitle(Form("%d-%d (ADC=%g,TDC=%g)",r+1,c+1,adc[r][c],tdc[r][c]));
       if(!gSaturated[r][c]){
 	goodHistoTest(histos[r][c],tdc[r][c],r,c);
       }
@@ -160,9 +168,9 @@ void processEvent(int entry = -1){
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
       if(gPulse[r+2][c+2]==true){
-	if((gPulse[r][c+2]==true&&gPulse[r+1][c+2]==true)||(gPulse[r+1][c+2]==true&&gPulse[r+3][c+2]==true)||(gPulse[r+3][c+2]==true&&gPulse[r+4][c+2]==true)){ //Checks if two pulses exist above, below, or one above and below every given pulse to ensure a track exists
+	if((gPulse[r][c+2]==true&&gPulse[r+1][c+2]==true)||(gPulse[r+1][c+2]==true&&gPulse[r+3][c+2]==true)||(gPulse[r+3][c+2]==true&&gPulse[r+4][c+2]==true)){ //Checks if two pulses exist above, below, or one above and below every given pulse to ensure a track exists. 
 	  continue;
-	}else{
+	}else{ //Else excluded. Diagonal tracks also excluded.
 	  gPulse[r+2][c+2]=false;
 	}
       }
@@ -187,7 +195,7 @@ void processEvent(int entry = -1){
   }
 }
 
-//Acquire pedestal from first 4 bins of each histogram for each module
+//Acquire pedestal for each module on events where no cosmic passed through said module (TDC==0). See comments for processEvent().
 void getPedestal(int entry=-1){ 
   if(entry == -1) {
     gCurrentEntry++;
@@ -203,13 +211,12 @@ void getPedestal(int entry=-1){
   
   int r,c,idx,n,sub;
   
-  // Clear old histograms, just in case modules are not in the tree
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
       histos[r][c]->Reset("ICES M");
     }
   }
-  
+
   double adc[kNrows][kNcols];
   double tdc[kNrows][kNcols];
   for(r  = 0; r < kNrows; r++) {
@@ -223,7 +230,7 @@ void getPedestal(int entry=-1){
     r = hcalt::row[m]-1;
     c = hcalt::col[m]-1;
     if(r < 0 || c < 0) {
-      std::cerr << "Why is row negative? Or col?" << std::endl;
+      cerr << "Why is row negative? Or col?" << endl;
       continue;
     }
     
@@ -247,6 +254,7 @@ void getPedestal(int entry=-1){
     }
   }
   
+  //With a histogram populated for each module on this event, fill pedestal histogram per module over all events with contents
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
       if(tdc[r][c]==0){ //eliminating adc pulses from coincident tdc measurement in pedestal calculation	
@@ -268,14 +276,17 @@ void goodHistoTest(TH1F *testHisto, double tdcVal, int row, int col){
   for(int b=1 ; b<=testHisto->GetNbinsX() ; b++) {
     testHisto->SetBinContent(b,testHisto->GetBinContent(b)-pedVal);
   }
- 
-  if(testHisto->GetMaximum()>(6.0*pedSigma[row][col]) && testHisto->GetMaximumBin()>2 && testHisto->GetMaximumBin()<28){  //Cut out noise by ensuring all pulses are greater than twice the sigma of the ped and that the max lies in the center of the histogram
-    
+
+  //Primary signal cut. All defined signals are greater than twice the sigma of the pedestal and the maximum value is not in the first or last bin
+  if(testHisto->GetMaximum()>(6.0*pedSigma[row][col]) && testHisto->GetMaximumBin()>2 && testHisto->GetMaximumBin()<28){
+
+    //Switch if both ADC signal and TDC signal exists
     if(tdcVal!=0) gPulseTDC[row+2][col+2]=true;
-    
+
+    //Switch if ADC signal exists
     gPulse[row+2][col+2]=true;
 
-    //Write out regular event histograms to verify that all have signal
+    //Write out sample event histograms for independent verification
     if (signalTotal % 50000 == 0){
       cout << "Writing a reference histogram to file.." << endl;
       cout << "Pedestal for same histogram = " << pedestals[row][col] << "." << endl;
@@ -298,7 +309,8 @@ void goodHistoTest(TH1F *testHisto, double tdcVal, int row, int col){
   }
 }
 
-int cosCal_v3(int run = 989, int event = -1){
+//Main
+int cosCal_v3(int run = 1725, int event = -1){
 
   // Define a clock to check macro processing time
   TStopwatch *st = new TStopwatch();

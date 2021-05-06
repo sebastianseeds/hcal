@@ -388,7 +388,7 @@ void LEDplots_rh(int run1 = 1686, int run2 = 1687, int run3 = 1688, int run4 = 1
   }
   
 
-  
+  /*
   //Send alpha parameters to file. 0-144 are temporary averages pending LED runs on RHS.
   for(int c=0; c<144; c++){
     int cval = c%kNcols;
@@ -411,6 +411,30 @@ void LEDplots_rh(int run1 = 1686, int run2 = 1687, int run3 = 1688, int run4 = 1
     }
     
   }
+
+  */
+
+  for(int c=0; c<144; c++){
+    int rval = floor(c/kNcols);
+    int cval = c%kNcols;
+    outFile << alpha[rval][cval] << endl;
+    
+    if(cval>3&&cval<8){
+      jlabAlphas->Fill(alpha[rval][cval]);
+    }else{
+      cmuAlphas->Fill(alpha[rval][cval]);
+    }
+  }
+
+  for(int c=144; c<(kNrows*kNcols); c++){
+    int cval = c%kNcols;
+    if(cval>3&&cval<8){
+      outFile << jlabSum/48 << endl; //For now just take an average of all alphas for jlab tubes
+    }else{
+      outFile << cmuSum/96 << endl; //For now just take an average of all alphas for cmu tubes
+    }
+  }
+  
   /*
   TGraph *NPEvChan = new TGraphErrors(kNrows*kNcols,channel,avgNPE,0,SDNPE);	
   NPEvChan->SetTitle("Average NPE vs Channel (Error SD)");

@@ -21,7 +21,7 @@ const int totSample = (maxSample-minSample);
 int gCurrentEntry = -1;
 
 TChain *T = 0;
-TFile *HistosFile = new TFile("HistosFile.root","RECREATE");  //File for checking histogram fits and integrity
+TFile *HistosFile = new TFile("LEDHistosFile.root","RECREATE");  //File for checking histogram fits and integrity
 
 void getPedestal(int);
 void pulseSpec(TH1F*, TF1*, double, int, int, int);
