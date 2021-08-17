@@ -621,6 +621,7 @@ int cosCal_l2(int run = 989, int event = -1){
       //landauFitMax[r][c]->SetParameter(1,PMTMaxSpec[r][c]->GetMean()); //Try this to avoid fitting pedestal
       //landauFitMax[r][c]->SetParameter(1,PMTMaxSpec[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpec[r][c]->GetMaximumBin()));
       landauFitMax[r][c]->SetParameter(1,PMTMaxSpec[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin()));
+      //landauFitMax[r][c]->SetParameter(1,PMTMaxSpecTDC[r][c]->GetMaximumBin());
 
       landauFitMax[r][c]->SetParameter(2,PMTMaxSpec[r][c]->GetStdDev());
       landauFitMax[r][c]->SetParameter(3,0);
@@ -637,6 +638,7 @@ int cosCal_l2(int run = 989, int event = -1){
 
       //landauFitInt[r][c]->SetParameter(1,PMTIntSpec[r][c]->GetXaxis()->GetBinCenter(PMTIntSpec[r][c]->GetMaximumBin()));
       landauFitInt[r][c]->SetParameter(1,PMTIntSpec[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin()));
+      //landauFitInt[r][c]->SetParameter(1,PMTIntSpecTDC[r][c]->GetMaximumBin());
 
       landauFitInt[r][c]->SetParameter(2,PMTIntSpec[r][c]->GetStdDev());
       landauFitInt[r][c]->SetParameter(3,0);

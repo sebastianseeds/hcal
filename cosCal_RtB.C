@@ -29,6 +29,7 @@ void getPedestal(int);
 //Declare necessary histograms
 TH1F *histos[kNrows][kNcols];
 TH1F *pedSpec[kNrows][kNcols];
+TH1F *retToBase[kNrows][kNcols]; //=new TH1F("","",totSample,0,totSample); //Limits set by histos[][]
 TH1F *PMTIntSpec[kNrows][kNcols]; //=new TH1F("","",20,0,5000); //Empirical limits
 TH1F *PMTMaxSpec[kNrows][kNcols]; //=new TH1F("","",20,0,1000); //Empirical limits
 TH1F *PMTIntSpecTDC[kNrows][kNcols]; //=new TH1F("","",20,0,5000); //Empirical limits, cut on tdc coincidence
@@ -46,10 +47,12 @@ TFile *HistosFilePedestal = new TFile("outFiles/CosHistosFilePedestal.root","REC
 
 //Declare necessary arrays
 double pedestals[kNrows][kNcols];
+//double retToBase[kNrows][kNcols];
 double pedSigma[kNrows][kNcols];
 bool gSaturated[kNrows][kNcols];
 bool gPulse[kNrows+4][kNcols+4]; //Needs to be larger for false-valued buffers (2 per side)
 bool gPulseTDC[kNrows+4][kNcols+4]; //Needs to be larger for false-valued buffers (2 per side)
+bool gVert[kNrows+4][kNcols+4]; //Needs to be larger for false-valued buffers (2 per side)
 
 //double targetRAU = 48.15; //4095*3.0/2.0*0.39*14/700 or (digMaxADC)*(dynRanAmp/dynRanADC)*(long cable attenuation)*(cosEdep/maxGMnEdep). Attenuation average over all channels current April 2021 pending effective gain measurements in Hall.
 
@@ -101,6 +104,7 @@ void processEvent(int entry = -1){
       gSaturated[r][c] = false;
       gPulse[r+2][c+2] = false;
       gPulseTDC[r+2][c+2] = false;
+      gVert[r+2][c+2] = false;
     }
   }
 
@@ -148,8 +152,8 @@ void processEvent(int entry = -1){
     //Report error if module is empty
     if(!processed) {
       std::cerr << "Skipping empty module: " << m << std::endl;
-      for(int s = 0;  s < totSample; s++) {
-        histos[r][c]->SetBinContent(s+1,-404);
+      for(int s = minSample;  s < totSample; s++) {
+        histos[r][c]->SetBinContent(s+1-minSample,-404);
       }
     }
   }
@@ -168,19 +172,43 @@ void processEvent(int entry = -1){
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
       if(gPulse[r+2][c+2]==true){
-	if((gPulse[r][c+2]==true&&gPulse[r+1][c+2]==true)||(gPulse[r+1][c+2]==true&&gPulse[r+3][c+2]==true)||(gPulse[r+3][c+2]==true&&gPulse[r+4][c+2]==true)){ //Checks if two pulses exist above, below, or one above and below every given pulse to ensure a track exists. 
-	  continue;
+	if((gPulse[r][c+2]==true&&gPulse[r+1][c+2]==true)||(gPulse[r+1][c+2]==true&&gPulse[r+3][c+2]==true)||(gPulse[r+3][c+2]==true&&gPulse[r+4][c+2]==true)){ //Checks if two pulses exist above, below, or one above and below every given pulse to ensure a track exists.
+	  if(gPulse[r+2][c+1]==false&&gPulse[r+2][c+3]==false) //Check on each side of track for pulses to exclude events which clip the corner of the module.
+	    gVert[r+2][c+2]=true; //Flip the bool to determine a good cosmic pulse.
 	}else{ //Else excluded. Diagonal tracks also excluded.
-	  gPulse[r+2][c+2]=false;
+	  continue;
 	}
       }
     }
   }
-  
+
   //Now, if pulse passes verticality test, pedestal subtract and fill spectra histograms
   for(r = 0; r < kNrows; r++) {
     for(c = 0; c < kNcols; c++) {
-      if(gPulse[r+2][c+2]==true){ 
+      if(gVert[r+2][c+2]==true){ 
+	
+	//Get return to baseline parameter (in bins (ADC samples, 4ns per sample))
+	double baseline = 0.0;
+	//int return = 0.0;
+	for(int s = 0; s < 4; s++){ //Get baseline from first four bins
+	  
+	  baseline += histos[r][c]->GetBinContent(s+1-minSample);
+	  
+	}
+	baseline /= 4.0; //Get average value of the baseline per event
+
+	for(int s = histos[r][c]->GetMaximumBin(); s < totSample; s++){
+	  double binContent = histos[r][c]->GetBinContent(s);
+	  if(binContent<baseline+3*pedSigma[r][c]){
+	    //cout << s-histos[r][c]->GetMaximumBin() << endl;
+	    retToBase[r][c]->Fill(s-histos[r][c]->GetMaximumBin());
+	  }else if(s==totSample-1){
+	    retToBase[r][c]->Fill(50);
+	  }else{
+	    continue;
+	  }
+	}
+	
 	
 	PMTIntSpec[r][c]->Fill(histos[r][c]->Integral(1,maxSample)); //Integral from total bin content
 	PMTMaxSpec[r][c]->Fill(histos[r][c]->GetMaximum());
@@ -248,8 +276,8 @@ void getPedestal(int entry=-1){
   
     if(!processed) {
       cerr << "Skipping empty module: " << m << endl;
-      for(int s = 0;  s < totSample; s++) {
-        histos[r][c]->SetBinContent(s+1,0);
+      for(int s = minSample;  s < totSample; s++) {
+        histos[r][c]->SetBinContent(s+1-minSample,0);
       }
     }
   }
@@ -310,14 +338,14 @@ void goodHistoTest(TH1F *testHisto, double tdcVal, int row, int col){
 }
 
 //Main
-int cosCal_v3(int run = 1725, int event = -1){
+int cosCal_RtB(int run = 1725, int event = -1){
 
   // Define a clock to check macro processing time
   TStopwatch *st = new TStopwatch();
   st->Start(kTRUE);
   
   //Declare outfile
-  TFile *cosHistFile = new TFile(Form("outFiles/cosHistV3_run%d.root",run),"RECREATE");
+  TFile *cosHistFile = new TFile(Form("outFiles/cosHistRtB_run%d.root",run),"RECREATE");
   
   //Build spectrum histograms. Empirical limits.
   cout << "Building ADC and TDC spectrum histograms.." << endl;
@@ -342,6 +370,10 @@ int cosCal_v3(int run = 1725, int event = -1){
       pedSpec[r][c] = new TH1F(Form("Pedestal Spect R%d C%d",r,c),Form("Pedestal Spect R%d C%d",r,c),200,120,320);
       pedSpec[r][c]->GetXaxis()->SetTitle("<RAU>");
       pedSpec[r][c]->GetXaxis()->CenterTitle();
+
+      retToBase[r][c] = new TH1F(Form("Return to Baseline R%d C%d",r,c),Form("Return to Baseline R%d C%d",r,c),totSample,minSample,maxSample);
+      retToBase[r][c]->GetXaxis()->SetTitle("Samples");
+      retToBase[r][c]->GetXaxis()->CenterTitle();
     }
   }
 
@@ -349,7 +381,7 @@ int cosCal_v3(int run = 1725, int event = -1){
   cout << "Reading raw data from analyzer.." << endl;
   if(!T) { 
     T = new TChain("T");
-    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_1.root",run));
+    T->Add(TString::Format("rootFiles/cosmic/fadc_f1tdc_%d_1.root",run)); //DEBUGGING
     T->SetBranchStatus("*",0);
     T->SetBranchStatus("sbs.hcal.*",1);
     T->SetBranchAddress("sbs.hcal.nsamps",hcalt::nsamps);
@@ -425,6 +457,7 @@ int cosCal_v3(int run = 1725, int event = -1){
     for(int c = 0; c < kNcols+4; c++) {
       gPulse[r][c] = false;
       gPulseTDC[r][c] = false;
+      gVert[r][c] = false;
     }
   }
   
@@ -498,15 +531,22 @@ int cosCal_v3(int run = 1725, int event = -1){
   //Make array of fit functions to pass initial conditions to and to fit ADC spectra per channel
   TF1 *landauFitMax[kNrows][kNcols] = {};
   TF1 *landauFitInt[kNrows][kNcols] = {};
+  TF1 *landauFitMaxTrue[kNrows][kNcols] = {};
+  TF1 *landauFitIntTrue[kNrows][kNcols] = {};
+  
 
   double fitMaxX;
   double fitIntX;
   
   for(int r=0; r<kNrows; r++){
     for(int c=0; c<kNcols; c++){
-      
+
+      //Fit twice - first across entire ADC range, second restricted with parameters from first fit
+
+      //First Fit
+
       //Create landau fit function per r and c
-      landauFitMax[r][c] = new TF1(Form("landauFitMax r%d c%d",r,c),landauFit, 0, 1000, 4);
+      landauFitMax[r][c] = new TF1(Form("landauFitMax r%d c%d",r,c),landauFit, 0, 1000, 4);  //Can use user defined landauFit here, but worst results
       landauFitMax[r][c]->SetLineColor(4);
       landauFitMax[r][c]->SetNpx(1000);
 
@@ -514,8 +554,9 @@ int cosCal_v3(int run = 1725, int event = -1){
       landauFitInt[r][c]->SetLineColor(4);
       landauFitInt[r][c]->SetNpx(1000);
 
-      //Set parameters for landau fit from spectrum histograms
-      landauFitMax[r][c]->SetRange(PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin())-0.5*PMTMaxSpecTDC[r][c]->GetStdDev(),PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin())+2.0*PMTMaxSpecTDC[r][c]->GetStdDev());
+      //MAX
+      //Set parameters for landau fit with maximized range
+      landauFitMax[r][c]->SetRange(0,1000);
       landauFitMax[r][c]->SetParameter(0,PMTMaxSpecTDC[r][c]->GetBinContent(PMTMaxSpecTDC[r][c]->GetMaximumBin()));
       //Use TDC to get good guess at mpv for landau fit
       landauFitMax[r][c]->SetParameter(1,PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin()));
@@ -523,8 +564,9 @@ int cosCal_v3(int run = 1725, int event = -1){
       //landauFitMax[r][c]->SetParameter(1,PMTMaxSpecTDC[r][c]->GetMaximumBin());
       landauFitMax[r][c]->SetParameter(2,PMTMaxSpecTDC[r][c]->GetStdDev());
       landauFitMax[r][c]->SetParameter(3,0);
-      
-      landauFitInt[r][c]->SetRange(PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin())-0.5*PMTIntSpecTDC[r][c]->GetStdDev(),PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin())+2.0*PMTIntSpecTDC[r][c]->GetStdDev());
+
+      //INT
+      landauFitInt[r][c]->SetRange(0,4000);
       landauFitInt[r][c]->SetParameter(0,PMTIntSpecTDC[r][c]->GetBinContent(PMTIntSpecTDC[r][c]->GetMaximumBin()));
       //Use TDC to get good guess at mpv for landau fit
       landauFitInt[r][c]->SetParameter(1,PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin()));
@@ -532,6 +574,7 @@ int cosCal_v3(int run = 1725, int event = -1){
       landauFitInt[r][c]->SetParameter(2,PMTIntSpecTDC[r][c]->GetStdDev());
       landauFitInt[r][c]->SetParameter(3,0);
 
+      //FIT
       if( PMTMaxSpecTDC[r][c]->GetEntries() > 0){
 	PMTMaxSpecTDC[r][c]->Fit(landauFitMax[r][c],"+RQ");
 	if(landauFitMax[r][c]->GetParameter(1)>0&&landauFitMax[r][c]->GetParameter(1)<2000){
@@ -547,15 +590,72 @@ int cosCal_v3(int run = 1725, int event = -1){
 	PMTMaxSpecTDC[r][c]->Draw("AP");
       }
 
+
+      //Second fit
+      //Create landau fit function per r and c
+      landauFitMaxTrue[r][c] = new TF1(Form("landauFitMax r%d c%d",r,c),landauFit, 0, 1000, 4);
+      landauFitMaxTrue[r][c]->SetLineColor(4);
+      landauFitMaxTrue[r][c]->SetNpx(1000);
+
+      landauFitIntTrue[r][c] = new TF1(Form("landauFitInt r%d c%d",r,c),landauFit, 0, 4000, 4);
+      landauFitIntTrue[r][c]->SetLineColor(4);
+      landauFitIntTrue[r][c]->SetNpx(1000);
+
+      //MAX
+      //Set parameters for landau fit from previous fit
+      landauFitMaxTrue[r][c]->SetRange(landauFitMax[r][c]->GetParameter(1)-landauFitMax[r][c]->GetParameter(2),landauFitMax[r][c]->GetParameter(1)+landauFitMax[r][c]->GetParameter(2));
+      landauFitMaxTrue[r][c]->SetParameter(0,PMTMaxSpecTDC[r][c]->GetBinContent(PMTMaxSpecTDC[r][c]->GetMaximumBin()));
+      //Use TDC to get good guess at mpv for landau fit
+      landauFitMaxTrue[r][c]->SetParameter(1,PMTMaxSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTMaxSpecTDC[r][c]->GetMaximumBin()));
+
+      //landauFitMaxTrue[r][c]->SetParameter(1,PMTMaxSpecTDC[r][c]->GetMaximumBin());
+      landauFitMaxTrue[r][c]->SetParameter(2,PMTMaxSpecTDC[r][c]->GetStdDev());
+      landauFitMaxTrue[r][c]->SetParameter(3,0);
+
+      //INT
+      landauFitIntTrue[r][c]->SetRange(landauFitInt[r][c]->GetParameter(1)-landauFitInt[r][c]->GetParameter(2),landauFitInt[r][c]->GetParameter(1)+landauFitInt[r][c]->GetParameter(2));
+      landauFitIntTrue[r][c]->SetParameter(0,PMTIntSpecTDC[r][c]->GetBinContent(PMTIntSpecTDC[r][c]->GetMaximumBin()));
+      //Use TDC to get good guess at mpv for landau fit
+      landauFitIntTrue[r][c]->SetParameter(1,PMTIntSpecTDC[r][c]->GetXaxis()->GetBinCenter(PMTIntSpecTDC[r][c]->GetMaximumBin()));
+      //landauFitIntTrue[r][c]->SetParameter(1,PMTIntSpecTDC[r][c]->GetMaximumBin());
+      landauFitIntTrue[r][c]->SetParameter(2,PMTIntSpecTDC[r][c]->GetStdDev());
+      landauFitIntTrue[r][c]->SetParameter(3,0);
+
+      //FIT
+      if( PMTMaxSpecTDC[r][c]->GetEntries() > 0){
+	PMTMaxSpecTDC[r][c]->Fit(landauFitMaxTrue[r][c],"+RQ");
+	if(landauFitMaxTrue[r][c]->GetParameter(1)>0&&landauFitMaxTrue[r][c]->GetParameter(1)<2000){
+	  fitMaxX = landauFitMaxTrue[r][c]->GetParameter(1);
+	  landauFitMaxTrue[r][c]->SetLineColor(kBlue);
+	}else{
+	  fitMaxX = PMTMaxSpecTDC[r][c]->GetMean();
+	  landauFitMaxTrue[r][c]->SetLineColor(kRed);
+	}
+	cosHistFile->cd();
+	PMTMaxSpecTDC[r][c]->SetTitle(Form("Max TDC Spect R%d C%d MaxX%f",r,c,fitMaxX));
+	PMTMaxSpecTDC[r][c]->Write(Form("Max TDC Spect R%d C%d",r,c));
+	PMTMaxSpecTDC[r][c]->Draw("AP");
+      }
+
+      
       //Calculate target HV
       targetHV[r][c] = pmtHV[r][c]/pow(fitMaxX/targetRAU,1.0/alphas[r][c]);
 
       cout << "For row " << r << " and col " << c << ", target HV for next cosmic run is " << targetHV[r][c] <<  "." << endl;
       outFile << r << "  " << c << "  " << targetHV[r][c] << "  " << endl;
-     
+
+      //Draw return to baseline histograms
+      
+      cosHistFile->cd();
+      retToBase[r][c]->SetTitle(Form("Return to Baseline R%d C%d (Samples)",r,c));
+      retToBase[r][c]->Write(Form("Return to Baseline R%d C%d (Samples)",r,c));
+      retToBase[r][c]->Draw("AP");
+      
     }
   }
-
+  
+  
+  
   //Post analysis reporting
   cout << "Finished loop over run " << run << "." << endl;
   cout << "Total good signals = " << signalTotal << "." << endl;
