@@ -12,10 +12,17 @@ namespace hcalt {
   Double_t col[MAX_HCAL_MODULES+1000] = {0};
   Double_t samps_idx[MAX_HCAL_MODULES+1000] = {0};
   Double_t a[MAX_HCAL_MODULES+1000] = {0};
+  Double_t a_p[MAX_HCAL_MODULES+1000] = {0};
+  Double_t ped[MAX_HCAL_MODULES+1000] = {0};
+
+  Double_t amp[MAX_HCAL_MODULES+1000] = {0};
+  Double_t amp_p[MAX_HCAL_MODULES+1000] = {0};
+
   Int_t ndata = 0;
   Double_t ledbit = -1;
   Double_t ledcount = 0;
   Double_t tdc[MAX_HCAL_TDC_MODULES+100];
+  Int_t 
 
 };
 

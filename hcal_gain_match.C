@@ -68,6 +68,7 @@ vector<double> gPeakPosInt, gPeakPosErrInt, gPeakPosMax, gPeakPosErrMax;
 vector<double> gRMSInt, gRMSErrInt, gRMSMax, gRMSErrMax;
 vector<double> gGoodEventMax, gGoodEventInt, gTargetHVOut;
 
+/* Not yet sure if this is necessary
 // Create generic histogram function
 TH1F* MakeHisto(int row, int col, int bins){
   TH1F *h = new TH1F(Form("h%02d%02d",row,col),Form("%d-%d",row+1,col+1),bins,kMinSample,kMaxSample);
@@ -75,6 +76,7 @@ TH1F* MakeHisto(int row, int col, int bins){
   h->SetLineWidth(2);
   return h;
 }
+*/
 
 // Make machine-based date function
 string getDate(){
@@ -87,8 +89,9 @@ string getDate(){
   string date = mm + '/' + dd + '/' + yyyy;
 
   return date;
-} // getDate
-
+} 
+/*
+// Not yet necessary - will parse
 // Create diagnostic plots upon command
 void diagnosticPlots( int run, string date ){
     char CName[9], CTitle[100];
@@ -147,6 +150,8 @@ void diagnosticPlots( int run, string date ){
     for( int i=0; i<4; i++ ) CGr[i]->SaveAs( Form( "outFiles/HCal_Cosmic_%d.pdf", run) );
     CGr[3]->SaveAs( Form( "outFiles/HCal_Cosmic_%d.pdf]", run) );
 }
+
+*/
 
 void processEvent(int entry = -1){
   // Check event increment and increment
@@ -209,26 +214,29 @@ void processEvent(int entry = -1){
     // Fill signal histogram from samps and mark saturated array if applicable
     for( int s = kMinSample; s < kMaxSample && s < n; s++ ) {
       processed = true;
-      gHistos[r][c]->SetBinContent( s+1-kMinSample, hcalt::samps[idx+s] );
+      //gHistos[r][c]->SetBinContent( s+1-kMinSample, hcalt::samps[idx+s] ); //No need to fill gHistos
       if( peak[r][c] < hcalt::samps[idx+s] )
         peak[r][c] = hcalt::samps[idx+s];
       if( peak[r][c] > 4095 ) {
         gSaturated[r][c] = true;
       }
     }
+
     // Report error if module is empty
     if(!processed) {
-      cerr << "Skipping empty module: " << m << ".." << endl;
+      cerr << "Missing data on event " << entry << ", module " << m << ".." << endl;
+      /*
       for( int s = kMinSample; s < kTotSample; s++ ) {
         gHistos[r][c]->SetBinContent( s+1 - kMinSample, -404 );
       }
+      */
     }
   }
 
   // Pass unsaturated signal histos to goodHistoTest to see if a signal pulse exists there. gPulse array value  marked true if test passed.
   for( r = 0; r < kNrows; r++ ) {
     for( c = 0; c < kNcols; c++ ) {
-      gHistos[r][c]->SetTitle( Form( "%d-%d (ADC=%g,TDC=%g)", r+1, c+1, adc[r][c], tdc[r][c] ) );
+      //gHistos[r][c]->SetTitle( Form( "%d-%d (ADC=%g,TDC=%g)", r+1, c+1, adc[r][c], tdc[r][c] ) );
       if( !gSaturated[r][c] ){
 	goodHistoTest( gHistos[r][c], tdc[r][c], r, c );
       }
@@ -291,7 +299,8 @@ void processEvent(int entry = -1){
     }
   }
 }
-
+/*
+//SBS-Offline now processes this - no further analysis needed
 // Acquire pedestal for each module on events where no cosmic passed through said module (TDC==0). See comments for processEvent().
 void getPedestal( int entry=-1 ){ 
   if( entry == -1 ) {
@@ -363,6 +372,8 @@ void getPedestal( int entry=-1 ){
     }
   }
 }
+*/
+
 
 // Pedestal subtract then verify that max value is greater than twice sigma of pedestals and lies w/in bounds of histo
 void goodHistoTest( TH1F *testHisto, double tdcVal, int row, int col ){
@@ -406,9 +417,11 @@ void goodHistoTest( TH1F *testHisto, double tdcVal, int row, int col ){
     gSignalTotal++; 
   }
 }
+*/
+
 
 // Main
-int hcal_gain_match(int run = 1725, int event = -1){
+int hcal_gain_match(int run = -1, int event = -1){
 
   // Initialize function with user commands
   bool diagPlots = 0;
@@ -427,8 +440,7 @@ int hcal_gain_match(int run = 1725, int event = -1){
   st->Start( kTRUE );
   
   //Declare outfile
-  //TFile *cosHistFile = new TFile( Form( "outFiles/cosHistv4_run%d.root", run ), "RECREATE" );
-  TFile *cosHistFile = new TFile( Form( "outFiles/cosHistv4_DEBUG_run%d.root", run ), "RECREATE" ); //DEBUGGING
+  TFile *cosHistFile = new TFile( Form( "outFiles/gainMatchResults_run%d.root", run ), "RECREATE" ); //DEBUGGING
   ofstream fitData;
   fitData.open( Form( "outFiles/HCal_%d_FitResults.txt", run ) );
   fitData << "Run Number: " << run << " Desired Peak Position: " << kTargetRAU << endl;
@@ -482,6 +494,10 @@ int hcal_gain_match(int run = 1725, int event = -1){
     T->SetBranchStatus( "sbs.hcal.*", 1 );
     T->SetBranchAddress( "sbs.hcal.nsamps", hcalt::nsamps );
     T->SetBranchAddress( "sbs.hcal.a", hcalt::a );
+    T->SetBranchAddress( "sbs.hcal.a_amp", hcalt::amp );
+    T->SetBranchAddress( "sbs.hcal.a_p", hcalt::a_p );
+    T->SetBranchAddress( "sbs.hcal.a_amp_p", hcalt::amp );
+    T->SetBranchAddress( "sbs.hcal.ped", hcalt::ped );
     T->SetBranchAddress( "sbs.hcal.tdc", hcalt::tdc );
     T->SetBranchAddress( "sbs.hcal.samps", hcalt::samps );
     T->SetBranchAddress( "sbs.hcal.samps_idx", hcalt::samps_idx );
@@ -501,6 +517,8 @@ int hcal_gain_match(int run = 1725, int event = -1){
   // Set appropriate HV and alphas for run. HV settings from HCAL wiki. Alphas from LED analysis. Must have accompanying text file, one double per line by module number. Assuming negative voltage inputs.
 
   ifstream file( Form( "setFiles/HV_run%d.txt", run ) );
+
+
 
   cout << "Getting HV settings for each pmt for run " << run << "." << endl;
 
