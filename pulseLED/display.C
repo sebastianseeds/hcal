@@ -1,4 +1,3 @@
-
 #include <TH2F.h>
 #include <TChain.h>
 #include <TCanvas.h>
@@ -7,13 +6,12 @@
 #include <TSystem.h>
 #include "hcal.h"
 
-const Int_t kNrows = 24;
+const Int_t kNrows = 12;
 const Int_t kNcols = 12;
 
 const Int_t kNumModules = kNrows*kNcols;
-const Int_t DISP_MIN_SAMPLE = 0;
-const Int_t DISP_MAX_SAMPLE = 50;
-//const Int_t DISP_MAX_SAMPLE = 30;
+const Int_t DISP_MIN_SAMPLE = 85*0;
+const Int_t DISP_MAX_SAMPLE = 135*0+200*0+150*0+20;
 //const Int_t DISP_FADC_SAMPLES = 200;
 const Int_t DISP_FADC_SAMPLES = (DISP_MAX_SAMPLE-DISP_MIN_SAMPLE);
 const Int_t numSamples = 50;
@@ -172,8 +170,8 @@ void displayEvent(Int_t entry = -1)
     }
   }
   for(Int_t m = 0; m < hcalt::ndata; m++) {
-    r = hcalt::row[m];
-    c = hcalt::col[m];
+    r = hcalt::row[m]-1;
+    c = hcalt::col[m]-1;
     if(r < 0 || c < 0) {
       std::cerr << "Why is row negative? Or col?" << std::endl;
       continue;
@@ -244,7 +242,7 @@ void clicked_displayEntryButton()
 }
 
 
-Int_t display(Int_t run = 1198, Int_t event = -1)
+Int_t display(Int_t run = 989, Int_t event = -1)
 {
   hcalgui::SetupGUI();
   gStyle->SetLabelSize(0.05,"XY");
@@ -252,8 +250,7 @@ Int_t display(Int_t run = 1198, Int_t event = -1)
 
   if(!T) { 
     T = new TChain("T");
-    T->Add(TString::Format("/volatile/halla/sbs/seeds/rootFiles/hcal_%d_-1_*.root",run));
-    //T->Add(TString::Format("rootFiles/LED/fadc_f1tdc_%d.root",run));
+    T->Add(TString::Format("fadc_f1tdc_%d.root",run));
     T->SetBranchStatus("*",0);
     T->SetBranchStatus("sbs.hcal.*",1);
     T->SetBranchAddress("sbs.hcal.nsamps",hcalt::nsamps);
@@ -263,10 +260,10 @@ Int_t display(Int_t run = 1198, Int_t event = -1)
     T->SetBranchAddress("sbs.hcal.ledcount",&hcalt::ledcount);
     T->SetBranchAddress("sbs.hcal.samps",hcalt::samps);
     T->SetBranchAddress("sbs.hcal.samps_idx",hcalt::samps_idx);
-    T->SetBranchAddress("sbs.hcal.adcrow",hcalt::row);
-    T->SetBranchAddress("sbs.hcal.adccol",hcalt::col);
-    T->SetBranchStatus("Ndata.sbs.hcal.adcrow",1);
-    T->SetBranchAddress("Ndata.sbs.hcal.adcrow",&hcalt::ndata);
+    T->SetBranchAddress("sbs.hcal.row",hcalt::row);
+    T->SetBranchAddress("sbs.hcal.col",hcalt::col);
+    T->SetBranchStatus("Ndata.sbs.hcal.row",1);
+    T->SetBranchAddress("Ndata.sbs.hcal.row",&hcalt::ndata);
     std::cerr << "Opened up tree with nentries=" << T->GetEntries() << std::endl;
     for(Int_t r = 0; r < kNrows; r++) {
       for(Int_t c = 0; c < kNcols; c++) {
