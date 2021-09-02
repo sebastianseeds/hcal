@@ -1,4 +1,4 @@
-//SSeeds August 2021 - Cosmic PMT HV calibration code version 4 for use with SBS HCAL experiments. 24 rows x 12 cols HCAL modules. Relevant information can be found here: hallaweb.jlab.org/wiki/index.php/HCAL_Cosmics.
+//SSeeds August 2021 - Cosmic PMT HV calibration code for use with SBS HCAL experiments. 24 rows x 12 cols HCAL modules. Relevant information can be found here: hallaweb.jlab.org/wiki/index.php/HCAL_Cosmics.
 
 #include <TH2F.h>
 #include <TChain.h>
@@ -16,9 +16,9 @@
 const int kNrows = 24;
 const int kNcols = 12;
 
-const int kMinSample = 0.0;
-const int kMaxSample = 50.0;
-const int kTotSample = ( kMaxSample-kMinSample ); // Should be the total fADC window size with each samp = 4ns
+//const int kMinSample = 0.0;
+//const int kMaxSample = 50.0;
+//const int kTotSample = ( kMaxSample-kMinSample ); // Should be the total fADC window size with each samp = 4ns
 const double kTargetRAU = 78.355; // Previous value of 61.425*(2.55/2) or kTargetRAU_prev*(attLongCable_newMeas/attLongCable_oldMeas)
 const int kMaxSteps = 10; // Corresponding to sample delta of 20 RAU (1 sigma LED) over 200 RAU (cosmics RAU range)
 const double kMaxStep = 20; // Sample delta of 20 RAU (1 sigma LED on either side)
@@ -28,15 +28,15 @@ int gCurrentEntry = -1;
 TChain *T = 0;
 
 // Augment fn's for cosmic Calibration and recording
-void goodHistoTest( TH1F*, double, int, int );
-void getPedestal( int );
+//void goodHistoTest( TH1F*, double, int, int );
+//void getPedestal( int );
 void diagnosticPlots( int, string );
 string getDate( );
 
 // Declare necessary histograms
-TH1F *gHistos[kNrows][kNcols];
-TH1F *gPedSpec[kNrows][kNcols];
-TH1F *gRetToBase[kNrows][kNcols][kMaxSteps];
+//TH1F *gHistos[kNrows][kNcols];
+//TH1F *gPedSpec[kNrows][kNcols];
+//TH1F *gRetToBase[kNrows][kNcols][kMaxSteps];
 TH1F *gPMTIntSpec[kNrows][kNcols]; 
 TH1F *gPMTMaxSpec[kNrows][kNcols]; 
 TH1F *gPMTIntSpecTDC[kNrows][kNcols]; 
@@ -46,27 +46,27 @@ TH1F *gPMTMaxSpecTDC[kNrows][kNcols];
 TF1 *g1;
 
 // Create marker to track number of signals that pass cuts
-int gSignalTotal = 1;
+int gSignalTotal = 0;
 
 // Create files to keep temporary histograms for integrity checks
-TFile *HistosFile = new TFile( "outFiles/CosHistosFile.root", "RECREATE" );  // File for checking histogram fits and integrity
-TFile *HistosFilePedestal = new TFile( "outFiles/CosHistosFilePedestal.root", "RECREATE" );  // File for checking histogram fits and integrity
+//TFile *HistosFile = new TFile( "outFiles/cosHistosFile.root", "RECREATE" );  // File for checking histogram fits and integrity
+//TFile *HistosFilePedestal = new TFile( "outFiles/CosHistosFilePedestal.root", "RECREATE" );  // File for checking histogram fits and integrity
 
 // Declare necessary arrays
-double gPedestals[kNrows][kNcols];
-double gPedSigma[kNrows][kNcols];
-bool gSaturated[kNrows][kNcols];
+//double gPedestals[kNrows][kNcols];
+//double gPedSigma[kNrows][kNcols];
+//bool gSaturated[kNrows][kNcols];
 double gPMTHV[kNrows][kNcols];
 double gAlphas[kNrows][kNcols];
-bool gPulse[kNrows+4][kNcols+4]; // Needs to be larger for false-valued buffers
-bool gPulseTDC[kNrows+4][kNcols+4];
-bool gVert[kNrows+4][kNcols+4];
+//bool gPulse[kNrows+4][kNcols+4]; // Needs to be larger for false-valued buffers
+//bool gPulseTDC[kNrows+4][kNcols+4];
+//bool gVert[kNrows+4][kNcols+4];
 
 // Declare storage vectors
-vector<double> gModule;
-vector<double> gPeakPosInt, gPeakPosErrInt, gPeakPosMax, gPeakPosErrMax;
-vector<double> gRMSInt, gRMSErrInt, gRMSMax, gRMSErrMax;
-vector<double> gGoodEventMax, gGoodEventInt, gTargetHVOut;
+//vector<double> gModule;
+//vector<double> gPeakPosInt, gPeakPosErrInt, gPeakPosMax, gPeakPosErrMax;
+//vector<double> gRMSInt, gRMSErrInt, gRMSMax, gRMSErrMax;
+//vector<double> gGoodEventMax, gGoodEventInt, gTargetHVOut;
 
 /* Not yet sure if this is necessary
 // Create generic histogram function
@@ -153,7 +153,7 @@ void diagnosticPlots( int run, string date ){
 
 */
 
-void processEvent(int entry = -1){
+void processEvent(int entry = -1, double cut ){
   // Check event increment and increment
   if( entry == -1 ) {
     gCurrentEntry++;
@@ -168,60 +168,84 @@ void processEvent(int entry = -1){
   // Get the event from the TTree
   T->GetEntry( gCurrentEntry );
   
-  int r,c,idx,n,sub;
+  //int r,c,idx,n,sub;
+
+  int r,c;
+  
+  /*
   // Clear old signal histograms, just in case modules are not in the tree
   for( r = 0; r < kNrows; r++ ) {
     for( c = 0; c < kNcols; c++ ) {
-      gHistos[r][c]->Reset( "ICES M" );
+      //gHistos[r][c]->Reset( "ICES M" );
       gSaturated[r][c] = false;
-      gPulse[r+2][c+2] = false;
-      gPulseTDC[r+2][c+2] = false;
-      gVert[r+2][c+2] = false;
+      //gPulse[r+2][c+2] = false;
+      //gPulseTDC[r+2][c+2] = false;
+      //gVert[r+2][c+2] = false;
     }
   }
-
-  // Reset signal peak, adc, and tdc arrays
-  float peak[kNrows][kNcols];
-  double adc[kNrows][kNcols];
-  double tdc[kNrows][kNcols];
+  */
+  // Declare signal peak, adc, and tdc arrays for this event
+  //float peak[kNrows][kNcols];
+  double adc[kNrows][kNcols] = {0.0};
+  double tdc[kNrows][kNcols] = {0.0};
+  double adc_p[kNrows][kNcols] = {0.0};
+  //double ped[kNrows][kNcols];
+  double amp[kNrows][kNcols] = {0.0};
+  double amp_p[kNrows][kNcols] = {0.0};
+  bool saturated[kNrows][kNcols] = { {false} };
+  /*
   for( r = 0; r < kNrows; r++ ) {
     for( c = 0; c < kNcols; c++ ) {
-      peak[r][c] = 0.0;
+      //peak[r][c] = 0.0;
       adc[r][c] = 0.0;
       tdc[r][c] = 0.0;
     }
   }
-
+  */
   // Process event with m data
   for( int m = 0; m < hcalt::ndata; m++ ) {
     // Define row and column
     r = hcalt::row[m];
     c = hcalt::col[m];
     if( r < 0 || c < 0 ) {
-      cerr << "Error: R or C negative." << endl;
+      cerr << "Error: row or col negative." << endl;
       continue;
     }
     
     if( r >= kNrows || c >= kNcols ) continue;
 
     // Define index, number of samples, fill adc and tdc arrays, and switch processed marker for error reporting
-    idx = hcalt::samps_idx[m];
-    n = hcalt::nsamps[m];
+    //idx = hcalt::samps_idx[m];
+    //n = hcalt::nsamps[m];
     adc[r][c] = hcalt::a[m];
+    adc_p[r][c] = hcalt::a_p[m];
+    amp[r][c] = hcalt::amp[m];
+    amp_p[r][c] = hcalt::amp_p[m];
+    //ped[r][c] = hcalt::ped[m];
     tdc[r][c] = hcalt::tdc[m];
+    
     bool processed = false;
 
+    /*
     // Fill signal histogram from samps and mark saturated array if applicable
     for( int s = kMinSample; s < kMaxSample && s < n; s++ ) {
       processed = true;
-      //gHistos[r][c]->SetBinContent( s+1-kMinSample, hcalt::samps[idx+s] ); //No need to fill gHistos
+
+      gHistos[r][c]->SetBinContent( s+1-kMinSample, hcalt::samps[idx+s] ); //No need to fill gHistos
       if( peak[r][c] < hcalt::samps[idx+s] )
         peak[r][c] = hcalt::samps[idx+s];
       if( peak[r][c] > 4095 ) {
         gSaturated[r][c] = true;
       }
-    }
 
+    }
+    */
+
+    // Mark saturated array when amplitude meets max RAU
+    if( amp[r][c] > 4094 ) {
+      gSaturated[r][c] = true;
+    }
+    
     // Report error if module is empty
     if(!processed) {
       cerr << "Missing data on event " << entry << ", module " << m << ".." << endl;
@@ -232,7 +256,7 @@ void processEvent(int entry = -1){
       */
     }
   }
-
+  /*
   // Pass unsaturated signal histos to goodHistoTest to see if a signal pulse exists there. gPulse array value  marked true if test passed.
   for( r = 0; r < kNrows; r++ ) {
     for( c = 0; c < kNcols; c++ ) {
@@ -242,27 +266,139 @@ void processEvent(int entry = -1){
       }
     }
   }
+  */
 
+  // Assuming pedestal sigma reasonable for all channels all events (sigma << 5 mV or 10 RAU (observed roughly 1 mV or 2 RAU))
+  /*
   // Vertical line test - remember to shift all values up by one due to intialization of gPulse/gPulseTDC and 'false' buffer. Only building functionality for straight vertical line test.
+  */
+  // Vertical line test - accept only if three hits in vertical track. Reject if hit adjacent in row.
   for( r = 0; r < kNrows; r++ ) {
     for( c = 0; c < kNcols; c++ ) {
-      if( gPulse[r+2][c+2] == true ){
-	if( ( gPulse[r][c+2] == true && gPulse[r+1][c+2] == true ) ||
-	    ( gPulse[r+1][c+2] == true && gPulse[r+3][c+2] == true) ||
-	    ( gPulse[r+3][c+2] == true && gPulse[r+4][c+2] ==true ) ) { // Checks if two pulses exist above, below, or one above and below every given pulse to ensure a track exists.
-	  if( gPulse[r+2][c+1] == false && gPulse[r+2][c+3] == false ) // Check on each side of track for pulses to exclude events which clip the corner of the module.
-	    gVert[r+2][c+2]=true; //Flip the bool to determine a good cosmic pulse.
-	} else { // Else excluded. Diagonal tracks also excluded.
-	  continue;
+      if( amp_p[r][c]>cut && gSaturated==false ) { // Only examine channels with max > 5 sigma pedestal for hits and no saturation
+	if( r==0 && c==0 ) { // Logic for top left channel
+	  if( amp_p[r+1][c] > cut && amp_p[r+2][c] > cut ){
+	    if( amp_p[r][c+1] < 6 ) {
+	      if( tdc[r][c] != 0 ) {
+		gPMTIntSpecTDC[r][c]->Fill( adc_p[r][c] );
+		gPMTMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
+	      }
+	      gPMTIntSpec[r][c]->Fill( adc_p[r][c] );
+	      gPMTMaxSpec[r][c]->Fill( amp_p[r][c] );
+	      gSignalTotal++;
+	    }
+	  }
 	}
+	else if( r==0 && c==11 ) { // Logic for top right channel
+	  if( amp_p[r+1][c] > cut && amp_p[r+2][c] > cut ){
+	    if( amp_p[r][c-1] < 6 ) {
+	      if( tdc[r][c] != 0 ) {
+		gPMTIntSpecTDC[r][c]->Fill( adc_p[r][c] );
+		gPMTMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
+	      }
+	      gPMTIntSpec[r][c]->Fill( adc_p[r][c] );
+	      gPMTMaxSpec[r][c]->Fill( amp_p[r][c] );
+	      gSignalTotal++;
+	    }
+	  }
+	}
+	else if( r==23 && c==0 ) { // Logic for bottom left channel
+	  if( amp_p[r-1][c] > cut && amp_p[r-2][c] > cut ){
+	    if( amp_p[r][c+1] < 6 ) {
+	      if( tdc[r][c] != 0 ) {
+		gPMTIntSpecTDC[r][c]->Fill( adc_p[r][c] );
+		gPMTMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
+	      }
+	      gPMTIntSpec[r][c]->Fill( adc_p[r][c] );
+	      gPMTMaxSpec[r][c]->Fill( amp_p[r][c] );
+	      gSignalTotal++;
+	    }
+	  }
+	}
+	else if( r==23 && c==11 ) { // Logic for bottom right channel
+	  if( amp_p[r-1][c] > cut && amp_p[r-2][c] > cut ){
+	    if( amp_p[r][c-1] < 6 ) {
+	      if( tdc[r][c] != 0 ) {
+		gPMTIntSpecTDC[r][c]->Fill( adc_p[r][c] );
+		gPMTMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
+	      }
+	      gPMTIntSpec[r][c]->Fill( adc_p[r][c] );
+	      gPMTMaxSpec[r][c]->Fill( amp_p[r][c] );
+	      gSignalTotal++;
+	    }
+	  }
+	}
+	else if( r==0 || r==1) { // Logic for other row 1 or 2 channels
+	  if( (amp_p[r+1][c] > cut && amp_p[r+2][c] > cut) ||
+	      r==1 && amp_p[r-1][c] > cut && amp_p[r+1][c] > cut) ) {
+	    if( amp_p[r][c-1] < 6 && amp_p[r][c+1] < 6 ) {
+	      if( tdc[r][c] != 0 ) {
+		gPMTIntSpecTDC[r][c]->Fill( adc_p[r][c] );
+		gPMTMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
+	      }
+	      gPMTIntSpec[r][c]->Fill( adc_p[r][c] );
+	      gPMTMaxSpec[r][c]->Fill( amp_p[r][c] );
+	      gSignalTotal++;
+	    }
+	  }
+	}
+	else if( r==23 || r==22 ) { // Logic for other row 22 or 23 channels
+	  if( (amp_p[r-1][c] > cut && amp_p[r-2][c] > cut) ||
+	      (r==22 && amp_p[r-1][c] > cut && amp_p[r+1][c] > cut) ) {
+	    if( amp_p[r][c-1] < 6 && amp_p[r][c+1] < 6 ) {
+	      if( tdc[r][c] != 0 ) {
+		gPMTIntSpecTDC[r][c]->Fill( adc_p[r][c] );
+		gPMTMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
+	      }
+	      gPMTIntSpec[r][c]->Fill( adc_p[r][c] );
+	      gPMTMaxSpec[r][c]->Fill( amp_p[r][c] );
+	      gSignalTotal++;
+	    }
+	  }
+	}
+	else { // Logic for all other channels
+	  if( (amp_p[r-2][c] > cut && amp_p[r-1][c] > cut) ||
+	      (amp_p[r-1][c] > cut && amp_p[r+1][c] > cut) ||
+	      (amp_p[r+1][c] > cut && amp_p[r+2][c] > cut) ) {
+	    if( amp_p[r][c-1] < 6 && amp_p[r][c+1] < 6 ) {
+	      if( tdc[r][c] != 0 ) {
+		gPMTIntSpecTDC[r][c]->Fill( adc_p[r][c] );
+		gPMTMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
+	      }
+	      gPMTIntSpec[r][c]->Fill( adc_p[r][c] );
+	      gPMTMaxSpec[r][c]->Fill( amp_p[r][c] );
+	      gSignalTotal++;
+	    }
+	  }
+	}
+	/*
+	if( gPulse[r+2][c+2] == true ){
+	  if( ( gPulse[r][c+2] == true && gPulse[r+1][c+2] == true ) ||
+	      ( gPulse[r+1][c+2] == true && gPulse[r+3][c+2] == true) ||
+	      ( gPulse[r+3][c+2] == true && gPulse[r+4][c+2] ==true ) ) { // Checks if two pulses exist above, below, or one above and below every given pulse to ensure a track exists.
+	    if( gPulse[r+2][c+1] == false && gPulse[r+2][c+3] == false ) // Check on each side of track for pulses to exclude events which clip the corner of the module.
+	      gVert[r+2][c+2]=true; //Flip the bool to determine a good cosmic pulse.
+	  } else { // Else excluded. Diagonal tracks also excluded.
+	    continue;
+	  }
+	  }
+	*/
+
+
       }
     }
   }
 
+/*
   // Now, if pulse passes verticality test, pedestal subtract and fill spectra histograms
   for( r = 0; r < kNrows; r++ ) {
     for( c = 0; c < kNcols; c++ ) {
-      if( gVert[r+2][c+2] == true ) { 	
+
+      
+      if( gVert[r+2][c+2] == true ) {
+
+	
+	
 	// Get return to baseline parameter (in bins (ADC samples, 4ns per sample))
 	double baseline = 0.0;
 	double maxValue = 0.0;
@@ -287,6 +423,7 @@ void processEvent(int entry = -1){
 	  }
 	}
 	
+		
 	gPMTIntSpec[r][c]->Fill( gHistos[r][c]->Integral( 1, kMaxSample ) ); // Integral from total bin content
 	gPMTMaxSpec[r][c]->Fill( gHistos[r][c]->GetMaximum() );
 	
@@ -299,6 +436,7 @@ void processEvent(int entry = -1){
     }
   }
 }
+*/
 /*
 //SBS-Offline now processes this - no further analysis needed
 // Acquire pedestal for each module on events where no cosmic passed through said module (TDC==0). See comments for processEvent().
@@ -374,7 +512,7 @@ void getPedestal( int entry=-1 ){
 }
 */
 
-
+/*
 // Pedestal subtract then verify that max value is greater than twice sigma of pedestals and lies w/in bounds of histo
 void goodHistoTest( TH1F *testHisto, double tdcVal, int row, int col ){
   
@@ -427,6 +565,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   bool diagPlots = 0;
   bool vertCut = 0;
   string date = getDate();
+  double adcCut = 5;
 
   cout << "Enter run number for analysis." << endl;
   cin >> run;
@@ -434,15 +573,17 @@ int hcal_gain_match(int run = -1, int event = -1){
   cin >> vertCut;
   cout << "Print diagnostic plots? Enter 0 for NO and 1 for YES." << endl;
   cin >> diagPlots;
+  cout << "Enter ADC pulse threshold over pedestal (in mV)." << endl;
+  cin >> adcCut;
   
   // Define a clock to check macro processing time
   TStopwatch *st = new TStopwatch();
   st->Start( kTRUE );
   
   //Declare outfile
-  TFile *cosHistFile = new TFile( Form( "outFiles/gainMatchResults_run%d.root", run ), "RECREATE" ); //DEBUGGING
+  TFile *cosHistFile = new TFile( Form( "outFiles/gainMatchResults_run%d.root", run ), "RECREATE" );
   ofstream fitData;
-  fitData.open( Form( "outFiles/HCal_%d_FitResults.txt", run ) );
+  fitData.open( Form( "outFiles/HCal_%d_FitData.txt", run ) );
   fitData << "Run Number: " << run << " Desired Peak Position: " << kTargetRAU << endl;
   fitData << "Module " << " " << " Target HV " << " " << " Stat " << " " << " ErrStat " << " " << " Peak Pos " << " " << " ErrPPos " << " " << " Peak Width " << " " << " ErrPWid " << " " << " NGoodEvents " << " " <<  " " << " Flag " << std::endl;
 
@@ -476,50 +617,58 @@ int hcal_gain_match(int run = -1, int event = -1){
       gPedSpec[r][c] = new TH1F( Form( "Pedestal Spect R%d C%d", r, c ), Form( "Pedestal Spect R%d C%d", r, c ), 100, -5, 5 ); // Empirical limits
       gPedSpec[r][c]->GetXaxis()->SetTitle( "<RAU>" );
       gPedSpec[r][c]->GetXaxis()->CenterTitle();
-
+      
+      /*
       for( int i = 0; i < kMaxSteps; i++){
 	gRetToBase[r][c][i] = new TH1F( Form( "Return to Baseline R%d C%d MaxADC(20*%d)", r, c, i ), Form( "Return to Baseline R%d C%d MaxADC(20*%d)", r, c, i ), kTotSample, kMinSample, kMaxSample );
 	gRetToBase[r][c][i]->GetXaxis()->SetTitle( "Samples" );
 	gRetToBase[r][c][i]->GetXaxis()->CenterTitle();
       }
+      */
+
     }
   }
-    
+  
   // Read in data produced by analyzer in root format
-  cout << "Reading raw data from analyzer.." << endl;
+  cout << "Reading replayed root file.." << endl;
   if( !T ) { 
     T = new TChain( "T" );
     T->Add( Form( "/volatile/halla/sbs/seeds/rootFiles/hcal_%d_*.root", run ) );
     T->SetBranchStatus( "*", 0 );
     T->SetBranchStatus( "sbs.hcal.*", 1 );
-    T->SetBranchAddress( "sbs.hcal.nsamps", hcalt::nsamps );
+    //T->SetBranchAddress( "sbs.hcal.nsamps", hcalt::nsamps );
     T->SetBranchAddress( "sbs.hcal.a", hcalt::a );
     T->SetBranchAddress( "sbs.hcal.a_amp", hcalt::amp );
     T->SetBranchAddress( "sbs.hcal.a_p", hcalt::a_p );
     T->SetBranchAddress( "sbs.hcal.a_amp_p", hcalt::amp );
-    T->SetBranchAddress( "sbs.hcal.ped", hcalt::ped );
+    //T->SetBranchAddress( "sbs.hcal.ped", hcalt::ped );
     T->SetBranchAddress( "sbs.hcal.tdc", hcalt::tdc );
-    T->SetBranchAddress( "sbs.hcal.samps", hcalt::samps );
-    T->SetBranchAddress( "sbs.hcal.samps_idx", hcalt::samps_idx );
+    //T->SetBranchAddress( "sbs.hcal.samps", hcalt::samps );
+    //T->SetBranchAddress( "sbs.hcal.samps_idx", hcalt::samps_idx );
     T->SetBranchAddress( "sbs.hcal.adcrow", hcalt::row );
     T->SetBranchAddress( "sbs.hcal.adccol", hcalt::col );
     T->SetBranchStatus( "Ndata.sbs.hcal.adcrow", 1 );
     T->SetBranchAddress( "Ndata.sbs.hcal.adcrow", &hcalt::ndata );
     cout << "Opened up tree with nentries=" << T->GetEntries() << endl;
-    for( int r = 0; r < kNrows; r++ ) {
+    /*
+      for( int r = 0; r < kNrows; r++ ) {
       for( int c = 0; c < kNcols; c++ ) {
-        gHistos[r][c] = MakeHisto( r, c, kTotSample );
-        gSaturated[r][c] = false;
+      gHistos[r][c] = MakeHisto( r, c, kTotSample );
+      gSaturated[r][c] = false;
       }
-    }
+    */
   }
+
 
   // Set appropriate HV and alphas for run. HV settings from HCAL wiki. Alphas from LED analysis. Must have accompanying text file, one double per line by module number. Assuming negative voltage inputs.
 
-  ifstream file( Form( "setFiles/HV_run%d.txt", run ) );
+  ifstream HVFile( Form( "setFiles/HV_run%d.txt", run ) );
 
-
-
+  if( !HVFile ){
+    cerr << "No HV settings from run present -> setFiles/HV_run" << run << ".txt expected." << endl;
+    return;
+  }
+  
   cout << "Getting HV settings for each pmt for run " << run << "." << endl;
 
   int n1=0;
@@ -528,7 +677,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   int rval, cval;
   string line;
     
-  while( getline( file, line ) ){
+  while( getline( HVFile, line ) ){
     if( line.at(0) == '#' ) {
       continue;
     }
@@ -544,12 +693,17 @@ int hcal_gain_match(int run = -1, int event = -1){
     n1++;
   }
 
-  ifstream file2( "setFiles/alphas.txt" );
+  ifstream alphaFile( "setFiles/alphas.txt" );
+
+  if( !alphaFile ){
+    cerr << "No PMT alphas file present -> setFiles/alphas.txt expected." << endl;
+    return;
+  }
   
   n1=0;
   string line2;
 
-  while( getline( file2, line2 ) ){
+  while( getline( alphaFile, line2 ) ){
     if( line2.at( 0 )=='#' ) {
       continue;
     }
@@ -564,9 +718,9 @@ int hcal_gain_match(int run = -1, int event = -1){
     
     n1++;
   }
-  
+  /*
   // Set default values for pulse check bool arrays. Arrays contain false-valued buffer for possible future diagonal track implementation.
-  cout << "Resetting particle track test flags.." << endl;
+  cout << "Declaring particle track test flags.." << endl;
   for( int r = 0; r < kNrows+4; r++ ){
     for( int c = 0; c < kNcols+4; c++ ){
       gPulse[r][c] = false;
@@ -574,11 +728,11 @@ int hcal_gain_match(int run = -1, int event = -1){
       gVert[r][c] = false;
     }
   }
-  
+  */
   gCurrentEntry = event;
 
-  cout << "Total events to process " << T->GetEntries() << endl;
-
+  cout << "Total events to process " << T->GetEntries() << ".." << endl;
+  /*
   // Fill pedestal histograms from data where f1TDC did not fire
   cout << "Filling pedestal histograms.." << endl;
   for ( int i = gCurrentEntry; i < T->GetEntries(); i++ ){ 
@@ -602,7 +756,6 @@ int hcal_gain_match(int run = -1, int event = -1){
       gPedSpec[r][c]->Draw( "AP" );
     }
   }
-  
 
   // Fitting pedestal histograms and getting mean to subtract event pulses by module
   cout << "Processing pedestals and saving to file.." << endl;
@@ -620,11 +773,15 @@ int hcal_gain_match(int run = -1, int event = -1){
   }
 
   gCurrentEntry = event; // Resetting entries for pulse analysis
+  */
 
   // Pedestal subtract each pulse by module and populate fADC and f1TDC spectra histograms
-  cout << "Pedestal subtracting and processing signals.." << endl;
+  //cout << "Pedestal subtracting and processing signals.." << endl;
+
+  cout << "Processing hits by event.." << endl;
+
   for ( int i = gCurrentEntry; i < T->GetEntries(); i++ ){ 
-    processEvent( gCurrentEntry );
+    processEvent( gCurrentEntry, adcCut );
     gCurrentEntry++;
     
     // Keep count of events processed for monitoring
@@ -632,7 +789,7 @@ int hcal_gain_match(int run = -1, int event = -1){
       cout << "Current event: " << gCurrentEntry << endl;
     }
   }
-
+  /*
   // Reset vectors
   gModule.clear();
   gPeakPosInt.clear();
@@ -646,17 +803,17 @@ int hcal_gain_match(int run = -1, int event = -1){
   gGoodEventMax.clear();
   gGoodEventInt.clear();
   gTargetHVOut.clear();
-
+  */
   // Fit ADC spectra with landau to extract mpv for HV calibration
   cout << "Writing spectrum histograms and calibration constants to file.." << endl;
   ofstream outFile;
-  outFile.open( Form( "outFiles/HVTargetsV4_run%d.txt", run ) ); // Create text file to hold target HVs
+  outFile.open( Form( "outFiles/HVTargets_run%d.txt", run ) ); // Create text file to hold target HVs
   time_t now = time(0); 
   char *dt = ctime(&now);
   outFile << "#Target HV settings for run " << run << " from hcal_gain_match.C on " << dt << "#" << endl;
   outFile << "#Row Col targetHV" << endl;
 
-  // Implement P. Datta's two-fit scheme
+  // Implement two-fit scheme
   TF1 *landauInt[kNrows][kNcols] = {};
   TF1 *landauMax[kNrows][kNcols] = {};
 
@@ -769,6 +926,7 @@ int hcal_gain_match(int run = -1, int event = -1){
 	cout << "**Warning: Module " << r << " " << c << " appears narrow." << endl;
       }
 
+      /*
       // Record fit parameters and target HV by module
       gModule.push_back( kNcols*r+c );
       gTargetHVOut.push_back( targetHV[r][c] );
@@ -784,8 +942,9 @@ int hcal_gain_match(int run = -1, int event = -1){
       gRMSMax.push_back( parsMax[2] );
       gRMSErrMax.push_back( parErrMax[2] );
       gGoodEventMax.push_back( goodEvMax );
+      */
 
-      
+      /*
       // Write all the important fit parameters in a text file
       fitData.setf( ios::fixed );
       fitData.setf( ios::showpoint );
@@ -800,38 +959,46 @@ int hcal_gain_match(int run = -1, int event = -1){
       fitData.width( 12 ); fitData << goodEvMax;
       fitData.width( 12 ); fitData.precision( 4 ); fitData << targetHV[r][c];
       fitData.width( 12 ); fitData << Flag << endl;
+      */
 
       if( Flag != "Good" )
 	cout << "Problem fit to module " << r << " " << c << " -> " << Flag << endl;
 
       // Write fitted histograms to file
+
+      cout << "Writing fitted histograms to file.." << endl;
+      
       cosHistFile->cd();
       // INT
-      gPMTIntSpec[r][c]->SetTitle( Form( "Int Spect R%d C%d FitMean%f", r, c, parsInt[1] ) );
+      gPMTIntSpec[r][c]->SetTitle( Form( "Int Spect R%d C%d FitMean %f", r, c, parsInt[1] ) );
       gPMTIntSpec[r][c]->Write( Form( "Int Spect R%d C%d", r, c ) );
       gPMTIntSpec[r][c]->Draw( "AP" );
       // MAX
-      gPMTMaxSpec[r][c]->SetTitle( Form( "Max Spect R%d C%d FitMean%f", r, c, parsMax[1] ) );
+      gPMTMaxSpec[r][c]->SetTitle( Form( "Max Spect R%d C%d FitMean %f", r, c, parsMax[1] ) );
       gPMTMaxSpec[r][c]->Write( Form( "Max Spect R%d C%d", r, c ) );
       gPMTMaxSpec[r][c]->Draw( "AP" );
-
+      /*
       // Draw return to baseline histograms
       for( int i = 0; i < kMaxSteps; i++){
 	gRetToBase[r][c][i]->SetTitle( Form( "Return to Baseline R%d C%d MaxADC(%d*20)", r, c, i ) );
 	gRetToBase[r][c][i]->Write(Form("RTB_R%d_C%d_DSamp(%d*20)", r, c, i ) );
 	gRetToBase[r][c][i]->Draw("AP");
       }
+      */
     }
   }
     
   // Post analysis reporting
   cout << "Finished loop over run " << run << "." << endl;
   cout << "Total good signals = " << gSignalTotal << "." << endl;
-  cout << "Sample histograms drawn to file HistosFile.root." << endl;
-  cout << "Target HV settings written to HVTargetsV3_run" << run << ".txt." << endl;
+  //cout << "Sample histograms drawn to file HistosFile.root." << endl;
+  cout << "Target HV settings written to HVTargets_run" << run << ".txt." << endl;
   if( diagPlots ){
-    cout << "Printing diagnostic plots.." << endl;
-    diagnosticPlots( run, date );
+    //cout << "Printing diagnostic plots.." << endl;
+    //diagnosticPlots( run, date );
+
+    cout << "No diagnostic plots yet.. Stay tuned!" << endl;
+    
   }
 
   st->Stop();
