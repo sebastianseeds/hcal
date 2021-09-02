@@ -22,9 +22,7 @@ namespace hcalt {
   Double_t ledbit = -1;
   Double_t ledcount = 0;
   Double_t tdc[MAX_HCAL_TDC_MODULES+100];
-  Int_t 
-
-};
+}
 
 void fixStats()
 {

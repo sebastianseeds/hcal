@@ -153,7 +153,7 @@ void diagnosticPlots( int run, string date ){
 
 */
 
-void processEvent(int entry = -1, double cut ){
+void processEvent(int entry = -1, double cut = 5){
   // Check event increment and increment
   if( entry == -1 ) {
     gCurrentEntry++;
@@ -224,7 +224,7 @@ void processEvent(int entry = -1, double cut ){
     //ped[r][c] = hcalt::ped[m];
     tdc[r][c] = hcalt::tdc[m];
     
-    bool processed = false;
+    //bool processed = false;
 
     /*
     // Fill signal histogram from samps and mark saturated array if applicable
@@ -243,18 +243,19 @@ void processEvent(int entry = -1, double cut ){
 
     // Mark saturated array when amplitude meets max RAU
     if( amp[r][c] > 4094 ) {
-      gSaturated[r][c] = true;
+      saturated[r][c] = true;
     }
-    
+    /*
     // Report error if module is empty
     if(!processed) {
       cerr << "Missing data on event " << entry << ", module " << m << ".." << endl;
-      /*
+      
       for( int s = kMinSample; s < kTotSample; s++ ) {
         gHistos[r][c]->SetBinContent( s+1 - kMinSample, -404 );
       }
-      */
-    }
+      
+      }
+    */
   }
   /*
   // Pass unsaturated signal histos to goodHistoTest to see if a signal pulse exists there. gPulse array value  marked true if test passed.
@@ -275,7 +276,7 @@ void processEvent(int entry = -1, double cut ){
   // Vertical line test - accept only if three hits in vertical track. Reject if hit adjacent in row.
   for( r = 0; r < kNrows; r++ ) {
     for( c = 0; c < kNcols; c++ ) {
-      if( amp_p[r][c]>cut && gSaturated==false ) { // Only examine channels with max > 5 sigma pedestal for hits and no saturation
+      if( amp_p[r][c]>cut && saturated[r][c]==false ) { // Only examine channels with max > 5 sigma pedestal for hits and no saturation
 	if( r==0 && c==0 ) { // Logic for top left channel
 	  if( amp_p[r+1][c] > cut && amp_p[r+2][c] > cut ){
 	    if( amp_p[r][c+1] < 6 ) {
@@ -330,7 +331,7 @@ void processEvent(int entry = -1, double cut ){
 	}
 	else if( r==0 || r==1) { // Logic for other row 1 or 2 channels
 	  if( (amp_p[r+1][c] > cut && amp_p[r+2][c] > cut) ||
-	      r==1 && amp_p[r-1][c] > cut && amp_p[r+1][c] > cut) ) {
+	      (r==1 && amp_p[r-1][c] > cut && amp_p[r+1][c] > cut) ) {
 	    if( amp_p[r][c-1] < 6 && amp_p[r][c+1] < 6 ) {
 	      if( tdc[r][c] != 0 ) {
 		gPMTIntSpecTDC[r][c]->Fill( adc_p[r][c] );
@@ -556,11 +557,11 @@ void goodHistoTest( TH1F *testHisto, double tdcVal, int row, int col ){
   }
 }
 */
-
+}
 
 // Main
 int hcal_gain_match(int run = -1, int event = -1){
-
+    
   // Initialize function with user commands
   bool diagPlots = 0;
   bool vertCut = 0;
@@ -613,11 +614,11 @@ int hcal_gain_match(int run = -1, int event = -1){
       gPMTMaxSpecTDC[r][c] = new TH1F( Form( "Max ADC Spect R%d C%d, TDC Cut", r, c ), Form( "Max ADC Spect R%d C%d", r, c ), PMTSpecBins, PMTMaxSpec_min, PMTMaxSpec_max );
       gPMTMaxSpecTDC[r][c]->GetXaxis()->SetTitle( "RAU" );
       gPMTMaxSpecTDC[r][c]->GetXaxis()->CenterTitle();
-
+      /*
       gPedSpec[r][c] = new TH1F( Form( "Pedestal Spect R%d C%d", r, c ), Form( "Pedestal Spect R%d C%d", r, c ), 100, -5, 5 ); // Empirical limits
       gPedSpec[r][c]->GetXaxis()->SetTitle( "<RAU>" );
       gPedSpec[r][c]->GetXaxis()->CenterTitle();
-      
+      */
       /*
       for( int i = 0; i < kMaxSteps; i++){
 	gRetToBase[r][c][i] = new TH1F( Form( "Return to Baseline R%d C%d MaxADC(20*%d)", r, c, i ), Form( "Return to Baseline R%d C%d MaxADC(20*%d)", r, c, i ), kTotSample, kMinSample, kMaxSample );
@@ -666,7 +667,7 @@ int hcal_gain_match(int run = -1, int event = -1){
 
   if( !HVFile ){
     cerr << "No HV settings from run present -> setFiles/HV_run" << run << ".txt expected." << endl;
-    return;
+    return 0;
   }
   
   cout << "Getting HV settings for each pmt for run " << run << "." << endl;
@@ -697,7 +698,7 @@ int hcal_gain_match(int run = -1, int event = -1){
 
   if( !alphaFile ){
     cerr << "No PMT alphas file present -> setFiles/alphas.txt expected." << endl;
-    return;
+    return 0;
   }
   
   n1=0;
