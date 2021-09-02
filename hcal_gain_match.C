@@ -31,6 +31,7 @@ TH1F *gPMTMaxSpec[kNrows][kNcols];
 TH1F *gPMTIntSpecTDC[kNrows][kNcols]; 
 TH1F *gPMTMaxSpecTDC[kNrows][kNcols]; 
 TH1F *gPedSpec[kNrows][kNcols];
+TH1F *gTHVvChannel;
 TH1F *gADCvChannel;
 TH1F *gAmpvChannel;
 TH1F *gNEVvChannel;
@@ -39,8 +40,9 @@ TH1F *gPedvChannel;
 // Declare fit function
 TF1 *g1;
 
-// Create marker to track number of signals that pass cuts
+// Create marker to track number of signals that pass cuts and saturation
 int gSignalTotal = 0;
+int gSaturated = 0;
 
 // Declare necessary arrays
 double gPMTHV[kNrows][kNcols];
@@ -107,6 +109,8 @@ void processEvent(int entry = -1, double cut = 5, int diagPlots = 0 ){
     // Mark saturated array when amplitude meets max RAU
     if( amp[r][c] > 4094 ) {
       saturated[r][c] = true;
+      cout << "Saturation on r " << r << ", col " << c << endl;
+      gSaturated++;
     }
   }
 
@@ -258,23 +262,26 @@ int hcal_gain_match(int run = -1, int event = -1){
   cout << "Building ADC and TDC spectrum histograms.." << endl;
   for( int r=0; r<kNrows; r++ ){
     for( int c=0; c<kNcols; c++ ){  
-      gPMTIntSpec[r][c] = new TH1F( Form( "Int ADC Spect R%d C%d", r, c ), Form( "Int ADC Spect R%d C%d", r, c ), PMTSpecBins, PMTIntSpec_min, PMTIntSpec_max );
+
+      int m = r*12+c;
+
+      gPMTIntSpec[r][c] = new TH1F( Form( "Int ADC Spect R%d C%d PMT%d", r, c, m ), Form( "Int ADC Spect R%d C%d PMT%d", r, c, m ), PMTSpecBins, PMTIntSpec_min, PMTIntSpec_max );
       gPMTIntSpec[r][c]->GetXaxis()->SetTitle( "sRAU" );
       gPMTIntSpec[r][c]->GetXaxis()->CenterTitle();
       
-      gPMTMaxSpec[r][c] = new TH1F( Form( "Max ADC Spect R%d C%d", r, c ), Form( "Max ADC Spect R%d C%d", r, c ), PMTSpecBins, PMTMaxSpec_min, PMTMaxSpec_max );
+      gPMTMaxSpec[r][c] = new TH1F( Form( "Max ADC Spect R%d C%d PMT%d", r, c, m ), Form( "Max ADC Spect R%d C%d PMT%d", r, c, m ), PMTSpecBins, PMTMaxSpec_min, PMTMaxSpec_max );
       gPMTMaxSpec[r][c]->GetXaxis()->SetTitle( "RAU" );
       gPMTMaxSpec[r][c]->GetXaxis()->CenterTitle();
       
-      gPMTIntSpecTDC[r][c] = new TH1F( Form( "Int ADC Spect R%d C%d, TDC Cut", r, c ), Form( "Int ADC Spect R%d C%d", r, c ), PMTSpecBins, PMTIntSpec_min, PMTIntSpec_max );
+      gPMTIntSpecTDC[r][c] = new TH1F( Form( "Int ADC Spect R%d C%d PMT%d, TDC Cut", r, c, m ), Form( "Int ADC Spect R%d C%d PMT%d, TDC Cut", r, c, m ), PMTSpecBins, PMTIntSpec_min, PMTIntSpec_max );
       gPMTIntSpecTDC[r][c]->GetXaxis()->SetTitle( "sRAU" );
       gPMTIntSpecTDC[r][c]->GetXaxis()->CenterTitle();
       
-      gPMTMaxSpecTDC[r][c] = new TH1F( Form( "Max ADC Spect R%d C%d, TDC Cut", r, c ), Form( "Max ADC Spect R%d C%d", r, c ), PMTSpecBins, PMTMaxSpec_min, PMTMaxSpec_max );
+      gPMTMaxSpecTDC[r][c] = new TH1F( Form( "Max ADC Spect R%d C%d PMT%d, TDC Cut", r, c, m ), Form( "Max ADC Spect R%d C%d PMT%d, TDC Cut", r, c, m ), PMTSpecBins, PMTMaxSpec_min, PMTMaxSpec_max );
       gPMTMaxSpecTDC[r][c]->GetXaxis()->SetTitle( "RAU" );
       gPMTMaxSpecTDC[r][c]->GetXaxis()->CenterTitle();
 
-      gPedSpec[r][c] = new TH1F( Form( "Pedestal Spect R%d C%d, TDC Cut", r, c ), Form( "Pedestal Spect R%d C%d", r, c ), PMTSpecBins, PMTMaxSpec_min, PMTMaxSpec_max );
+      gPedSpec[r][c] = new TH1F( Form( "Pedestal Spect R%d C%d PMT%d, TDC Cut", r, c, m ), Form( "Pedestal Spect R%d C%d PMT%d", r, c, m ), PMTSpecBins, PMTMaxSpec_min, PMTMaxSpec_max );
       gPedSpec[r][c]->GetXaxis()->SetTitle( "RAU" );
       gPedSpec[r][c]->GetXaxis()->CenterTitle();
     }
@@ -286,6 +293,7 @@ int hcal_gain_match(int run = -1, int event = -1){
     gAmpvChannel = new TH1F( "AmpvChannel", "Amplitude vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
     gNEVvChannel = new TH1F( "NEVvChannel", "Number of events vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
     gPedvChannel = new TH1F( "PedvChannel", "Pedestal vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
+    gTHVvChannel = new TH1F( "THVvChannel", "Target HV vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
   }
   
   // Read in data produced by analyzer in root format
@@ -469,7 +477,7 @@ int hcal_gain_match(int run = -1, int event = -1){
       double goodEvMax = gPMTMaxSpec[r][c]->Integral( gPMTMaxSpec[r][c]->FindFixBin( lowBinCentMax ), gPMTMaxSpec[r][c]->FindFixBin( upBinCentMax ), "" );
 
       // Calculate target HV
-      targetHV[r][c] = gPMTHV[r][c]/pow(parsMax[1]/kTargetRAU,1.0/gAlphas[r][c]);
+      targetHV[r][c] = gPMTHV[r][c]/pow(parsInt[1]/kTargetRAU,1.0/gAlphas[r][c]);
       outFile << r << " " << c << " " << targetHV[r][c] << endl; 
 
       // Checking on goodness of fit for max spectra
@@ -512,14 +520,16 @@ int hcal_gain_match(int run = -1, int event = -1){
 
       cout << "Writing fitted histograms to file.." << endl;
       
+      int m = r*12+c;
+
       cosHistFile->cd();
       // INT
-      gPMTIntSpec[r][c]->SetTitle( Form( "Int Spect R%d C%d FitMean %f", r, c, parsInt[1] ) );
-      gPMTIntSpec[r][c]->Write( Form( "Int Spect R%d C%d", r, c ) );
+      gPMTIntSpec[r][c]->SetTitle( Form( "Integrated Spectrum R%d C%d ADC%d FitMean %f", r, c, m, parsInt[1] ) );
+      gPMTIntSpec[r][c]->Write( Form( "ADCSpect_PMT%d", m ) );
       gPMTIntSpec[r][c]->Draw( "AP" );
       // MAX
-      gPMTMaxSpec[r][c]->SetTitle( Form( "Max Spect R%d C%d FitMean %f", r, c, parsMax[1] ) );
-      gPMTMaxSpec[r][c]->Write( Form( "Max Spect R%d C%d", r, c ) );
+      gPMTMaxSpec[r][c]->SetTitle( Form( "Max Spectrum R%d C%d FitMean %f", r, c, parsMax[1] ) );
+      gPMTMaxSpec[r][c]->Write( Form( "AmpSpect_PMT%d", m ) );
       gPMTMaxSpec[r][c]->Draw( "AP" );
 
       if( diagPlots==1 ){
@@ -528,6 +538,13 @@ int hcal_gain_match(int run = -1, int event = -1){
 	gAmpvChannel->SetBinContent( kNcols*r+c, parsMax[1] );
 	gPedvChannel->SetBinContent( kNcols*r+c, gPedSpec[r][c]->GetMean() );
 	gNEVvChannel->SetBinContent( kNcols*r+c, gPMTIntSpec[r][c]->GetEntries() );
+	gTHVvChannel->SetBinContent( kNcols*r+c, targetHV[r][c] );
+
+	
+
+	gPedSpec[r][c]->SetTitle( Form( "Pedestal Spectrum R%d C%d PMT%d", r, c, m ) );
+	gPMTIntSpec[r][c]->Write( Form( "PedSpect_PMT%d", m ) );
+	gPMTIntSpec[r][c]->Draw( "AP" );
       }
     }
   }
@@ -546,14 +563,19 @@ int hcal_gain_match(int run = -1, int event = -1){
     gPedvChannel->Write( "PedvChannel" );
     gPedvChannel->Draw( "AP" );
 
-    gNEVvChannel->SetTitle( "Numver of Hits vs Channel" );
+    gNEVvChannel->SetTitle( "Number of Hits vs Channel" );
     gNEVvChannel->Write( "NEVvChannel" );
     gNEVvChannel->Draw( "AP" );
+
+    gTHVvChannel->SetTitle( "Target HV vs Channel" );
+    gTHVvChannel->Write( "THVvChannel" );
+    gTHVvChannel->Draw( "AP" );
   }
 
   // Post analysis reporting
   cout << "Finished loop over run " << run << "." << endl;
   cout << "Total good signals = " << gSignalTotal << "." << endl;
+  cout << "Total saturated events = " << gSaturated << "." << endl;
   cout << "Target HV settings written to HVTargets_run" << run << ".txt." << endl;
 
   st->Stop();
