@@ -30,6 +30,11 @@ TH1F *gPMTIntSpec[kNrows][kNcols];
 TH1F *gPMTMaxSpec[kNrows][kNcols]; 
 TH1F *gPMTIntSpecTDC[kNrows][kNcols]; 
 TH1F *gPMTMaxSpecTDC[kNrows][kNcols]; 
+TH1F *gPedSpec[kNrows][kNcols];
+TH1F *gADCvChannel;
+TH1F *gAmpvChannel;
+TH1F *gNEVvChannel;
+TH1F *gPedvChannel;
 
 // Declare fit function
 TF1 *g1;
@@ -54,7 +59,7 @@ string getDate(){
   return date;
 } 
 
-void processEvent(int entry = -1, double cut = 5){
+void processEvent(int entry = -1, double cut = 5, int diagPlots = 0 ){
   // Check event increment and increment
   if( entry == -1 ) {
     gCurrentEntry++;
@@ -77,6 +82,7 @@ void processEvent(int entry = -1, double cut = 5){
   double adc_p[kNrows][kNcols] = {0.0};
   double amp[kNrows][kNcols] = {0.0};
   double amp_p[kNrows][kNcols] = {0.0};
+  double ped[kNrows][kNcols] = {0.0};
   bool saturated[kNrows][kNcols] = { {false} };
 
   // Process event with m data
@@ -94,10 +100,10 @@ void processEvent(int entry = -1, double cut = 5){
     // Fill adc and tdc arrays
     adc[r][c] = hcalt::a[m];
     adc_p[r][c] = hcalt::a_p[m];
-    amp[r][c] = hcalt::amp[m];
-    amp_p[r][c] = hcalt::amp_p[m];
+    amp[r][c] = hcalt::a_amp[m];
+    amp_p[r][c] = hcalt::a_amp_p[m];
     tdc[r][c] = hcalt::tdc[m];
-
+    if( diagPlots==1 ) ped[r][c] = hcalt::ped[m];
     // Mark saturated array when amplitude meets max RAU
     if( amp[r][c] > 4094 ) {
       saturated[r][c] = true;
@@ -108,6 +114,9 @@ void processEvent(int entry = -1, double cut = 5){
  
   for( r = 0; r < kNrows; r++ ) {
     for( c = 0; c < kNcols; c++ ) {
+
+      if( diagPlots==1 ) gPedSpec[r][c]->Fill( ped[r][c] );
+
       if( amp_p[r][c]>cut && saturated[r][c]==false ) { // Only examine channels with max > 5 sigma pedestal for hits and no saturation
 	if( r==0 && c==0 ) { // Logic for top left channel
 	  if( amp_p[r+1][c] > cut && amp_p[r+2][c] > cut ){
@@ -241,9 +250,9 @@ int hcal_gain_match(int run = -1, int event = -1){
   //Set spectrum histogram limits
   int PMTSpecBins = 100;
   //INT
-  double PMTIntSpec_min = 0.0, PMTIntSpec_max = 4000.0;
+  double PMTIntSpec_min = 0.0, PMTIntSpec_max = 250.0;
   //MAX
-  double PMTMaxSpec_min = 0.0, PMTMaxSpec_max = 1000.0;
+  double PMTMaxSpec_min = 0.0, PMTMaxSpec_max = 500.0;
   
   //Build spectrum histograms. Empirical limits.
   cout << "Building ADC and TDC spectrum histograms.." << endl;
@@ -264,7 +273,19 @@ int hcal_gain_match(int run = -1, int event = -1){
       gPMTMaxSpecTDC[r][c] = new TH1F( Form( "Max ADC Spect R%d C%d, TDC Cut", r, c ), Form( "Max ADC Spect R%d C%d", r, c ), PMTSpecBins, PMTMaxSpec_min, PMTMaxSpec_max );
       gPMTMaxSpecTDC[r][c]->GetXaxis()->SetTitle( "RAU" );
       gPMTMaxSpecTDC[r][c]->GetXaxis()->CenterTitle();
+
+      gPedSpec[r][c] = new TH1F( Form( "Pedestal Spect R%d C%d, TDC Cut", r, c ), Form( "Pedestal Spect R%d C%d", r, c ), PMTSpecBins, PMTMaxSpec_min, PMTMaxSpec_max );
+      gPedSpec[r][c]->GetXaxis()->SetTitle( "RAU" );
+      gPedSpec[r][c]->GetXaxis()->CenterTitle();
     }
+  }
+
+  // Build diagnostic histograms
+  if( diagPlots==1 ){
+    gADCvChannel = new TH1F( "ADCvChannel", "ADC vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
+    gAmpvChannel = new TH1F( "AmpvChannel", "Amplitude vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
+    gNEVvChannel = new TH1F( "NEVvChannel", "Number of events vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
+    gPedvChannel = new TH1F( "PedvChannel", "Pedestal vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
   }
   
   // Read in data produced by analyzer in root format
@@ -275,10 +296,11 @@ int hcal_gain_match(int run = -1, int event = -1){
     T->SetBranchStatus( "*", 0 );
     T->SetBranchStatus( "sbs.hcal.*", 1 );
     T->SetBranchAddress( "sbs.hcal.a", hcalt::a );
-    T->SetBranchAddress( "sbs.hcal.a_amp", hcalt::amp );
+    T->SetBranchAddress( "sbs.hcal.a_amp", hcalt::a_amp );
     T->SetBranchAddress( "sbs.hcal.a_p", hcalt::a_p );
-    T->SetBranchAddress( "sbs.hcal.a_amp_p", hcalt::amp );
+    T->SetBranchAddress( "sbs.hcal.a_amp_p", hcalt::a_amp_p );
     T->SetBranchAddress( "sbs.hcal.tdc", hcalt::tdc );
+    T->SetBranchAddress( "sbs.hcal.ped", hcalt::ped );
     T->SetBranchAddress( "sbs.hcal.adcrow", hcalt::row );
     T->SetBranchAddress( "sbs.hcal.adccol", hcalt::col );
     T->SetBranchStatus( "Ndata.sbs.hcal.adcrow", 1 );
@@ -352,7 +374,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   cout << "Processing hits by event.." << endl;
 
   for ( int i = gCurrentEntry; i < T->GetEntries(); i++ ){ 
-    processEvent( gCurrentEntry, adcCut );
+    processEvent( gCurrentEntry, adcCut, diagPlots );
     gCurrentEntry++;
     
     // Keep count of events processed for monitoring
@@ -499,18 +521,40 @@ int hcal_gain_match(int run = -1, int event = -1){
       gPMTMaxSpec[r][c]->SetTitle( Form( "Max Spect R%d C%d FitMean %f", r, c, parsMax[1] ) );
       gPMTMaxSpec[r][c]->Write( Form( "Max Spect R%d C%d", r, c ) );
       gPMTMaxSpec[r][c]->Draw( "AP" );
+
+      if( diagPlots==1 ){
+	cout << "Writing diagnostic plots to file.." << endl;
+	gADCvChannel->SetBinContent( kNcols*r+c, parsInt[1] );
+	gAmpvChannel->SetBinContent( kNcols*r+c, parsMax[1] );
+	gPedvChannel->SetBinContent( kNcols*r+c, gPedSpec[r][c]->GetMean() );
+	gNEVvChannel->SetBinContent( kNcols*r+c, gPMTIntSpec[r][c]->GetEntries() );
+      }
     }
   }
     
+  if( diagPlots==1 ){
+    cosHistFile->cd();
+    gADCvChannel->SetTitle( "Average ADC vs Channel" );
+    gADCvChannel->Write( "ADCvChannel" );
+    gADCvChannel->Draw( "AP" );
+
+    gAmpvChannel->SetTitle( "Average Amplitude vs Channel" );
+    gAmpvChannel->Write( "AmpvChannel" );
+    gAmpvChannel->Draw( "AP" );
+
+    gPedvChannel->SetTitle( "Average Pedestal vs Channel" );
+    gPedvChannel->Write( "PedvChannel" );
+    gPedvChannel->Draw( "AP" );
+
+    gNEVvChannel->SetTitle( "Numver of Hits vs Channel" );
+    gNEVvChannel->Write( "NEVvChannel" );
+    gNEVvChannel->Draw( "AP" );
+  }
+
   // Post analysis reporting
   cout << "Finished loop over run " << run << "." << endl;
   cout << "Total good signals = " << gSignalTotal << "." << endl;
   cout << "Target HV settings written to HVTargets_run" << run << ".txt." << endl;
-  if( diagPlots ){
-
-    cout << "No diagnostic plots yet.. Stay tuned!" << endl;
-    
-  }
 
   st->Stop();
 
