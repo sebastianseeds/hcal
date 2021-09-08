@@ -16,7 +16,7 @@
 const int kNrows = 24;
 const int kNcols = 12;
 
-const double kTargetRAU = 78.355; // Previous value of 61.425*(2.55/2) or kTargetRAU_prev*(attLongCable_newMeas/attLongCable_oldMeas)
+const double kTargetRAU = 375/50; // Set by looking for signature amp saturation distribution between maxADC values of 975 mv to 1000 mV and taking the rising edge start. 1000 is the minimum maxADC value to saturate where the amp dynamic range is 0-3V and the average attenuation over cables is 1/3. 
 
 // Counter to keep track of T tree entry for processing
 int gCurrentEntry = -1;
@@ -36,6 +36,7 @@ TH1F *gADCvChannel;
 TH1F *gAmpvChannel;
 TH1F *gNEVvChannel;
 TH1F *gPedvChannel;
+TH2F *gNEV;
 
 // Declare fit function
 TF1 *g1;
@@ -107,9 +108,9 @@ void processEvent(int entry = -1, double cut = 5, int diagPlots = 0 ){
     tdc[r][c] = hcalt::tdc[m];
     if( diagPlots==1 ) ped[r][c] = hcalt::ped[m];
     // Mark saturated array when amplitude meets max RAU
-    if( amp[r][c] > 4094 ) {
+    if( amp[r][c] > 3900 ) {
       saturated[r][c] = true;
-      cout << "Saturation on r " << r << ", col " << c << endl;
+      //cout << "Saturation on r " << r << ", col " << c << endl;
       gSaturated++;
     }
   }
@@ -292,6 +293,7 @@ int hcal_gain_match(int run = -1, int event = -1){
     gADCvChannel = new TH1F( "ADCvChannel", "ADC vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
     gAmpvChannel = new TH1F( "AmpvChannel", "Amplitude vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
     gNEVvChannel = new TH1F( "NEVvChannel", "Number of events vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
+    gNEV = new TH2F( "NEV", "Number of events heatmap", kNrows, 0, kNrows, kNcols, 0, kNcols );
     gPedvChannel = new TH1F( "PedvChannel", "Pedestal vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
     gTHVvChannel = new TH1F( "THVvChannel", "Target HV vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
   }
@@ -300,7 +302,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   cout << "Reading replayed root file.." << endl;
   if( !T ) { 
     T = new TChain( "T" );
-    T->Add( Form( "/volatile/halla/sbs/seeds/rootFiles/hcal_%d_*.root", run ) );
+    T->Add( Form( "/volatile/halla/sbs/seeds/rootFiles/hcal_%d*.root", run ) );
     T->SetBranchStatus( "*", 0 );
     T->SetBranchStatus( "sbs.hcal.*", 1 );
     T->SetBranchAddress( "sbs.hcal.a", hcalt::a );
@@ -478,6 +480,7 @@ int hcal_gain_match(int run = -1, int event = -1){
 
       // Calculate target HV
       targetHV[r][c] = gPMTHV[r][c]/pow(parsInt[1]/kTargetRAU,1.0/gAlphas[r][c]);
+      cout << "Target HV for r=" << r << ", c=" << c << ", target sRAU=" << kTargetRAU << ", HV setting=" << gPMTHV[r][c] << ", mean ADC=" << parsInt[1] << ", and PMT alpha=" << gAlphas[r][c] << " is: " << targetHV[r][c] << "." << endl;
       outFile << r << " " << c << " " << targetHV[r][c] << endl; 
 
       // Checking on goodness of fit for max spectra
@@ -538,6 +541,10 @@ int hcal_gain_match(int run = -1, int event = -1){
 	gAmpvChannel->SetBinContent( kNcols*r+c, parsMax[1] );
 	gPedvChannel->SetBinContent( kNcols*r+c, gPedSpec[r][c]->GetMean() );
 	gNEVvChannel->SetBinContent( kNcols*r+c, gPMTIntSpec[r][c]->GetEntries() );
+	
+	cout << r << " " << c << " " << gPMTIntSpec[r][c]->GetEntries() << endl;
+
+	gNEV->SetBinContent( r+1, c+1, gPMTIntSpec[r][c]->GetEntries() );
 	gTHVvChannel->SetBinContent( kNcols*r+c, targetHV[r][c] );
 
 	
@@ -566,6 +573,10 @@ int hcal_gain_match(int run = -1, int event = -1){
     gNEVvChannel->SetTitle( "Number of Hits vs Channel" );
     gNEVvChannel->Write( "NEVvChannel" );
     gNEVvChannel->Draw( "AP" );
+
+    gNEV->SetTitle( "Number of Hits Heatmap" );
+    gNEV->Write( "NEV" );
+    gNEV->Draw( "colz" );
 
     gTHVvChannel->SetTitle( "Target HV vs Channel" );
     gTHVvChannel->Write( "THVvChannel" );
