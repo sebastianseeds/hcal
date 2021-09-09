@@ -16,7 +16,7 @@
 const int kNrows = 24;
 const int kNcols = 12;
 
-const double kTargetRAU = 375/50; // Set by looking for signature amp saturation distribution between maxADC values of 975 mv to 1000 mV and taking the rising edge start. 1000 is the minimum maxADC value to saturate where the amp dynamic range is 0-3V and the average attenuation over cables is 1/3. 
+const double kTargetRAU = 375/50; // Set by looking for signature amp saturation distribution between maxADC values of 975 mv to 1000 mV and taking the rising edge start. 1000 is the minimum maxADC value to saturate where the amp dynamic range is 0-3V and the average attenuation over cables is 1/3. Looking at 14MeV/700MeV for mean energy deposition from muons by peak energy deposition in highest GMn kinematic (E_m/E_gmn = 1/50), so multiply this target (375 mV) by 1/50 to maximize dynamic range of the PMT and avoid saturation on amplifier where (owing to attenuation over long cables) saturation occurs there before the fADC
 
 // Counter to keep track of T tree entry for processing
 int gCurrentEntry = -1;
@@ -400,7 +400,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   time_t now = time(0); 
   char *dt = ctime(&now);
   outFile << "#Target HV settings for run " << run << " from hcal_gain_match.C on " << dt << "#" << endl;
-  outFile << "#Row Col targetHV" << endl;
+  outFile << "#Row Col targetHV Error" << endl;
 
   // Implement two-fit scheme
   TF1 *landauInt[kNrows][kNcols] = {};
@@ -480,8 +480,6 @@ int hcal_gain_match(int run = -1, int event = -1){
 
       // Calculate target HV
       targetHV[r][c] = gPMTHV[r][c]/pow(parsInt[1]/kTargetRAU,1.0/gAlphas[r][c]);
-      cout << "Target HV for r=" << r << ", c=" << c << ", target sRAU=" << kTargetRAU << ", HV setting=" << gPMTHV[r][c] << ", mean ADC=" << parsInt[1] << ", and PMT alpha=" << gAlphas[r][c] << " is: " << targetHV[r][c] << "." << endl;
-      outFile << r << " " << c << " " << targetHV[r][c] << endl; 
 
       // Checking on goodness of fit for max spectra
       string Flag = "Good"; // Flag to keep track of fit status
@@ -518,6 +516,10 @@ int hcal_gain_match(int run = -1, int event = -1){
 
       if( Flag != "Good" )
 	cout << "Problem fit to module " << r << " " << c << " -> " << Flag << endl;
+
+      // Write target HV and error flags to file
+      cout << "Target HV for r=" << r << ", c=" << c << ", target sRAU=" << kTargetRAU << ", HV setting=" << gPMTHV[r][c] << ", mean ADC=" << parsInt[1] << ", and PMT alpha=" << gAlphas[r][c] << " is: " << targetHV[r][c] << "." << endl;
+      outFile << r << " " << c << " " << targetHV[r][c] << " " << Flag << endl; 
 
       // Write fitted histograms to file
 
