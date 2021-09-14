@@ -302,7 +302,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   cout << "Reading replayed root file.." << endl;
   if( !T ) { 
     T = new TChain( "T" );
-    T->Add( Form( "/volatile/halla/sbs/seeds/rootFiles/hcal_%d*.root", run ) );
+    T->Add( Form( "/volatile/halla/sbs/seeds/rootfiles/hcal_%d*.root", run ) );
     T->SetBranchStatus( "*", 0 );
     T->SetBranchStatus( "sbs.hcal.*", 1 );
     T->SetBranchAddress( "sbs.hcal.a", hcalt::a );
@@ -552,8 +552,8 @@ int hcal_gain_match(int run = -1, int event = -1){
 	
 
 	gPedSpec[r][c]->SetTitle( Form( "Pedestal Spectrum R%d C%d PMT%d", r, c, m ) );
-	gPMTIntSpec[r][c]->Write( Form( "PedSpect_PMT%d", m ) );
-	gPMTIntSpec[r][c]->Draw( "AP" );
+	gPedSpec[r][c]->Write( Form( "PedSpect_PMT%d", m ) );
+	gPedSpec[r][c]->Draw( "AP" );
       }
     }
   }

@@ -236,7 +236,7 @@ void displayEvent(Int_t entry = -1, bool HMOpt = true)
       if(r>= Nrows || c >= Ncols)
 	continue;
 
-      // Fill adc and tdc arrays
+      // Fill adc, tdc, and cluster arrays
       idx = hcalt::samps_idx[m];
       n = hcalt::nsamps[m];
       adc[r][c] = hcalt::a[m];
@@ -303,7 +303,7 @@ void displayEvent(Int_t entry = -1, bool HMOpt = true)
     std::cout << "Displaying event " << gCurrentEntry << std::endl;
     hcalgui::ledLabel->SetText(TString::Format("LED Bit: %02d, Count: %5d",Int_t(hcalt::ledbit),Int_t(hcalt::ledcount)));
   
-    int r,c,sub;
+    int r,c,sub,cid;
 
     // Clear old histogram
     heatMapHisto->Reset("ICES");
@@ -325,7 +325,7 @@ void displayEvent(Int_t entry = -1, bool HMOpt = true)
 
       // Fill adc array
       adc_p[r][c] = hcalt::a_p[m];
-
+      cid = hcalt::clusid;
       //if( adc_p[r][c]<5 ) adc_p[r][c]=0.;
 
       heatMapHisto->SetBinContent( c+1, r+1, adc_p[r][c] );
@@ -400,6 +400,9 @@ Int_t dispClus(Int_t run = 1198, Int_t event = -1)
     T->SetBranchAddress("sbs.hcal.samps_idx",hcalt::samps_idx);
     T->SetBranchAddress("sbs.hcal.adcrow",hcalt::row);
     T->SetBranchAddress("sbs.hcal.adccol",hcalt::col);
+    // Add clustering branches
+    T->SetBranchAddress("sbs.hcal.clus.id",hcalt::clusid);
+    
     T->SetBranchStatus("Ndata.sbs.hcal.adcrow",1);
     T->SetBranchAddress("Ndata.sbs.hcal.adcrow",&hcalt::ndata);
     std::cerr << "Opened up tree with nentries=" << T->GetEntries() << std::endl;

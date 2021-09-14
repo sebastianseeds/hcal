@@ -90,6 +90,9 @@ void hcalECal( int run, const char *setupfilename, const char *outputfilename ){
     //
     T->SetBranchStatus( "Ndata.sbs.hcal.adcrow", 1 );
     T->SetBranchAddress( "Ndata.sbs.hcal.adcrow", &hcalt::ndata );
+    //Add proton energy from tree here
+    //
+    //
     if( T->GetEntries == 0 ){
       cout << "Run data is empty. Returning.." << endl;
       return;
