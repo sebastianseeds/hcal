@@ -1,291 +1,289 @@
-#Target HV settings for run 270 from hcal_gain_match.C on Tue Sep 14 11:55:10 2021
-#
-#Row Col targetHV Error
-0 0 1 Big_error
-0 1 1 Big_error
-0 2 1 Big_error
-0 3 1 Big_error
-0 4 1 Big_error
-0 5 1 Big_error
-0 6 1 Big_error
-0 7 1 Big_error
-0 8 1 Big_error
-0 9 1 Big_error
-0 10 1 Big_error
-0 11 1 Narrow
-1 0 1 Big_error
-1 1 1 Big_error
-1 2 1 Big_error
-1 3 1 Big_error
-1 4 1838.49 Good
-1 5 1 Big_error
-1 6 1 Big_error
-1 7 1 Narrow
-1 8 1 Big_error
-1 9 1 Big_error
-1 10 -nan Good
-1 11 -nan Good
-2 0 1 Big_error
-2 1 1682.06 Good
-2 2 -nan Good
-2 3 1407.06 Good
-2 4 -nan Good
-2 5 1 Big_error
-2 6 1 Narrow
-2 7 1 Big_error
-2 8 1 Big_error
-2 9 1 Big_error
-2 10 1 Narrow
-2 11 1420.39 Good
-3 0 1454.63 Good
-3 1 1 Big_error
-3 2 1 Big_error
-3 3 -nan Good
-3 4 1 Big_error
-3 5 1 Big_error
-3 6 1618.26 Good
-3 7 1761.09 Good
-3 8 1 Big_error
-3 9 1 Big_error
-3 10 1 Big_error
-3 11 1 Big_error
-4 0 1 Big_error
-4 1 1 Big_error
-4 2 1 Big_error
-4 3 1443.09 Good
-4 4 1 Big_error
-4 5 1 Big_error
-4 6 1 Big_error
-4 7 1 Big_error
-4 8 1 Big_error
-4 9 1 Big_error
-4 10 1 Big_error
-4 11 -nan Good
-5 0 1 Big_error
-5 1 1 Big_error
-5 2 1 Big_error
-5 3 1 Big_error
-5 4 1 Big_error
-5 5 1 Big_error
-5 6 1549.3 Good
-5 7 1 Big_error
-5 8 -nan Good
-5 9 1 Big_error
-5 10 1 Big_error
-5 11 -nan Good
-6 0 1 Narrow
-6 1 1 Big_error
-6 2 1 Narrow
-6 3 1 Big_error
-6 4 1 Big_error
-6 5 1 Big_error
-6 6 1 Big_error
-6 7 1 Big_error
-6 8 1405.19 Good
-6 9 1 Big_error
-6 10 1432 Good
-6 11 1466.1 Good
-7 0 1 Big_error
-7 1 1 Big_error
-7 2 1 Big_error
-7 3 1 Big_error
-7 4 1 Big_error
-7 5 1 Big_error
-7 6 1 Big_error
-7 7 1 Big_error
-7 8 1 Big_error
-7 9 1 Big_error
-7 10 -nan Good
-7 11 1519.65 Good
-8 0 1468.04 Good
-8 1 1400.34 Good
-8 2 1 Big_error
-8 3 1 Big_error
-8 4 1 Big_error
-8 5 1 Big_error
-8 6 -nan Good
-8 7 -nan Good
-8 8 1377.96 Good
-8 9 1 Big_error
-8 10 1 Big_error
-8 11 1 Big_error
-9 0 1 Big_error
-9 1 1 Big_error
-9 2 1 Big_error
-9 3 1 Big_error
-9 4 1 Big_error
-9 5 1 Big_error
-9 6 1 Big_error
-9 7 1 Big_error
-9 8 1 Big_error
-9 9 1453.19 Good
-9 10 1 Big_error
-9 11 1438.44 Good
-10 0 1411.95 Good
-10 1 1 Big_error
-10 2 1 Big_error
-10 3 1 Big_error
-10 4 1 Big_error
-10 5 1 Big_error
-10 6 1483.14 Good
-10 7 1529.27 Good
-10 8 1 Big_error
-10 9 1 Narrow
-10 10 1 Narrow
-10 11 1 Narrow
-11 0 1560.72 Good
-11 1 1 Big_error
-11 2 1 Big_error
-11 3 1 Big_error
-11 4 1 Big_error
-11 5 1854.36 Good
-11 6 1672.82 Good
-11 7 1 Big_error
-11 8 1 Big_error
-11 9 1477.42 Good
-11 10 1 Big_error
-11 11 1 Big_error
-12 0 1628.84 Good
-12 1 1 Big_error
-12 2 1 Narrow
-12 3 1614.12 Good
-12 4 1 Big_error
-12 5 -nan Good
-12 6 1987.47 Good
-12 7 1 Big_error
-12 8 1 Big_error
-12 9 1 Big_error
-12 10 1 Big_error
-12 11 1 Big_error
-13 0 1435.6 Good
-13 1 1 Narrow
-13 2 1442.47 Good
-13 3 1 Big_error
-13 4 1 Big_error
-13 5 1 Big_error
-13 6 1 Big_error
-13 7 1 Big_error
-13 8 1 Big_error
-13 9 1 Big_error
-13 10 1 Big_error
-13 11 1 Big_error
-14 0 1 Big_error
-14 1 1 Big_error
-14 2 -nan Good
-14 3 1 Big_error
-14 4 1 Big_error
-14 5 -nan Good
-14 6 1 Big_error
-14 7 1 Big_error
-14 8 1 Big_error
-14 9 1715.45 Good
-14 10 1 Narrow
-14 11 1 Big_error
-15 0 1 Big_error
-15 1 1 Big_error
-15 2 1 Big_error
-15 3 1 Big_error
-15 4 1 Big_error
-15 5 1 Big_error
-15 6 1 Big_error
-15 7 1 Narrow
-15 8 -nan Good
-15 9 1 Big_error
-15 10 1 Big_error
-15 11 1 Big_error
-16 0 1 Big_error
-16 1 -nan Good
-16 2 1 Big_error
-16 3 1 Big_error
-16 4 1 Big_error
-16 5 1 Big_error
-16 6 1 Big_error
-16 7 1 Big_error
-16 8 1 Big_error
-16 9 1 Big_error
-16 10 1387.89 Good
-16 11 1 Big_error
-17 0 1 Narrow
-17 1 1578.44 Good
-17 2 1 Big_error
-17 3 1 Big_error
-17 4 1 Big_error
-17 5 1 Big_error
-17 6 1444.22 Good
-17 7 1807.25 Good
-17 8 1382.04 Good
-17 9 1 No_Data
-17 10 1 Big_error
-17 11 1 Big_error
-18 0 1429.75 Good
-18 1 -nan Good
-18 2 1 Big_error
-18 3 -nan Good
-18 4 1 Big_error
-18 5 1 Big_error
-18 6 1531.7 Good
-18 7 1 Big_error
-18 8 1 Big_error
-18 9 1 Narrow
-18 10 1 Big_error
-18 11 1645.86 Good
-19 0 1446.16 Good
-19 1 1 Big_error
-19 2 1 Big_error
-19 3 1 Big_error
-19 4 1 Big_error
-19 5 1 Big_error
-19 6 1 Big_error
-19 7 1 Big_error
-19 8 1 Big_error
-19 9 1 Narrow
-19 10 1 Big_error
-19 11 1576.35 Good
-20 0 1 Narrow
-20 1 1 Big_error
-20 2 1 Narrow
-20 3 -nan Good
-20 4 1 Big_error
-20 5 1 Big_error
-20 6 1 Big_error
-20 7 1 Big_error
-20 8 1 Big_error
-20 9 1 Big_error
-20 10 1 Big_error
-20 11 1 Big_error
-21 0 1 Big_error
-21 1 1 Narrow
-21 2 1 Big_error
-21 3 1366.37 Good
-21 4 -nan Good
-21 5 1 Big_error
-21 6 1 Big_error
-21 7 1 Big_error
-21 8 1 Big_error
-21 9 1 Big_error
-21 10 -nan Good
-21 11 1418.51 Good
-22 0 1 Big_error
-22 1 1 Big_error
-22 2 1 Big_error
-22 3 1 Big_error
-22 4 1601.24 Good
-22 5 1414.71 Good
-22 6 1 Big_error
-22 7 1 Big_error
-22 8 1 Big_error
-22 9 1 Big_error
-22 10 1 Big_error
-22 11 1395.07 Good
-23 0 1 Narrow
-23 1 1 Big_error
-23 2 1 Big_error
-23 3 1421.08 Good
-23 4 1 Big_error
-23 5 1 Big_error
-23 6 1 Big_error
-23 7 1 Big_error
-23 8 1 Big_error
-23 9 1 Big_error
-23 10 1 Big_error
-23 11 1602.67 Good
+Module	 HV
+1	-1430.37
+2	-1480
+3	-1486
+4	-1453
+5	-2087
+6	-1793
+7	-1781
+8	-1848
+9	-1467
+10	-1444
+11	-1425
+12	-1456.72
+13	-1489.03
+14	nan
+15	-1451
+16	-1435
+17	-2016
+18	-1739
+19	-2009
+20	nan
+21	-1373.77
+22	-1480
+23	-1585.43
+24	-1608
+25	-1449
+26	-1605
+27	-1527.92
+28	-1370.92
+29	-2546.63
+30	-1885
+31	-2419.68
+32	-2200
+33	-1514.57
+34	nan
+35	nan
+36	-1462
+37	-1492.63
+38	-1463
+39	-1436
+40	-1543.76
+41	-1787
+42	-1783
+43	-1782
+44	-1902
+45	-1455
+46	-1469
+47	-1474
+48	-1520.35
+49	-1480
+50	nan
+51	-1554.41
+52	nan
+53	-1665
+54	-1838
+55	-1900
+56	-1967
+57	-1466
+58	-1491
+59	-1472
+60	-1593.18
+61	nan
+62	-1464
+63	-1514
+64	-1478
+65	-2106
+66	-1779
+67	-1739
+68	-2026
+69	nan
+70	-1509
+71	nan
+72	-1472
+73	-1600
+74	-1530
+75	-1627
+76	-1520
+77	-2200
+78	-2200
+79	-1850
+80	-2168
+81	-1437
+82	-1461
+83	-1443.49
+84	-1481.58
+85	-1450
+86	-1471
+87	-1504.31
+88	-1446
+89	-1809
+90	-1742
+91	-1670
+92	-1840
+93	-1457
+94	-1486
+95	-1511
+96	-1531.16
+97	-1529.78
+98	-1445
+99	-1538
+100	-1458
+101	-2018
+102	-1842
+103	nan
+104	-2102
+105	-1433
+106	-1439
+107	-1477
+108	-1489.86
+109	-1646.41
+110	-1534.99
+111	-1470
+112	-1458
+113	-1658
+114	-1682
+115	-1805
+116	-1866
+117	-1404
+118	-1481
+119	-1394.13
+120	-1467.06
+121	-1434.49
+122	-1481
+123	-1554.77
+124	-1485
+125	-1551
+126	-1734
+127	-1745
+128	-1682
+129	-1424
+130	-1361.72
+131	nan
+132	-1621.15
+133	-1479.62
+134	-1437
+135	-1482
+136	-1454
+137	-1965
+138	-1957
+139	-1938
+140	-2058
+141	nan
+142	-1424.54
+143	-1479
+144	-1447.14
+145	-1614
+146	-1581
+147	-1545
+148	-1572
+149	-2200
+150	-2099
+151	-1964.55
+152	-1975
+153	-1441
+154	-1454.71
+155	-1492
+156	-1493
+157	-1455
+158	-1467
+159	-1492.61
+160	-1464
+161	nan
+162	-2200
+163	-1653
+164	-1867
+165	-1469
+166	-1389.75
+167	-1484
+168	-1570.54
+169	nan
+170	-1409.66
+171	-1492
+172	-1413.08
+173	-1963
+174	nan
+175	-1962
+176	-1914
+177	-1482
+178	-1712
+179	-1459
+180	-1479.22
+181	nan
+182	-1525
+183	-1432
+184	-1495
+185	-1381.92
+186	-2034
+187	-1714
+188	-1582.64
+189	nan
+190	-1524
+191	-1462.02
+192	-1453
+193	-1518
+194	-1504
+195	-1494
+196	-1495
+197	-2364.9
+198	-1765
+199	-2150
+200	-2200
+201	nan
+202	nan
+203	-1399.55
+204	-1740
+205	-1524
+206	-1572
+207	nan
+208	-1534.72
+209	-1881
+210	-1709
+211	-1619
+212	-2065
+213	-1424
+214	-1470
+215	-1435
+216	-1514.11
+217	-1460.26
+218	-1657.6
+219	-1430
+220	-1431.26
+221	-1659
+222	-2022
+223	-1779
+224	-1750
+225	-1401
+226	-1490
+227	-1470
+228	-1650
+229	-1497.59
+230	-1373.13
+231	-1482
+232	-1509
+233	-2065
+234	nan
+235	-1929
+236	-2200
+237	-1501
+238	-1467
+239	nan
+240	-1550
+241	-1598
+242	-1511
+243	-1465.92
+244	-1498.28
+245	-2194
+246	nan
+247	nan
+248	-2121
+249	-1449
+250	-1465
+251	-1481
+252	-1600
+253	-1600
+254	-1498
+255	-1359.05
+256	nan
+257	nan
+258	-1486
+259	-1598
+260	-1882
+261	-1450
+262	-1429
+263	-1455
+264	-1456.67
+265	-1616
+266	-1427
+267	-1453.64
+268	-1421
+269	-1498.9
+270	-1406.02
+271	-2111
+272	-2121
+273	-1414
+274	-1414
+275	-1433.45
+276	-1431.28
+277	-1490
+278	-1557
+279	-1472
+280	-1483
+281	-1769
+282	-1367.91
+283	-1861
+284	nan
+285	-1455
+286	-1465
+287	-1488
+288	-1540

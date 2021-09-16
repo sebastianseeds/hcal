@@ -1,7 +1,7 @@
 //Code to calibrate HCal energy deposition by PMT module modified from BigCal script courtesy A.Puckett. SSeeds 8.20.21
 
 //#include "bigcal_ntuple.C"
-#include "HCal_ntuple.C"
+//#include "HCal_ntuple.C"
 #include "TChain.h"
 #include "TTree.h"
 #include "TFile.h"
@@ -20,7 +20,7 @@
 
 const int ncell = 1744; //Why? For bigCal 32 rows by 32 cols = 1024. Later, the difference (1744 - 1024 = 720) is attributed to RCS (?) where the bigCal cells are protvino (also ?)
 
-void bigcal_calibration( const char *setupfilename, const char *outputfilename ){
+void hcal_e_calibration( const char *setupfilename, const char *outputfilename ){
 
   //set some limits on the calibration constants:
   //where do these limits come from? - SS
@@ -41,7 +41,7 @@ void bigcal_calibration( const char *setupfilename, const char *outputfilename )
   
   //TChain *C = new TChain("h9030"); //why h9030? - SS
   
-  TChain *C = new TChain("T");
+  TChain *C = new TChain("C");
 
   TString currentline;
   ifstream setupfile(setupfilename);
@@ -55,11 +55,13 @@ void bigcal_calibration( const char *setupfilename, const char *outputfilename )
       C->Add(currentline.Data());
   }
   
+  //Hard code this cut for now, just to check the integrity of the algorithm
   TCut global_cut = ""; 
+  //TCut global_cut = "sbs.hcal.a_p>50"; //Can inform with expected energy deposition from cosmics (14 MeV) 
 
   while( currentline.ReadLine(setupfile) && !currentline.BeginsWith("endcut") ){
     if( !currentline.BeginsWith("#") )
-      global_cut += currentline.Data();
+      global_cut += currentline.Data(); //This adds a many strings of logical operators - assuming channel, signal amplitude, 
   }
 
   TEventList *elist = new TEventList("elist");
@@ -139,10 +141,13 @@ void bigcal_calibration( const char *setupfilename, const char *outputfilename )
     // dchi^2/dc_k = 2 * sum_i=1,nevent 1/E_i * (E_i - sum_j c_j A_j) * A_k 
     // This is a system of linear equations for c_k, with RHS = sum_i A_k and LHS = sum_i sum_j A_j c_j A_k/E_i 
     if( nevent%1000 == 0 ) cout << nevent << endl;
-    int best = int(T->ibest) - 1; //index in the array of the "best" cluster found in this event
-    int ncellclust = int(T->ncellclust[best]); //total number of hits in the "best" cluster
+    //int best = int(T->ibest) - 1; //index in the array of the "best" cluster found in this event
+    int best = int(T->cid) - 1; //index in the array of the "best" cluster found in this event
+    //int ncellclust = int(T->ncellclust[best]); //total number of hits in the "best" cluster
+    int ncellclust = int(T->cnb); //total number of hits in the "best" cluster
     
-    if( best >= 0 && T->nclust > 0 && ncellclust >= 1 ){ // require at least 2 hits in this cluster to use as a "good" event for calibration purposes:
+    //if( best >= 0 && T->nclust > 0 && ncellclust >= 1 ){ // require at least 2 hits in this cluster to use as a "good" event for calibration purposes:
+    if( cid >= 0 && T->nclust > 0 && ncellclust >= 1 ){ // require at least 2 hits in this cluster to use as a "good" event for calibration purposes:
       //******************************************************************
       //* Starting here, this information is irrelevant for calibration: *
       //******************************************************************

@@ -15,8 +15,9 @@
 // Detector parameters and flags
 const int kNrows = 24;
 const int kNcols = 12;
+const int kCanvSize = 100;
 
-const double kTargetRAU = 375/50; // Set by looking for signature amp saturation distribution between maxADC values of 975 mv to 1000 mV and taking the rising edge start. 1000 is the minimum maxADC value to saturate where the amp dynamic range is 0-3V and the average attenuation over cables is 1/3. Looking at 14MeV/700MeV for mean energy deposition from muons by peak energy deposition in highest GMn kinematic (E_m/E_gmn = 1/50), so multiply this target (375 mV) by 1/50 to maximize dynamic range of the PMT and avoid saturation on amplifier where (owing to attenuation over long cables) saturation occurs there before the fADC
+const double kTargetRAU = 406/50; // Set by looking for signature amp saturation distribution between maxADC values of 975 mv to 1000 mV and taking the rising edge start. 1000 is the minimum maxADC value to saturate where the amp dynamic range is 0-3V and the average attenuation over cables is 1/3. Looking at 14MeV/700MeV for mean energy deposition from muons by peak energy deposition in highest GMn kinematic (E_m/E_gmn = 1/50), so multiply this target (375 mV) by 1/50 to maximize dynamic range of the PMT and avoid saturation on amplifier where (owing to attenuation over long cables) saturation occurs there before the fADC
 
 // Counter to keep track of T tree entry for processing
 int gCurrentEntry = -1;
@@ -25,7 +26,7 @@ TChain *T = 0;
 // Augment fn's for cosmic Calibration and recording
 string getDate( );
 
-// Declare necessary histograms
+// Declare necessary histograms and canvas
 TH1F *gPMTIntSpec[kNrows][kNcols]; 
 TH1F *gPMTMaxSpec[kNrows][kNcols]; 
 TH1F *gPMTIntSpecTDC[kNrows][kNcols]; 
@@ -253,7 +254,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   fitData << "Module " << " " << " Target HV " << " " << " Stat " << " " << " ErrStat " << " " << " Peak Pos " << " " << " ErrPPos " << " " << " Peak Width " << " " << " ErrPWid " << " " << " NGoodEvents " << " " <<  " " << " Flag " << std::endl;
 
   //Set spectrum histogram limits
-  int PMTSpecBins = 100;
+  int PMTSpecBins = 250;
   //INT
   double PMTIntSpec_min = 0.0, PMTIntSpec_max = 250.0;
   //MAX
@@ -261,6 +262,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   
   //Build spectrum histograms. Empirical limits.
   cout << "Building ADC and TDC spectrum histograms.." << endl;
+
   for( int r=0; r<kNrows; r++ ){
     for( int c=0; c<kNcols; c++ ){  
 
@@ -395,12 +397,16 @@ int hcal_gain_match(int run = -1, int event = -1){
 
   // Fit ADC spectra with landau to extract mpv for HV calibration
   cout << "Writing spectrum histograms and calibration constants to file.." << endl;
+  ofstream reportFile;
+  reportFile.open( "outFiles/HVReport.txt" ); // Create text file to hold target HVs
   ofstream outFile;
-  outFile.open( Form( "outFiles/HVTargets_run%d.txt", run ) ); // Create text file to hold target HVs
+  outFile.open( Form("outFiles/HVTargets_run%d.txt", run ) ); // Create text file to hold target HVs
   time_t now = time(0); 
   char *dt = ctime(&now);
-  outFile << "#Target HV settings for run " << run << " from hcal_gain_match.C on " << dt << "#" << endl;
-  outFile << "#Row Col targetHV Error" << endl;
+  reportFile << "#Target HV settings for run " << run << " from hcal_gain_match.C on " << dt << "#" << endl;
+  reportFile << "#Row Col targetHV Error" << endl;
+
+  outFile << "Module" << '\t' << " HV" << endl;
 
   // Implement two-fit scheme
   TF1 *landauInt[kNrows][kNcols] = {};
@@ -487,28 +493,28 @@ int hcal_gain_match(int run = -1, int event = -1){
 	cout << "**Module " << r << " " << c << " histo empty." << endl;
 	Flag = "No_Data";
 	for( int i=0; i<4; i++ ) { parsMax[i] = 0.0; parErrMax[i] = 0.0; }
-	targetHV[r][c] = 1.0;
+	targetHV[r][c] = gPMTHV[r][c];
 	goodEvMax = 0.0;
       }else if( parsMax[2] > 60.0 ){
 	cout << "**Module " << r << " " << c << " fit too wide." << endl;
 	cout << "parsMax[2] = " << parsMax[2] << endl;
 	Flag = "Wide";
 	for( int i=0; i<4; i++ ) { parsMax[i] = 0.0; parErrMax[i] = 0.0; }
-	targetHV[r][c] = 1.0;
+	targetHV[r][c] = gPMTHV[r][c];
 	goodEvMax = 0.0;
       }else if( parsMax[2] < 1.0 ){
 	cout << "**Module " << r << " " << c << " fit too narrow." << endl;
 	cout << "parsMax[2] = " << parsMax[2] << endl;
 	Flag = "Narrow";
 	for( int i=0; i<4; i++ ) { parsMax[i] = 0.0; parErrMax[i] = 0.0; }
-	targetHV[r][c] = 1.0;
+	targetHV[r][c] = gPMTHV[r][c];
 	goodEvMax = 0.0;
       }else if( parErrMax[1] > 20.0 || parErrMax[2] > 20.0 ){
 	cout << "**Module " << r << " " << c << " error bar too high." << endl;
 	cout << "parErrMax[1] = " << parErrMax[1] << " parErrMax[2] = " << parErrMax[2] << endl;
 	Flag = "Big_error";
 	for( int i=0; i<4; i++ ) { parsMax[i] = 0.0; parErrMax[i] = 0.0; }
-	targetHV[r][c] = 1.0;
+	targetHV[r][c] = gPMTHV[r][c];
 	goodEvMax = 0.0;
       }else if( parsMax[2] < 5.0 ){
 	cout << "**Warning: Module " << r << " " << c << " appears narrow." << endl;
@@ -519,7 +525,9 @@ int hcal_gain_match(int run = -1, int event = -1){
 
       // Write target HV and error flags to file
       cout << "Target HV for r=" << r << ", c=" << c << ", target sRAU=" << kTargetRAU << ", HV setting=" << gPMTHV[r][c] << ", mean ADC=" << parsInt[1] << ", and PMT alpha=" << gAlphas[r][c] << " is: " << targetHV[r][c] << "." << endl;
-      outFile << r << " " << c << " " << targetHV[r][c] << " " << Flag << endl; 
+      reportFile << r << " " << c << " " << targetHV[r][c] << " " << Flag << endl; 
+
+      outFile << r*12+c+1 << '\t' << -targetHV[r][c] << endl;
 
       // Write fitted histograms to file
 
@@ -538,13 +546,13 @@ int hcal_gain_match(int run = -1, int event = -1){
       gPMTMaxSpec[r][c]->Draw( "AP" );
 
       if( diagPlots==1 ){
-	cout << "Writing diagnostic plots to file.." << endl;
+	//cout << "Writing diagnostic plots to file.." << endl;
 	gADCvChannel->SetBinContent( kNcols*r+c, parsInt[1] );
 	gAmpvChannel->SetBinContent( kNcols*r+c, parsMax[1] );
 	gPedvChannel->SetBinContent( kNcols*r+c, gPedSpec[r][c]->GetMean() );
 	gNEVvChannel->SetBinContent( kNcols*r+c, gPMTIntSpec[r][c]->GetEntries() );
 	
-	cout << r << " " << c << " " << gPMTIntSpec[r][c]->GetEntries() << endl;
+	//cout << r << " " << c << " " << gPMTIntSpec[r][c]->GetEntries() << endl;
 
 	gNEV->SetBinContent( r+1, c+1, gPMTIntSpec[r][c]->GetEntries() );
 	gTHVvChannel->SetBinContent( kNcols*r+c, targetHV[r][c] );
@@ -583,6 +591,43 @@ int hcal_gain_match(int run = -1, int event = -1){
     gTHVvChannel->SetTitle( "Target HV vs Channel" );
     gTHVvChannel->Write( "THVvChannel" );
     gTHVvChannel->Draw( "AP" );
+  }
+
+  int tab=4;
+  TCanvas *c1[tab];
+
+  if( diagPlots==1 ){
+    cout << "Writing spectra to single canvas.." << endl;
+    int j=0;
+    int k=0;
+    int m=0;
+
+    for( int i=0; i<tab; i++){
+      c1[i] = new TCanvas( Form("c1[%d]",i),"Integrated ADC Spectra (pC)",kCanvSize*kNrows,kCanvSize*kNrows);
+      gStyle->SetOptStat(0);
+      c1[i]->Divide(kNcols,kNrows/tab);
+    }
+
+    for( int r=0; r<kNrows; r++ ){
+      for( int c=0; c<kNcols; c++ ){
+	m = kNcols*r+c;
+	k = m/72;
+	j = m-72*k+1;	  
+
+	cout << m << " " << j << " " << k << endl;
+
+	c1[k]->cd(j);
+	gPMTIntSpec[r][c]->SetTitle(Form("R%d C%d",r,c));
+	gPMTIntSpec[r][c]->Draw();
+      }
+    }
+    
+    for( int i=0; i<tab; i++){
+      c1[i]->SaveAs(Form("Q%d.pdf",i));
+    }
+    
+
+
   }
 
   // Post analysis reporting
