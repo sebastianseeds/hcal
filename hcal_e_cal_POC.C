@@ -46,7 +46,7 @@ void hcal_e_cal_POC( int run = -1 ){
   TFile *fout = new TFile( Form("hcalECal_%d.root",run), "RECREATE" );
      
   //Hard code this with arbitrary cut for now, just to check the integrity of the algorithm
-  TCut global_cut = "sbs.hcal.a_p>20"; 
+  TCut global_cut = ""; 
 
   //Create event list to loop over
   TEventList *elist = new TEventList("elist");

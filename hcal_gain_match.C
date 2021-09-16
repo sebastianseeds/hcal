@@ -230,6 +230,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   // Initialize function with user commands
   bool diagPlots = 0;
   bool vertCut = 0;
+  bool HVLimit = 0;
   string date = getDate();
   double adcCut = 5;
 
@@ -241,6 +242,8 @@ int hcal_gain_match(int run = -1, int event = -1){
   cin >> diagPlots;
   cout << "Enter ADC pulse threshold over pedestal (in mV)." << endl;
   cin >> adcCut;
+  cout << "Limit HV Targets to within 100V of HV settings? Enter 0 for NO and 1 for YES." << endl;
+  cin >> HVLimit;
   
   // Define a clock to check macro processing time
   TStopwatch *st = new TStopwatch();
@@ -292,12 +295,12 @@ int hcal_gain_match(int run = -1, int event = -1){
 
   // Build diagnostic histograms
   if( diagPlots==1 ){
-    gADCvChannel = new TH1F( "ADCvChannel", "ADC vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
-    gAmpvChannel = new TH1F( "AmpvChannel", "Amplitude vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
-    gNEVvChannel = new TH1F( "NEVvChannel", "Number of events vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
+    gADCvChannel = new TH1F( "ADCvChannel", "ADC vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
+    gAmpvChannel = new TH1F( "AmpvChannel", "Amplitude vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
+    gNEVvChannel = new TH1F( "NEVvChannel", "Number of events vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
     gNEV = new TH2F( "NEV", "Number of events heatmap", kNrows, 0, kNrows, kNcols, 0, kNcols );
-    gPedvChannel = new TH1F( "PedvChannel", "Pedestal vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
-    gTHVvChannel = new TH1F( "THVvChannel", "Target HV vs Channel", kNcols*kNrows, 0, kNcols*kNrows-1 );
+    gPedvChannel = new TH1F( "PedvChannel", "Pedestal vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
+    gTHVvChannel = new TH1F( "THVvChannel", "Target HV vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
   }
   
   // Read in data produced by analyzer in root format
@@ -404,7 +407,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   time_t now = time(0); 
   char *dt = ctime(&now);
   reportFile << "#Target HV settings for run " << run << " from hcal_gain_match.C on " << dt << "#" << endl;
-  reportFile << "#Row Col targetHV Error" << endl;
+  reportFile << "#Row Col targetHVUnlimited targetHV setHV Error" << endl;
 
   outFile << "Module" << '\t' << " HV" << endl;
 
@@ -420,6 +423,7 @@ int hcal_gain_match(int run = -1, int event = -1){
 
   // Array to store target high voltage per module as it's calculated
   double targetHV[kNrows][kNcols];
+  double targetHVUnlimited[kNrows][kNcols];
 
   // Fit all spectra histograms
   for(int r=0; r<kNrows; r++){
@@ -486,6 +490,8 @@ int hcal_gain_match(int run = -1, int event = -1){
 
       // Calculate target HV
       targetHV[r][c] = gPMTHV[r][c]/pow(parsInt[1]/kTargetRAU,1.0/gAlphas[r][c]);
+      targetHVUnlimited[r][c] = targetHV[r][c];
+      
 
       // Checking on goodness of fit for max spectra
       string Flag = "Good"; // Flag to keep track of fit status
@@ -516,6 +522,16 @@ int hcal_gain_match(int run = -1, int event = -1){
 	for( int i=0; i<4; i++ ) { parsMax[i] = 0.0; parErrMax[i] = 0.0; }
 	targetHV[r][c] = gPMTHV[r][c];
 	goodEvMax = 0.0;
+      }else if( targetHV[r][c]-gPMTHV[r][c] > 100 ){
+	if( HVLimit==1 ){
+	  targetHV[r][c] = gPMTHV[r][c]+100;
+	  Flag = "Big_HV_UP";
+	}
+      }else if( targetHV[r][c]-gPMTHV[r][c] < 100 ){
+	if( HVLimit==1 ){
+	  targetHV[r][c] = gPMTHV[r][c]-100;
+	  Flag = "Big_HV_DOWN";
+	}
       }else if( parsMax[2] < 5.0 ){
 	cout << "**Warning: Module " << r << " " << c << " appears narrow." << endl;
       }
@@ -525,7 +541,7 @@ int hcal_gain_match(int run = -1, int event = -1){
 
       // Write target HV and error flags to file
       cout << "Target HV for r=" << r << ", c=" << c << ", target sRAU=" << kTargetRAU << ", HV setting=" << gPMTHV[r][c] << ", mean ADC=" << parsInt[1] << ", and PMT alpha=" << gAlphas[r][c] << " is: " << targetHV[r][c] << "." << endl;
-      reportFile << r << " " << c << " " << targetHV[r][c] << " " << Flag << endl; 
+      reportFile << r << " " << c << " " << -targetHVUnlimited[r][c] << " " << -targetHV[r][c] << " " << -gPMTHV[r][c] << " " << Flag << endl; 
 
       outFile << r*12+c+1 << '\t' << -targetHV[r][c] << endl;
 
@@ -623,7 +639,8 @@ int hcal_gain_match(int run = -1, int event = -1){
     }
     
     for( int i=0; i<tab; i++){
-      c1[i]->SaveAs(Form("Q%d.pdf",i));
+      gStyle->SetImageScaling(3.);
+      c1[i]->SaveAs(Form("outFiles/Run%d_Q%d.png",run,i));
     }
     
 
