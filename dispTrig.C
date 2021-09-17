@@ -102,7 +102,7 @@ namespace hcalgui {
         subCanv[i] = canv[i]->GetCanvas();
 	if( Nrows<12 || Ncols<12) {
 	  //subCanv[i]->Divide(Nrows,Ncols,0.001,0.001);
-	  subCanv[i]->Divide(Ncols,Nrows,0.001,0.001);
+	  subCanv[i]->Divide(Nrows,Ncols,0.001,0.001);
         } else {
 	 subCanv[i]->Divide(12,6,0.001,0.001);
         }
@@ -147,15 +147,8 @@ namespace hcalgui {
       main->MapWindow();
 
       
-      for(Int_t i = 0; i < 1; i++) {
-        subCanv[i] = canv[i]->GetCanvas();
-	if( Nrows<12 || Ncols<12) {
-	  subCanv[i]->Divide(Nrows,Ncols,0.001,0.001);
-          subCanv[i]->Divide(Ncols,Nrows,0.001,0.001);
-        } else {
-	 subCanv[i]->Divide(12,6,0.001,0.001);
-        }
-      }
+      subCanv[0] = canv[0]->GetCanvas();
+      subCanv[0]->Divide(4,4,0.001,0.001);
       
     }
   }
@@ -210,11 +203,11 @@ void displayEvent(Int_t entry = -1, bool TOpt = true)
 	gSaturated[r][c] = false;
       }
     }
-
+    
     Double_t peak[Nrows][Ncols];
     Double_t adc[Nrows][Ncols];
     Double_t tdc[Nrows][Ncols];
-
+    
     for(r  = 0; r < Nrows; r++) {
       for(c  = 0; c < Ncols; c++) {
 	peak[r][c] = 0.0;
@@ -222,7 +215,7 @@ void displayEvent(Int_t entry = -1, bool TOpt = true)
 	tdc[r][c] = 0.0;
       }
     }
-
+    
     for(Int_t m = 0; m < hcalt::ndata; m++) {
       r = hcalt::row[m];
       c = hcalt::col[m];
@@ -231,10 +224,10 @@ void displayEvent(Int_t entry = -1, bool TOpt = true)
 	std::cerr << "Row or column negative." << std::endl;
 	continue;
       }
-
+      
       if(r>= Nrows || c >= Ncols)
 	continue;
-
+      
       // Fill adc, tdc, and cluster arrays
       idx = hcalt::samps_idx[m];
       n = hcalt::nsamps[m];
@@ -259,6 +252,8 @@ void displayEvent(Int_t entry = -1, bool TOpt = true)
 	}
       }
     }
+    
+    sub = 6;
 
     for(r = 0; r < Nrows; r++) {
       for(c = 0; c < Ncols; c++) {
@@ -301,8 +296,9 @@ void displayEvent(Int_t entry = -1, bool TOpt = true)
     std::cout << "Displaying event " << gCurrentEntry << std::endl;
     hcalgui::ledLabel->SetText(TString::Format("LED Bit: %02d, Count: %5d",Int_t(hcalt::ledbit),Int_t(hcalt::ledcount)));
 
-    Int_t r,c,Tidx,Tn,Tsub;
+    Int_t r,c,Tidx,Tn,sub;
     // Clear old histograms, just in case modules are not in the tree
+
     for(r = 0; r < Nrows; r++) {
       for(c = 0; c < Ncols; c++) {
 	histos[r][c]->Reset("ICES M");
@@ -310,22 +306,22 @@ void displayEvent(Int_t entry = -1, bool TOpt = true)
       }
     }
 
-    //Double_t peak[Nrows][Ncols];
+    Double_t peak[Nrows][Ncols];
     Double_t Tadc[Nrows][Ncols];
     //Double_t tdc[Nrows][Ncols];
 
     for(r  = 0; r < Nrows; r++) {
       for(c  = 0; c < Ncols; c++) {
-	//peak[r][c] = 0.0;
+	peak[r][c] = 0.0;
 	Tadc[r][c] = 0.0;
 	//tdc[r][c] = 0.0;
       }
     }
 
-    for(Int_t m = 0; m < hcalt::ndata; m++) {
-      r = hcalt::TelemID[m]/Ncols;
-      c = hcalt::TelemID[m]%Ncols;
-      //peak[r][c] = hcalt::a_amp[m];
+    for(Int_t m = 0; m < hcalt::Tndata; m++) {
+      r = 0;
+      c = hcalt::Tcol[m];
+      peak[r][c] = hcalt::Ta_amp[m];
       if(r < 0 || c < 0) {
 	std::cerr << "Row or column negative." << std::endl;
 	continue;
@@ -363,14 +359,12 @@ void displayEvent(Int_t entry = -1, bool TOpt = true)
       for(c = 0; c < Ncols; c++) {
 	sub = r/6;
 	//subCanv[sub]->cd(c*Nrows + r + 1);
-	subCanv[sub]->cd((r%6)*Ncols + c + 1);
-	histos[r][c]->SetTitle(TString::Format("%d-%d (ADC=%g,TDC=%g)",r+1,c+1,adc[r][c],tdc[r][c]));
+	subCanv[sub]->cd((r%4)*Ncols + c + 1);
+	histos[r][c]->SetTitle(TString::Format("%d-%d (ADC=%g)",r+1,c+1,Tadc[r][c]));
 	if(gSaturated[r][c])
 	  histos[r][c]->SetLineColor(kRed+1);
 	else
 	  histos[r][c]->SetLineColor(kBlue+1);
-	if(tdc[r][c]!=0)
-	  histos[r][c]->SetLineColor(kGreen+1);
 	
 	histos[r][c]->Draw();
 	gPad->Update();
@@ -416,8 +410,8 @@ Int_t dispTrig(Int_t run = 1198, Int_t event = -1)
   cin >> trigMap;
 
   if( trigMap==1 ){
-    Nrows=4;
-    Ncols=4;
+    Nrows=1;
+    Ncols=16;
     //heatMapHisto = new TH2D( "Hits by Module", "", kNcols, 0., kNcols, kNrows, 0., kNrows );
   }
 
@@ -444,8 +438,16 @@ Int_t dispTrig(Int_t run = 1198, Int_t event = -1)
     T->SetBranchAddress("sbs.hcal.samps_idx",hcalt::samps_idx);
     T->SetBranchAddress("sbs.hcal.adcrow",hcalt::row);
     T->SetBranchAddress("sbs.hcal.adccol",hcalt::col);
+    
+    // Add trigger generic detector branches
     T->SetBranchAddress("sbs.trig.a_p",hcalt::Ta_p);
     T->SetBranchAddress("sbs.trig.adcelemID",hcalt::TelemID);
+    T->SetBranchAddress("sbs.trig.nsamps",hcalt::Tnsamps);
+    T->SetBranchAddress("sbs.trig.samps",hcalt::Tsamps);
+    T->SetBranchAddress("sbs.trig.samps_idx",hcalt::Tsamps_idx);
+    T->SetBranchAddress("sbs.trig.adccol",hcalt::Tcol);
+    T->SetBranchAddress("sbs.trig.a_amp_p",hcalt::Ta_amp_p);
+    T->SetBranchAddress("sbs.trig.a_amp",hcalt::Ta_amp);
     
 
     // Add clustering branches
@@ -457,6 +459,9 @@ Int_t dispTrig(Int_t run = 1198, Int_t event = -1)
 
     T->SetBranchStatus("Ndata.sbs.hcal.adcrow",1);
     T->SetBranchAddress("Ndata.sbs.hcal.adcrow",&hcalt::ndata);
+
+    T->SetBranchStatus("Ndata.sbs.trig.adccol",1);
+    T->SetBranchAddress("Ndata.sbs.trig.adccol",&hcalt::Tndata);
 
     std::cerr << "Opened up tree with nentries=" << T->GetEntries() << std::endl;
     for(Int_t r = 0; r < Nrows; r++) {
