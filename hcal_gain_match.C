@@ -257,11 +257,11 @@ int hcal_gain_match(int run = -1, int event = -1){
   fitData << "Module " << " " << " Target HV " << " " << " Stat " << " " << " ErrStat " << " " << " Peak Pos " << " " << " ErrPPos " << " " << " Peak Width " << " " << " ErrPWid " << " " << " NGoodEvents " << " " <<  " " << " Flag " << std::endl;
 
   //Set spectrum histogram limits
-  int PMTSpecBins = 250;
+  int PMTSpecBins = 150;
   //INT
-  double PMTIntSpec_min = 0.0, PMTIntSpec_max = 250.0;
+  double PMTIntSpec_min = 0.0, PMTIntSpec_max = 75.0;
   //MAX
-  double PMTMaxSpec_min = 0.0, PMTMaxSpec_max = 500.0;
+  double PMTMaxSpec_min = 0.0, PMTMaxSpec_max = 300.0;
   
   //Build spectrum histograms. Empirical limits.
   cout << "Building ADC and TDC spectrum histograms.." << endl;
@@ -296,6 +296,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   // Build diagnostic histograms
   if( diagPlots==1 ){
     gADCvChannel = new TH1F( "ADCvChannel", "ADC vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
+    gADCvChannel->SetMaximum(100);
     gAmpvChannel = new TH1F( "AmpvChannel", "Amplitude vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
     gNEVvChannel = new TH1F( "NEVvChannel", "Number of events vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
     gNEV = new TH2F( "NEV", "Number of events heatmap", kNrows, 0, kNrows, kNcols, 0, kNcols );
@@ -525,15 +526,18 @@ int hcal_gain_match(int run = -1, int event = -1){
       }else if( targetHV[r][c]-gPMTHV[r][c] > 100 ){
 	if( HVLimit==1 ){
 	  targetHV[r][c] = gPMTHV[r][c]+100;
-	  Flag = "Big_HV_UP";
+	  Flag = "Big_UP";
 	}
-      }else if( targetHV[r][c]-gPMTHV[r][c] < 100 ){
+      }else if( targetHV[r][c]-gPMTHV[r][c] < -100 ){
 	if( HVLimit==1 ){
 	  targetHV[r][c] = gPMTHV[r][c]-100;
-	  Flag = "Big_HV_DOWN";
+	  Flag = "Big_DOWN";
 	}
       }else if( parsMax[2] < 5.0 ){
 	cout << "**Warning: Module " << r << " " << c << " appears narrow." << endl;
+      }else if( targetHV[r][c] > 2500 ){
+	targetHV[r][c] = 2500;
+	Flag = "HV_MAX";
       }
 
       if( Flag != "Good" )
@@ -563,10 +567,10 @@ int hcal_gain_match(int run = -1, int event = -1){
 
       if( diagPlots==1 ){
 	//cout << "Writing diagnostic plots to file.." << endl;
-	gADCvChannel->SetBinContent( kNcols*r+c, parsInt[1] );
-	gAmpvChannel->SetBinContent( kNcols*r+c, parsMax[1] );
-	gPedvChannel->SetBinContent( kNcols*r+c, gPedSpec[r][c]->GetMean() );
-	gNEVvChannel->SetBinContent( kNcols*r+c, gPMTIntSpec[r][c]->GetEntries() );
+	gADCvChannel->SetBinContent( kNcols*r+c+1, parsInt[1] );
+	gAmpvChannel->SetBinContent( kNcols*r+c+1, parsMax[1] );
+	gPedvChannel->SetBinContent( kNcols*r+c+1, gPedSpec[r][c]->GetMean() );
+	gNEVvChannel->SetBinContent( kNcols*r+c+1, gPMTIntSpec[r][c]->GetEntries() );
 	
 	//cout << r << " " << c << " " << gPMTIntSpec[r][c]->GetEntries() << endl;
 
@@ -587,6 +591,11 @@ int hcal_gain_match(int run = -1, int event = -1){
     gADCvChannel->SetTitle( "Average ADC vs Channel" );
     gADCvChannel->Write( "ADCvChannel" );
     gADCvChannel->Draw( "AP" );
+
+    TLine *HVT = new TLine( 0, kTargetRAU, kNcols*kNrows, kTargetRAU);
+    HVT->SetLineColor(kRed);
+    HVT->SetLineWidth(2);
+    HVT->Draw("same");
 
     gAmpvChannel->SetTitle( "Average Amplitude vs Channel" );
     gAmpvChannel->Write( "AmpvChannel" );
