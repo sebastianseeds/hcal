@@ -24,7 +24,10 @@ namespace hcalt {
   Double_t ledcount = 0;
   Double_t tdc[MAX_HCAL_TDC_MODULES+100];
   //Cluster vars
+  Double_t nclus[MAX_HCAL_MODULES+1000] = {0};
+  Double_t nblk[MAX_HCAL_MODULES+1000] = {0};
   Double_t cid[MAX_HCAL_MODULES+1000] = {0};
+  Double_t cblkid[MAX_HCAL_MODULES+1000] = {0};
   Double_t crow[MAX_HCAL_MODULES+1000] = {0};
   Double_t ccol[MAX_HCAL_MODULES+1000] = {0};
   Double_t ce[MAX_HCAL_MODULES+1000] = {0};
