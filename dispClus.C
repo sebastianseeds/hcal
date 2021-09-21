@@ -144,9 +144,10 @@ void displayEvent(Int_t entry = -1)
     std::cout << "Displaying event " << gCurrentEntry << std::endl;
     hcalgui::ledLabel->SetText(TString::Format("LED Bit: %02d, Count: %5d",Int_t(hcalt::ledbit),Int_t(hcalt::ledcount)));
   
-    int r,c,cid;
+    int r,c;
     int nblk = hcalt::nblk[0];
     int cblkid[nblk];
+    int cid = hcalt::cid[0];
 
     // Clear old histogram
     heatMapHisto->Reset("ICES");
@@ -169,6 +170,8 @@ void displayEvent(Int_t entry = -1)
 	if( el == cblkid-1 ) 
 	  clustHisto->SetBinContent( c+1, r+1, 1.0 );
 	  
+	if( el == cid-1 )
+	  clustHisto->SetBinContent( c+1, r+1, 0.5 );
       }
 	
     }

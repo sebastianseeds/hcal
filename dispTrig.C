@@ -274,6 +274,11 @@ Int_t dispTrig(Int_t run = 1198, Int_t event = -1)
     }
   }
 
+  if( T->GetEntries()<=0 ){
+    cout << "Error: no data." << endl;
+    return 0;
+  }
+
   gCurrentEntry = event;
   while( user_input != "q" ) {
     if(is_number(user_input)) {
