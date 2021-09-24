@@ -17,7 +17,7 @@ const int kNrows = 24;
 const int kNcols = 12;
 const int kCanvSize = 100;
 
-const double kTargetRAU = 406/50; // Set by looking for signature amp saturation distribution between maxADC values of 975 mv to 1000 mV and taking the rising edge start. 1000 is the minimum maxADC value to saturate where the amp dynamic range is 0-3V and the average attenuation over cables is 1/3. Looking at 14MeV/700MeV for mean energy deposition from muons by peak energy deposition in highest GMn kinematic (E_m/E_gmn = 1/50), so multiply this target (375 mV) by 1/50 to maximize dynamic range of the PMT and avoid saturation on amplifier where (owing to attenuation over long cables) saturation occurs there before the fADC
+const double kTargetpC = 406/50; // Set by looking for signature amp saturation distribution between maxADC values of 975 mv to 1000 mV and taking the rising edge start. 1000 is the minimum maxADC value to saturate where the amp dynamic range is 0-3V and the average attenuation over cables is 1/3. Looking at 14MeV/700MeV for mean energy deposition from muons by peak energy deposition in highest GMn kinematic (E_m/E_gmn = 1/50), so multiply this target (375 mV) by 1/50 to maximize dynamic range of the PMT and avoid saturation on amplifier where (owing to attenuation over long cables) saturation occurs there before the fADC
 
 // Counter to keep track of T tree entry for processing
 int gCurrentEntry = -1;
@@ -263,7 +263,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   TFile *cosHistFile = new TFile( Form( "outFiles/gainMatchResults_run%d.root", run ), "RECREATE" );
   ofstream fitData;
   fitData.open( Form( "outFiles/HCal_%d_FitData.txt", run ) );
-  fitData << "Run Number: " << run << " Desired Peak Position: " << kTargetRAU << endl;
+  fitData << "Run Number: " << run << " Desired Peak Position: " << kTargetpC << endl;
   fitData << "Module " << " " << " Target HV " << " " << " Stat " << " " << " ErrStat " << " " << " Peak Pos " << " " << " ErrPPos " << " " << " Peak Width " << " " << " ErrPWid " << " " << " NGoodEvents " << " " <<  " " << " Flag " << std::endl;
 
   //Set ADC spectrum histogram limits
@@ -286,26 +286,26 @@ int hcal_gain_match(int run = -1, int event = -1){
       int m = r*12+c;
 
       gIntSpec[r][c] = new TH1F( Form( "Int ADC Spect R%d C%d PMT%d", r, c, m ), Form( "Int ADC Spect R%d C%d PMT%d", r, c, m ), SpecBins, IntSpec_min, IntSpec_max );
-      gIntSpec[r][c]->GetXaxis()->SetTitle( "sRAU" );
+      gIntSpec[r][c]->GetXaxis()->SetTitle( "pC" );
       gIntSpec[r][c]->GetXaxis()->CenterTitle();
       
       gMaxSpec[r][c] = new TH1F( Form( "Max ADC Spect R%d C%d PMT%d", r, c, m ), Form( "Max ADC Spect R%d C%d PMT%d", r, c, m ), SpecBins, MaxSpec_min, MaxSpec_max );
-      gMaxSpec[r][c]->GetXaxis()->SetTitle( "RAU" );
+      gMaxSpec[r][c]->GetXaxis()->SetTitle( "mV" );
       gMaxSpec[r][c]->GetXaxis()->CenterTitle();
       
       gIntSpecTDC[r][c] = new TH1F( Form( "Int ADC Spect R%d C%d PMT%d, TDC Cut", r, c, m ), Form( "Int ADC Spect R%d C%d PMT%d, TDC Cut", r, c, m ), SpecBins, IntSpec_min, IntSpec_max );
-      gIntSpecTDC[r][c]->GetXaxis()->SetTitle( "sRAU" );
+      gIntSpecTDC[r][c]->GetXaxis()->SetTitle( "pC" );
       gIntSpecTDC[r][c]->GetXaxis()->CenterTitle();
       
       gMaxSpecTDC[r][c] = new TH1F( Form( "Max ADC Spect R%d C%d PMT%d, TDC Cut", r, c, m ), Form( "Max ADC Spect R%d C%d PMT%d, TDC Cut", r, c, m ), SpecBins, MaxSpec_min, MaxSpec_max );
-      gMaxSpecTDC[r][c]->GetXaxis()->SetTitle( "RAU" );
+      gMaxSpecTDC[r][c]->GetXaxis()->SetTitle( "mV" );
       gMaxSpecTDC[r][c]->GetXaxis()->CenterTitle();
 
       gPedSpec[r][c] = new TH1F( Form( "Pedestal Spect R%d C%d PMT%d", r, c, m ), Form( "Pedestal Spect R%d C%d PMT%d", r, c, m ), SpecBins, MaxSpec_min, MaxSpec_max );
-      gPedSpec[r][c]->GetXaxis()->SetTitle( "RAU" );
+      gPedSpec[r][c]->GetXaxis()->SetTitle( "mV" );
       gPedSpec[r][c]->GetXaxis()->CenterTitle();
 
-      gTDCSpec[r][c] = new TH1F( Form( "TDC Spect R%d C%d PMT%d", r, c, m ), Form( "Pedestal Spect R%d C%d PMT%d", r, c, m ), TDCBins, TDC_min, TDC_max );
+      gTDCSpec[r][c] = new TH1F( Form( "TDC Spect%d C%d PMT%d", r, c, m ), Form( "Pedestal Spect R%d C%d PMT%d", r, c, m ), TDCBins, TDC_min, TDC_max );
       gTDCSpec[r][c]->GetXaxis()->SetTitle( "t-ref difference (ns)" );
       gTDCSpec[r][c]->GetXaxis()->CenterTitle();
     }
@@ -425,6 +425,8 @@ int hcal_gain_match(int run = -1, int event = -1){
   reportFile.open( "outFiles/HVReport.txt" ); // Create text file to hold target HVs
   ofstream outFile;
   outFile.open( Form("outFiles/HVTargets_run%d.txt", run ) ); // Create text file to hold target HVs
+  ofstream HVsetFile;
+  HVsetFile.open( "setFiles/HV_run####.txt" );
   time_t now = time(0); 
   char *dt = ctime(&now);
   reportFile << "#Target HV settings for run " << run << " from hcal_gain_match.C on " << dt << "#" << endl;
@@ -510,7 +512,7 @@ int hcal_gain_match(int run = -1, int event = -1){
       double goodEvMax = gMaxSpec[r][c]->Integral( gMaxSpec[r][c]->FindFixBin( lowBinCentMax ), gMaxSpec[r][c]->FindFixBin( upBinCentMax ), "" );
 
       // Calculate target HV
-      targetHV[r][c] = gHV[r][c]/pow(parsInt[1]/kTargetRAU,1.0/gAlphas[r][c]);
+      targetHV[r][c] = gHV[r][c]/pow(parsInt[1]/kTargetpC,1.0/gAlphas[r][c]);
       targetHVUnlimited[r][c] = targetHV[r][c];
       
 
@@ -520,28 +522,28 @@ int hcal_gain_match(int run = -1, int event = -1){
 	cout << "**Module " << r << " " << c << " histo empty." << endl;
 	Flag = "No_Data";
 	for( int i=0; i<4; i++ ) { parsMax[i] = 0.0; parErrMax[i] = 0.0; }
-	targetHV[r][c] = gHV[r][c];
+	if( HVLimit == 1 ) targetHV[r][c] = gHV[r][c];
 	goodEvMax = 0.0;
       }else if( parsMax[2] > 60.0 ){
 	cout << "**Module " << r << " " << c << " fit too wide." << endl;
 	cout << "parsMax[2] = " << parsMax[2] << endl;
 	Flag = "Wide";
 	for( int i=0; i<4; i++ ) { parsMax[i] = 0.0; parErrMax[i] = 0.0; }
-	targetHV[r][c] = gHV[r][c];
+	if( HVLimit == 1 ) targetHV[r][c] = gHV[r][c];
 	goodEvMax = 0.0;
       }else if( parsMax[2] < 1.0 ){
 	cout << "**Module " << r << " " << c << " fit too narrow." << endl;
 	cout << "parsMax[2] = " << parsMax[2] << endl;
 	Flag = "Narrow";
 	for( int i=0; i<4; i++ ) { parsMax[i] = 0.0; parErrMax[i] = 0.0; }
-	targetHV[r][c] = gHV[r][c];
+	if( HVLimit == 1 ) targetHV[r][c] = gHV[r][c];
 	goodEvMax = 0.0;
       }else if( parErrMax[1] > 20.0 || parErrMax[2] > 20.0 ){
 	cout << "**Module " << r << " " << c << " error bar too high." << endl;
 	cout << "parErrMax[1] = " << parErrMax[1] << " parErrMax[2] = " << parErrMax[2] << endl;
 	Flag = "Big_error";
 	for( int i=0; i<4; i++ ) { parsMax[i] = 0.0; parErrMax[i] = 0.0; }
-	targetHV[r][c] = gHV[r][c];
+	if( HVLimit == 1 ) targetHV[r][c] = gHV[r][c];
 	goodEvMax = 0.0;
       }else if( targetHV[r][c]-gHV[r][c] > 100 ){
 	if( HVLimit==1 ){
@@ -564,10 +566,11 @@ int hcal_gain_match(int run = -1, int event = -1){
 	cout << "Problem fit to module " << r << " " << c << " -> " << Flag << endl;
 
       // Write target HV and error flags to file
-      cout << "Target HV for r=" << r << ", c=" << c << ", target sRAU=" << kTargetRAU << ", HV setting=" << gHV[r][c] << ", mean ADC=" << parsInt[1] << ", and PMT alpha=" << gAlphas[r][c] << " is: " << targetHV[r][c] << "." << endl;
+      cout << "Target HV for r=" << r << ", c=" << c << ", target pC=" << kTargetpC << ", HV setting=" << gHV[r][c] << ", mean ADC=" << parsInt[1] << ", and PMT alpha=" << gAlphas[r][c] << " is: " << targetHV[r][c] << "." << endl;
       reportFile << r << " " << c << " " << -targetHVUnlimited[r][c] << " " << -targetHV[r][c] << " " << -gHV[r][c] << " " << Flag << endl; 
 
       outFile << r*12+c+1 << '\t' << -targetHV[r][c] << endl;
+      HVsetFile << -targetHV[r][c] << endl;
 
       // Write fitted histograms to file
 
@@ -681,6 +684,10 @@ int hcal_gain_match(int run = -1, int event = -1){
 
 
   }
+
+  reportFile.close();
+  outFile.close();
+  HVsetFile.close();
 
   // Post analysis reporting
   cout << "Finished loop over run " << run << "." << endl;
