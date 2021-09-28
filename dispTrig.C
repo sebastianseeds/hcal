@@ -48,7 +48,7 @@ namespace hcalgui {
   TRootEmbeddedCanvas *canv[4];
 
   TGCompositeFrame* AddTabSub(Int_t sub) {
-    tf = fTab->AddTab(Form("HCAL Sub%d",sub+1));
+    tf = fTab->AddTab(Form("HCAL Trigger fADC Sub%d",sub+1));
 
     TGCompositeFrame *fF5 = new TGCompositeFrame(tf, (12+1)*kCanvSize,(6+1)*kCanvSize , kHorizontalFrame);
     TGLayoutHints *fL4 = new TGLayoutHints(kLHintsTop | kLHintsLeft | kLHintsExpandX |
@@ -189,11 +189,11 @@ void displayEvent(Int_t entry = -1)
   for(c = 0; c < kNcols; c++) {
     subCanv[0]->cd( c + 1 );
     histos[c]->SetTitle(TString::Format("%d (ADC=%g)",c+1,Tadc[c]));
+    histos[c]->SetMaximum(60);
     if(gSaturated[c])
       histos[c]->SetLineColor(kRed+1);
     else
       histos[c]->SetLineColor(kBlue+1);
-    
     histos[c]->Draw();
     gPad->Update();
     std::cout << " [" << c << "]=" << peak[c];
@@ -229,6 +229,7 @@ Int_t dispTrig(Int_t run = 1198, Int_t event = -1)
     T->Add(TString::Format("/volatile/halla/sbs/seeds/rootfiles/hcal_%d*.root",run));
     T->SetBranchStatus("*",0);
     T->SetBranchStatus("sbs.hcal.*",1);
+    T->SetBranchStatus("sbs.trig.*",2);
     T->SetBranchAddress("sbs.hcal.nsamps",hcalt::nsamps);
     T->SetBranchAddress("sbs.hcal.a",hcalt::a);
     T->SetBranchAddress("sbs.hcal.a_p",hcalt::a_p);
@@ -263,7 +264,7 @@ Int_t dispTrig(Int_t run = 1198, Int_t event = -1)
     T->SetBranchStatus("Ndata.sbs.hcal.adcrow",1);
     T->SetBranchAddress("Ndata.sbs.hcal.adcrow",&hcalt::ndata);
 
-    T->SetBranchStatus("Ndata.sbs.trig.adccol",1);
+    T->SetBranchStatus("Ndata.sbs.trig.adccol",2);
     T->SetBranchAddress("Ndata.sbs.trig.adccol",&hcalt::Tndata);
 
     std::cerr << "Opened up tree with nentries=" << T->GetEntries() << std::endl;
@@ -271,6 +272,11 @@ Int_t dispTrig(Int_t run = 1198, Int_t event = -1)
       histos[c] = MakeHisto(c,DISP_FADC_SAMPLES);
       gSaturated[c] = false;
     }
+  }
+
+  if( T->GetEntries()<=0 ){
+    cout << "Error: no data." << endl;
+    return 0;
   }
 
   gCurrentEntry = event;

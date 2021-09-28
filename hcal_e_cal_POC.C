@@ -71,12 +71,15 @@ void hcal_e_cal_POC( int run = -1 ){
 
     // Add clustering branches
     T->SetBranchAddress("sbs.hcal.clus.id",hcalt::cid);
-    T->SetBranchAddress("sbs.hcal.clus.nblk",hcalt::cnblk);  //!!!
     T->SetBranchAddress("sbs.hcal.clus.row",hcalt::crow);
     T->SetBranchAddress("sbs.hcal.clus.col",hcalt::ccol);
     T->SetBranchAddress("sbs.hcal.clus.e",hcalt::ce);
     T->SetBranchAddress("sbs.hcal.clus.eblk",hcalt::ceblk);
-    T->SetBranchAddress("sbs.hcal.clus_blk.e",hcalt::ceblk);
+    T->SetBranchAddress("sbs.hcal.clus.nblk",hcalt::cnblk);
+    T->SetBranchAddress("sbs.hcal.nclus",hcalt::nclus);
+    T->SetBranchAddress("sbs.hcal.nblk",hcalt::nblk);
+    T->SetBranchAddress("sbs.hcal.clus_blk.id",hcalt::cblkid);
+    T->SetBranchAddress("sbs.hcal.clus.eblk",hcalt::ceblk);
     
     cout << "Opened up tree with nentries=" << T->GetEntries() << endl;
   }
@@ -181,9 +184,11 @@ void hcal_e_cal_POC( int run = -1 ){
       }
     }
     
-    int best = hcalt::cid[0] - 1; //index in the array of the "best" cluster found in this event
+    int best = hcalt::cid[0] - 1; //index in the array of the "best" block in the best cluster found in this event. Currently only one cluster is recorded per event
 
-    int ncellclust = 9; //total number of hits in the "best" cluster, default to 9 (3x3) for now
+    //cout << "best = " << best << endl;
+
+    int ncellclust = hcalt::nblk[0]; //total number of hits in the "best" cluster, default to 9 (3x3) for now
     
 
     if( best >= 0 && ncellclust >= 1 && saturated == 0 ){ // require at least 2 hits in this cluster to use as a "good" event for calibration purposes:
@@ -194,6 +199,8 @@ void hcal_e_cal_POC( int run = -1 ){
       int rowmax = best/kNcols;
       int colmax = best%kNcols;
 
+      //cout << "rowmax " << rowmax << " colmax " << colmax << endl; 
+
       bool edge_max = false;
 
       //Corrected for HCal geometry
@@ -203,18 +210,25 @@ void hcal_e_cal_POC( int run = -1 ){
      
       if( !edge_max ){  //Only consider clusters with maximum at least one block away from the edge for calibration:
 	for(int ihit=0; ihit<ncellclust; ihit++ ){ //outer loop over all cells in the cluster: 
-	  int dr_i = ihit/3-1;
-	  int dc_i = ihit%3-1;
+	  //int dr_i = ihit/3-1;
+	  //int dc_i = ihit%3-1;
 
-	  int row_i = rowmax+dr_i;
-	  int col_i = colmax+dc_i;
+	  //int row_i = rowmax+dr_i;
+	  //int col_i = colmax+dc_i;
+
+	  int cell_i = hcalt::cblkid[ihit]-1;
+
+	  int row_i = cell_i/kNcols;
+	  int col_i = cell_i%kNcols;
+
+	  //cout << "OUT blk row id " << row_i << " OUT blk col id " << col_i << endl;
 
 	  float Ahit_i = adc_p[row_i][col_i]; //Ahit_i is the ADC value for this hit (ped-subtracted)
 	  float Ehit_i = e[row_i][col_i]; //Ehit_i is the reconstructed energy for this hit (using previous calibration constants)
 
 	  //updated for HCal
-	  int cell_i;
-	  cell_i = col_i + 12*row_i;
+	  //int cell_i;
+	  //cell_i = col_i + kNcols*row_i;
 	  
 	  //Check old calibration constants:
 	  oldconstants_sum[cell_i] += Ehit_i/Ahit_i;
@@ -223,21 +237,38 @@ void hcal_e_cal_POC( int run = -1 ){
 	  
 	  for(int jhit=0; jhit<ncellclust; jhit++ ){ //inner loop over all cells in the cluster: 
 	    
-	    int dr_j = jhit/3-1;
-	    int dc_j = jhit%3-1;
+	    //int dr_j = jhit/3-1;
+	    //int dc_j = jhit%3-1;
 
-	    int row_j = rowmax+dr_j;
-	    int col_j = colmax+dc_j;
+	    //int row_j = rowmax+dr_j;
+	    //int col_j = colmax+dc_j;
+
+	    int cell_j = hcalt::cblkid[jhit]-1;
+
+	    //cout << "cell_i = " << cell_i << " cell_j = " << cell_j << endl; 
+
+	    int row_j = cell_j/kNcols;
+	    int col_j = cell_j%kNcols;
+
+	    //cout << "IN blk row id " << row_j << " IN blk col id " << col_j << endl;
 
 	    float Ahit_j = adc_p[row_j][col_j]; //ADC value of hit j 
 
 	    //updated for HCal
-	    int cell_j;
-	    cell_j = col_j + 12*row_j;
+	    //int cell_j;
+	    //cell_j = col_j + kNcols*row_j;
 
 	    //increment Matrix element M_{i,j} with Ai * Aj / E_e, where, recall A_i and A_j are ADC values of hit i and hit j, and E_e is the predicted energy
 	    // of the elastically scattered electron:
 	    M(cell_i,cell_j) += Ahit_i * Ahit_j / E_e;
+	    
+	    if( cell_i >= 288 || cell_j >= 288) {
+	      cout << "Error: Cell number greater than expected geometry." << endl;
+	      return 0;
+	    }
+
+	    //cout << "Matrix element i:j " << cell_i << ":" << cell_j << " = " << M(cell_i,cell_j) << endl;
+
 	  }
 	  b(cell_i) += Ahit_i; //increment vector element i with ADC value of hit i. 
 	  nevents[cell_i] += 1; //increment event counter for cell i:
@@ -245,6 +276,10 @@ void hcal_e_cal_POC( int run = -1 ){
       }
     }
   }
+
+  cout << "Matrix populated.." << endl;
+
+
   //IF the number of events in a cell exceeds the minimum, then we can calibrate 
 
   int smalld[ncell];
@@ -380,6 +415,8 @@ void hcal_e_cal_POC( int run = -1 ){
       }
     }
 
+    cout << "Constant: " << cconst << endl;
+
     constants_file << cconst;
     if( i+1 != nrows*ncols && i+1 != ncell ) constants_file << ",";
     if( (i+1)%8 == 0 ) constants_file << endl;
@@ -391,6 +428,8 @@ void hcal_e_cal_POC( int run = -1 ){
   for(int i=0; i<ncell; i++){
     char cconst[20];
     sprintf( cconst, "%15.4f", 1.0 );
+
+    cout << "Gain factor: " << cconst << endl;
 
     constants_file << cconst;
     if( i+1 != nrows*ncols && i+1 != ncell ) constants_file << ",";

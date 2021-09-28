@@ -358,7 +358,7 @@ void clicked_displayEntryButton()
   displayEvent(gCurrentEntry);
 }
 
-Int_t dispClus(Int_t run = 1198, Int_t event = -1)
+Int_t dispClusOld(Int_t run = 1198, Int_t event = -1)
 {
 
   // Initialize function with user commands
