@@ -12,7 +12,7 @@ const int rmin = 0;
 const int rmax = 12;
 const int kNrows = 24; //All available rows for HCAL
 const int kNcols = 12; //Half of HCAL has 12 columns
-const int kNLED = 6; //For 5 LEDs and an off position at zero
+const int kNLED = 10; //For 5 LEDs and an off position at zero
 
 const int minSample = 0; //Initialize histogram minimum
 const int maxSample = 50; //Initialize histogram maximum - cannot exceed hcalt::nsamps per pmt per event
@@ -109,7 +109,8 @@ void getPedestal(int entry=-1){  //Taken only from the set of data where the LED
   //General vars by event
   int r,c,l,idx,n,sub;
   int ledbit = hcalt::ledbit; 
-  ledNumber = (int) (ceil(log2(ledbit+1)));  //Verified map
+  //ledNumber = (int) (ceil(log2(ledbit+1)));  //Verified map
+  ledNumber = ledbit;  
 
   if(ledNumber==0){  //When ledNumber == 0, the LEDs are OFF
 
@@ -126,8 +127,8 @@ void getPedestal(int entry=-1){  //Taken only from the set of data where the LED
     
     //Get rows and columns from Tree for the event and fill histos and gsaturated
     for(int m = 0; m < hcalt::ndata; m++) {
-      r = hcalt::row[m]-1;
-      c = hcalt::col[m]-1;
+      r = hcalt::row[m];
+      c = hcalt::col[m];
       
       if(r < 0 || c < 0) {
         cerr << "Row/Col error: R" << r << " C" << c << "." << endl;
@@ -177,16 +178,21 @@ void getPedestal(int entry=-1){  //Taken only from the set of data where the LED
 	  cout << "Saving a reference pedestal histogram to write to file.." << endl;
 	  cout << "Row " << r << ", col " << c << "." << endl;
 	  cout << "Maximum value for this histogram = " << histos[r][c][ledNumber]->GetMaximum() << "." << endl;
-	  cout << "LED number for this histogram = " << ledNumber << "." << endl << endl;
-	  histos[r][c][ledNumber]->SetTitle(Form("Sample Histo R%d C%d LED%d",r,c,ledNumber));
+	  //cout << "LED number for this histogram = " << ledNumber << "." << endl << endl;
+	  cout << "LED bit for this histogram = " << ledbit << "." << endl << endl;
+
+	  //histos[r][c][ledNumber]->SetTitle(Form("Sample Histo R%d C%d LED%d",r,c,ledNumber));
+	  histos[r][c][ledNumber]->SetTitle(Form("Sample Histo R%d C%d LEDbit%d",r,c,ledbit));
 	  histos[r][c][ledNumber]->Draw();
 	  HistosFile->cd();
-	  histos[r][c][ledNumber]->SetTitle(Form("Pedestal Histogram R%d C%d LED%d",r,c,ledNumber));
+	  //histos[r][c][ledNumber]->SetTitle(Form("Pedestal Histogram R%d C%d LED%d",r,c,ledNumber));
+	  histos[r][c][ledNumber]->SetTitle(Form("Pedestal Histogram R%d C%d LEDbit%d",r,c,ledbit));
 	  histos[r][c][ledNumber]->GetYaxis()->SetTitle("RAU");
 	  histos[r][c][ledNumber]->GetYaxis()->CenterTitle();
 	  histos[r][c][ledNumber]->GetXaxis()->SetTitle("fADC Channel");
 	  histos[r][c][ledNumber]->GetXaxis()->CenterTitle();
-	  histos[r][c][ledNumber]->Write(Form("Pedestal Histogram R%d C%d LED%d",r,c,ledNumber));
+	  //histos[r][c][ledNumber]->Write(Form("Pedestal Histogram R%d C%d LED%d",r,c,ledNumber));
+	  histos[r][c][ledNumber]->Write(Form("Pedestal Histogram R%d C%d LEDbit%d",r,c,ledbit));
 	  histos[r][c][ledNumber]->Draw("AP");
 	  
 	}
@@ -225,7 +231,8 @@ void processEvent(int entry = -1){
   int r,c,l,idx,n,sub;
   int ledbit = hcalt::ledbit;  //Attempt 1 at including ledbit info in output histograms. One ledbit per event, no loops over ledbit.
   
-  ledNumber = (int) (ceil(log2(ledbit+1)));  //Verified map
+  //ledNumber = (int) (ceil(log2(ledbit+1)));  //Verified map
+  ledNumber = ledbit;
   
   // Clear old histograms, just in case modules are not in the tree
   for(r = 0; r < kNrows; r++) {
@@ -251,8 +258,8 @@ void processEvent(int entry = -1){
     
   //Get rows and columns from Tree for the event and fill histos and gsaturated
   for(int m = 0; m < hcalt::ndata; m++) {
-    r = hcalt::row[m]-1;
-    c = hcalt::col[m]-1;
+    r = hcalt::row[m];
+    c = hcalt::col[m];
     if(r < 0 || c < 0) {
       cout << "Why is row negative? Or col?" << endl;
       continue;
@@ -261,7 +268,7 @@ void processEvent(int entry = -1){
     if(r >= kNrows || c >= kNcols)
       continue;
     idx = hcalt::samps_idx[m];
-    n = hcalt::nsamps[m];  
+    n = hcalt::nsamps[m];
     adc[r][c] = hcalt::a[m];
     tdc[r][c] = hcalt::tdc[m];
     bool processed = false;
@@ -314,16 +321,17 @@ void processEvent(int entry = -1){
 	cout << "Maximum value for this histogram = " << maxy << "." << endl;
 	cout << "Pedestal for this histogram = " << pedestals[r][c] << "." << endl;
 	cout << "TDC value for this histogram = " << tdc[r][c] << "." << endl;
-	cout << "LED number for this histogram = " << ledNumber << "." << endl << endl;
-	histos[r][c][ledNumber]->SetTitle(Form("Sample Histo R%d C%d LED%d",r,c,ledNumber));
+	//cout << "LED number for this histogram = " << ledNumber << "." << endl << endl;
+	cout << "LED bit for this histogram = " << ledbit << "." << endl << endl;
+	histos[r][c][ledNumber]->SetTitle(Form("Sample Histo R%d C%d LEDbit%d",r,c,ledbit));
 	histos[r][c][ledNumber]->Draw();
 	HistosFile->cd();
-	histos[r][c][ledNumber]->SetTitle(Form("Sample Event Histogram R%d C%d LED%d",r,c,ledNumber));
+	histos[r][c][ledNumber]->SetTitle(Form("Sample Event Histogram R%d C%d LEDbit%d",r,c,ledbit));
 	histos[r][c][ledNumber]->GetYaxis()->SetTitle("RAU");
 	histos[r][c][ledNumber]->GetYaxis()->CenterTitle();
 	histos[r][c][ledNumber]->GetXaxis()->SetTitle("fADC Channel");
 	histos[r][c][ledNumber]->GetXaxis()->CenterTitle();
-	histos[r][c][ledNumber]->Write(Form("Sample Event Histogram R%d C%d LED%d",r,c,ledNumber));
+	histos[r][c][ledNumber]->Write(Form("Sample Event Histogram R%d C%d LEDbit%d",r,c,ledbit));
 	histos[r][c][ledNumber]->Draw("AP");
   
       }
@@ -346,7 +354,7 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
   for(int r=0; r<kNrows; r++){
     for(int c=0; c<kNcols; c++){
       for(int l=0; l<kNLED; l++){
-	PMTIntSpec[r][c][l] = new TH1F(Form("Int ADC Spect R%d C%d LED%d",r,c,l),Form("Int ADC Spect R%d C%d LED%d",r,c,l),20,0,0);
+	PMTIntSpec[r][c][l] = new TH1F(Form("Int ADC Spect R%d C%d LED%d",r,c,l),Form("Int ADC Spect R%d C%d LED%d",r,c,l),40,0,0);
 	PMTIntSpec[r][c][l]->GetXaxis()->SetTitle("sRAU");
 	PMTIntSpec[r][c][l]->GetXaxis()->CenterTitle();
 
@@ -398,9 +406,7 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
   if(!T) { 
     T = new TChain("T");
 
-    T->Add(TString::Format("rootFiles/LED/fadc_f1tdc_%d*.root",run));
-    
-
+    T->Add(TString::Format("$ROOTFILES/hcal_%d*.root",run));
     
     T->SetBranchStatus("*",0);
     T->SetBranchStatus("sbs.hcal.*",1);
@@ -411,10 +417,10 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
     T->SetBranchAddress("sbs.hcal.tdc",hcalt::tdc);
     T->SetBranchAddress("sbs.hcal.samps",hcalt::samps);
     T->SetBranchAddress("sbs.hcal.samps_idx",hcalt::samps_idx);
-    T->SetBranchAddress("sbs.hcal.row",hcalt::row);
-    T->SetBranchAddress("sbs.hcal.col",hcalt::col);
-    T->SetBranchStatus("Ndata.sbs.hcal.row",1);
-    T->SetBranchAddress("Ndata.sbs.hcal.row",&hcalt::ndata);
+    T->SetBranchAddress("sbs.hcal.adcrow",hcalt::row);
+    T->SetBranchAddress("sbs.hcal.adccol",hcalt::col);
+    T->SetBranchStatus("Ndata.sbs.hcal.adcrow",1);
+    T->SetBranchAddress("Ndata.sbs.hcal.adcrow",&hcalt::ndata);
     cout << "Opened up tree with nentries=" << T->GetEntries() << endl;
     for(int r = 0; r < kNrows; r++) {
       for(int c = 0; c < kNcols; c++) {
@@ -498,7 +504,7 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
       pedvChannel->SetBinContent(kNcols*r+c+1,pedestals[r][c]);
       
       //Get mean of gaussian fit to pedestals histogram
-      outFile << "For row " << r << " and col " << c << ", pedestal is " << f1->GetParameter(1) << endl;
+      //outFile << "For row " << r << " and col " << c << ", pedestal is " << f1->GetParameter(1) << endl;
       
       for(int l=1; l<kNLED; l++){
 	if(PMTIntSpec[r][c][l]->GetEntries()!=0){
@@ -526,11 +532,11 @@ int LEDCal_v2(int run = 1205, int event = 1000)  //Start after LEDs warm up ~100
 	
 	if(PMTMaxSpec[r][c][l]->GetEntries()!=0){
 
-	  outFile << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0) << endl;  //Sigma error in quadrature, mean already pedestal subtracted
+	  //outFile << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0) << endl;  //Sigma error in quadrature, mean already pedestal subtracted
 
-	  cout << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0) << endl;  //Sigma error in quadrature, mean already pedestal subtracted
+	  //cout << r << "  " << c << "  " << l << "  " << f3->GetParameter(1) << "  " << f2->GetParameter(1) << "  " << pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0) << endl;  //Sigma error in quadrature, mean already pedestal subtracted
 
-	  NPE[r][c][l-1]=pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0);
+	  //NPE[r][c][l-1]=pow(f3->GetParameter(1)/pow(pow(f3->GetParameter(2),2.0)-pow(f1->GetParameter(2),2.0),0.5),2.0);
 	  
 	}
       }

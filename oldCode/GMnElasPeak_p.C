@@ -29,17 +29,13 @@ int GMnElasPeak_p(){
 
   cout << endl;
   
-  Double_t Q2 = 4.0;
-
   Double_t elasPeak[7] = {0.};
   Double_t elasPeak_p[7] = {0.};
-  Double_t epsilon[7] = {0.};
   for(int shcol=0; shcol<7; shcol++){
     elasPeak[shcol] = E_beam/( 1. + (2.*E_beam/Mp)*pow(TMath::Sin(effective_BBang[shcol]/2.), 2.) );
-    epsilon[shcol] = pow(1+2*(1+Q2/(4*Mp))*pow(TMath::Tan(effective_BBang[shcol]/2),2),-1);
     Double_t nu = E_beam-elasPeak[shcol];
     elasPeak_p[shcol] = nu+Mp;
-    cout << "SH Col= " << shcol+1 << " Elastic Peak= " << elasPeak[shcol] << " GeV. Epsilon= " << epsilon[shcol] << "." << endl;
+    cout << "SH Col= " << shcol+1 << " Elastic Peak= " << elasPeak[shcol] << " GeV" << endl;
   }
 
   cout << endl;
