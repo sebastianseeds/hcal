@@ -49,8 +49,8 @@ TF1 *g1;
 int gSignalTotal = 1;
 
 // Create files to keep temporary histograms for integrity checks
-TFile *HistosFile = new TFile( "outFiles/CosHistosFile.root", "RECREATE" );  // File for checking histogram fits and integrity
-TFile *HistosFilePedestal = new TFile( "outFiles/CosHistosFilePedestal.root", "RECREATE" );  // File for checking histogram fits and integrity
+TFile *HistosFile = new TFile( "CosHistosFile.root", "RECREATE" );  // File for checking histogram fits and integrity
+TFile *HistosFilePedestal = new TFile( "CosHistosFilePedestal.root", "RECREATE" );  // File for checking histogram fits and integrity
 
 // Declare necessary arrays
 double gPedestals[kNrows][kNcols];
@@ -61,6 +61,9 @@ double gAlphas[kNrows][kNcols];
 bool gPulse[kNrows+4][kNcols+4]; // Needs to be larger for false-valued buffers
 bool gPulseTDC[kNrows+4][kNcols+4];
 bool gVert[kNrows+4][kNcols+4];
+
+double gMasterHisto[kNrows][kNcols];
+int nevents = 0;
 
 // Declare storage vectors
 vector<double> gModule;
@@ -210,12 +213,18 @@ void processEvent(int entry = -1){
     for( int s = kMinSample; s < kMaxSample && s < n; s++ ) {
       processed = true;
       gHistos[r][c]->SetBinContent( s+1-kMinSample, hcalt::samps[idx+s] );
+
+      //double lastSample = gMasterHisto[r][c]->GetBinContent( s+1-kMinSample );
+      gMasterHisto[r][c]->Fill( s+1-kMinSample, hcalt::samps[idx+s] );
+
       if( peak[r][c] < hcalt::samps[idx+s] )
         peak[r][c] = hcalt::samps[idx+s];
       if( peak[r][c] > 4095 ) {
         gSaturated[r][c] = true;
       }
     }
+
+    nevents++;
     // Report error if module is empty
     if(!processed) {
       cerr << "Skipping empty module: " << m << ".." << endl;
@@ -433,7 +442,7 @@ int cosCal_v5(int run = 1725, int event = -1){
   
   //Declare outfile
   //TFile *cosHistFile = new TFile( Form( "outFiles/cosHistv4_run%d.root", run ), "RECREATE" );
-  TFile *cosHistFile = new TFile( Form( "outFiles/cosHistv4_DEBUG_run%d.root", run ), "RECREATE" ); //DEBUGGING
+  TFile *cosHistFile = new TFile( Form( "cosHistv4_DEBUG_run%d.root", run ), "RECREATE" ); //DEBUGGING
   ofstream fitData;
   fitData.open( Form( "outFiles/HCal_%d_FitResults.txt", run ) );
   fitData << "Run Number: " << run << " Desired Peak Position: " << kTargetRAU << endl;
@@ -468,7 +477,12 @@ int cosCal_v5(int run = 1725, int event = -1){
 
       gPedSpec[r][c] = new TH1F( Form( "Pedestal Spect R%d C%d", r, c ), Form( "Pedestal Spect R%d C%d", r, c ), 200, -20, 100 ); // Empirical limits
       gPedSpec[r][c]->GetXaxis()->SetTitle( "<RAU>" );
-      gPedSpec[r][c]->GetXaxis()->CenterTitle();
+      gPedSpec[r][c]->GetXaxis()->CenterTitle();;
+
+      gMasterHisto[r][c] = new TH1F(Form("h%02d%02d",row,col),Form("%d-%d",row+1,col+1),kTotSample,kMinSample,kMaxSample);
+      gMasterHisto[r][c]->GetXaxis()->SetTitle( "<RAU>" );
+      gMasterHisto[r][c]->GetXaxis()->CenterTitle();;
+
 
       for( int i = 0; i < kMaxSteps; i++){
 	gRetToBase[r][c][i] = new TH1F( Form( "Return to Baseline R%d C%d MaxADC(20*%d)", r, c, i ), Form( "Return to Baseline R%d C%d MaxADC(20*%d)", r, c, i ), kTotSample, kMinSample, kMaxSample );
@@ -484,6 +498,9 @@ int cosCal_v5(int run = 1725, int event = -1){
     T = new TChain( "T" );
     //T->Add( Form( "$ROOTFILES/hcal_%d_*.root", run ) );
     T->Add( Form( "$ROOTFILES/hcal_%d*.root", run ) );
+    
+    //4T->Add( Form( "$ROOTFILES/hcal_%d*.root", run ) );
+    
     //T->Add( Form( "rootFiles/cosmic/fadc_f1tdc_%d_1.root", run ) ); //DEBUGGING
     T->SetBranchStatus( "*", 0 );
     T->SetBranchStatus( "sbs.hcal.*", 1 );
@@ -500,7 +517,8 @@ int cosCal_v5(int run = 1725, int event = -1){
     for( int r = 0; r < kNrows; r++ ) {
       for( int c = 0; c < kNcols; c++ ) {
         gHistos[r][c] = MakeHisto( r, c, kTotSample );
-        gSaturated[r][c] = false;
+        //gMasterHisto[r][c] = MakeHisto( r, c, kTotSample );
+	gSaturated[r][c] = false;
       }
     }
   }
@@ -812,6 +830,13 @@ int cosCal_v5(int run = 1725, int event = -1){
       gPMTMaxSpec[r][c]->SetTitle( Form( "Max Spect R%d C%d FitMean%f", r, c, parsMax[1] ) );
       gPMTMaxSpec[r][c]->Write( Form( "Max Spect R%d C%d", r, c ) );
       gPMTMaxSpec[r][c]->Draw( "AP" );
+
+
+      gMasterHisto[r][c]->SetTitle( Form( "Master Histo R%d C%d", r, c) );
+      gMasterHisto[r][c]->Write( Form( "Master Histo R%d C%d", r, c ) );
+      gMasterHisto[r][c]->Draw( "AP" );
+
+      
 
       // Draw return to baseline histograms
       for( int i = 0; i < kMaxSteps; i++){
