@@ -39,12 +39,12 @@ const double c_light = 299792458.0;
 
 void hcal_eCal_p( const char *configfilename, int run = -1 ){
   
+  // Start the chain for root files passed with config file
+  TChain *C = new TChain("T");
+  
   // Define a clock to check macro processing time
   TStopwatch *st = new TStopwatch();
   st->Start( kTRUE );
-
-  // Start the chain for root files passed with config file
-  TChain *C = new TChain("T");
   
   double E_e = 1.92; // Energy of beam (incoming electrons from accelerator)
   int minEventPerCell = 100; // Minimum number of scattered p in cell required to calibrate
@@ -120,10 +120,10 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
     delete tokens;
   }
   
-  // Declare outfile
+  //Declare outfile
   TFile *fout = new TFile( "hcalECalResults.root", "RECREATE" );
   
-  // Initialize vectors and arrays
+  //initialize vectors and arrays
   vector<int> hitlist;
   vector<double> energy;
   double gHV[kNrows][kNcols];
@@ -131,16 +131,14 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
   double gTargetHV[kNrows][kNcols];
   double gCRatio[kNrows][kNcols];
   
-  // Initialize histograms
-  TH1D *h_W = new TH1D( "W", "W", 250, 0.7, 1.5 );
+  //initialize histograms
+  TH1D *h_W = new TH1D( "W", "W", 200, 0, 2 );
   h_W->GetXaxis()->SetTitle( "GeV" );
-  TH1D *h_Q2 = new TH1D( "Q2", "Q2", 250, 0.5, 3.0 );
+  TH1D *h_Q2 = new TH1D( "Q2", "Q2", 200, 0, 2 );
   h_Q2->GetXaxis()->SetTitle( "GeV" );
-  TH1D *h_E_ep = new TH1D( "Scattered Electron Energy","E_ep", 500, 0.0, E_e*1.5 ); // Set limits based on energy conservation
+  TH1D *h_E_ep = new TH1D( "Scattered Electron Energy","E_ep",500,-2,8);
   h_E_ep->GetXaxis()->SetTitle( "GeV" );
-  TH1D *h_E_pp = new TH1D( "Scattered Proton Energy", "E_pp", 500, 0.0, E_e*1.5 ); // Set limits based on energy conservation
-  h_E_pp->GetXaxis()->SetTitle( "GeV" );
-  TH1D *h_KE_p = new TH1D( "Scattered Proton Energy", "E_pp", 500, 0.0, E_e*1.5 ); // Set limits based on energy conservation
+  TH1D *h_E_pp = new TH1D("Scattered Proton Energy","E_pp",500,-2,15);
   h_E_pp->GetXaxis()->SetTitle( "GeV" );
   TH1F *h_HCalCol_p = new TH1F( "HCalCol_p", "Projection of Scattered p on HCal Columns", kNcols, 0, kNcols );
   h_HCalCol_p->GetXaxis()->SetTitle( "column" );
@@ -149,25 +147,17 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
   TH1F *badCvCh = new TH1F( "badCvChannel", "Bad Cell vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
   TH1F *CRatiovCh = new TH1F( "CRatiovChannel", "Constant Ratio (new/old) vs Channel", kNcols*kNrows, 0, kNcols*kNrows );
 
-  // Intialize fit function
-  //TF1 *f1;
   
   // Build ADC histograms - Set integrated ADC spectrum histogram limits
   int SpecBins = 520;
   double IntSpec_min = -20.0, IntSpec_max = 500.0; 
   // Build histograms
   TH1F *gIntSpec[kNrows][kNcols];
-  TH1F *gATimeSpec[kNrows][kNcols];
   for( int r=0; r<kNrows; r++ ){
     for( int c=0; c<kNcols; c++ ){  
-      int m = r*kNcols+c;
+      int m = r*12+c;
       gIntSpec[r][c] = new TH1F( Form( "Int ADC Spect R%d C%d PMT%d", r, c, m ), Form( "Int ADC Spect R%d C%d PMT%d", r, c, m ), SpecBins, IntSpec_min, IntSpec_max );
       gIntSpec[r][c]->GetXaxis()->SetTitle( "pC" );
-
-      gATimeSpec[r][c] = new TH1F( Form( "ADC Time Spect R%d C%d PMT%d", r, c, m ), Form( "ADC Time Spect R%d C%d PMT%d", r, c, m ), 160, 0, 160 );
-      //gATimeSpec[r][c] = new TH1F( "Insufficient Data", Form( "ADC Time Spect R%d C%d PMT%d", r, c, m ), SpecBins, IntSpec_min, IntSpec_max );
-
-      gATimeSpec[r][c]->GetXaxis()->SetTitle( "ns" );
     }
   }
 
@@ -237,9 +227,6 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
 
   // Need to get electron energy and W for cuts on elastic events
   long mevent = 0;
-
-  // e' momentum correction factor
-  double eCorr = 1.04;
   
   cout << "Preliminary loop over all events in tree to get physics quantities commencing.." << endl;
     
@@ -264,14 +251,13 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
     double E_ep = sqrt( pow(M_e,2) + lVep.Mag2() ); // Obtain the scattered electron energy
     h_E_ep->Fill( E_ep ); // Fill histogram
 
-    double p_ep = eCorr*lVep.Mag(); // Obtain the magnitude of scattered electron momentum with correction factor
+    double p_ep = lVep.Mag(); // Obtain the magnitude of scattered electron momentum
 
     double theta_e = acos( ( T->bb_tr_pz[track])/p_ep ) * 180.0 / PI; // Obtain the electron's scattering angle in degrees
     
     double phi_e = TMath::ASin( T->bb_tr_py[track]/( p_ep*TMath::Sin( theta_e ) ) );
     
     double Q2 = 2*E_e*E_ep*( 1-(lVep.Z()/p_ep) ); // Obtain Q2 from beam energy, outgoing electron energy, and momenta
-    h_Q2->Fill( Q2 ); // Fill histogram
 
     double nu = E_e-E_ep; // Obtain energy transfer
 
@@ -288,26 +274,20 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
     double E_pp = nu+M_p; // Get energy of the proton
     h_E_pp->Fill( E_pp ); // Fill histogram
 
-    double p_p = sqrt( pow( E_pp,2 )-W2 ); // Magnitude of the scattered proton
-
-    //double KE_p = pow( p_p,2 )/(2*M_p);
-    double KE_p = nu; //For elastics
-    h_KE_p->Fill( KE_p );
+    double p_p = sqrt( pow( E_pp,2 )+W2 );
 
     //Each component in the form p_p_z = p_p*cos(phi)
     double phi_p = TMath::ACos( ( E_e-T->bb_tr_pz[track])/p_p ) * 180.0 / PI;
 
     //Get the projection of each event onto the face of HCal - consider only X (column) components to avoid calculations with 48D48 field map. Should still be useful
     double relPosX = HCal_d*TMath::Tan( HCal_th-phi_p );
-    //int relPosCol = std::floor( relPosX*HCal_th+6 ); // Return the column where the p is expected to land in HCal
-    h_HCalCol_p->Fill( relPosX );
+    int relPosCol = std::floor( relPosX*HCal_th+6 ); // Return the column where the p is expected to land in HCal
+    h_HCalCol_p->Fill( relPosCol );
 
-    //if( W>0&&W<2 ){
-    //if( W>( 0.945-0.1 )&&W<( 0.945+0.1 ) ){
-      
-    if( W<1.1 ){
+    if( W>0&&W<2 ){
+      //if( W>( 0.945-0.02 )&&W<( 0.945+0.02 ) ){
       hitlist.push_back( mevent );
-      energy.push_back( KE_p );
+      energy.push_back( E_pp );
     }
     
   }
@@ -323,11 +303,11 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
   h_E_ep->Write( "E_ep" );
   h_E_ep->Draw( "AP" );
 
-  h_KE_p->Write( "KE_p" );
-  h_KE_p->Draw( "AP" );
-
   h_E_pp->Write( "E_pp" );
   h_E_pp->Draw( "AP" );
+
+  h_Q2->Write( "Q2" );
+  h_Q2->Draw( "AP" );
 
   h_HCalCol_p->Write( "HCalCol_p" );
   h_HCalCol_p->Draw( "AP" );
@@ -385,7 +365,6 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
     double adc_p[kNrows][kNcols] = {0.0};
     double e[kNrows][kNcols] = {0.0};
     double amp[kNrows][kNcols] = {0.0};
-    double adc_t[kNrows][kNcols] = {0.0};
 
     int saturated = 0;
 
@@ -403,7 +382,6 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
       adc_p[r][c] = T->sbs_hcal_a_p[m]; 
       amp[r][c] = T->sbs_hcal_a_amp[m];
       e[r][c] = T->sbs_hcal_a_c[m];
-      adc_t[r][c] = T->sbs_hcal_a_time[m];
       
       // Mark saturated array when amplitude meets max RAU
       if( amp[r][c] > 4095 ) {
@@ -440,11 +418,9 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
 
 	  float Ahit_i = adc_p[row_i][col_i]; // Ahit_i is the ADC value for this hit (ped-subtracted)
 	  float Ehit_i = e[row_i][col_i]; // Ehit_i is the reconstructed energy for this hit (using previous calibration constants where a_c = const*a_p)
-	  float Thit_i = adc_t[row_i][col_i];
 
 	  gIntSpec[row_i][col_i]->Fill( Ahit_i ); // Opportune time to fill ADC histogram for this run (diagnostic)
-	  gATimeSpec[row_i][col_i]->Fill( Thit_i ); // Also fill a_time variable (time from opening of ADC window (trigger) until first bin over 5 mV)
-
+	  
 	  nevents[cell_i] += 1; // Increment recorded event counter for cell i
 	  if(nevents[cell_i] > maxEventPerCell) continue; // Added to keep statistics similar across all channels
 
@@ -482,6 +458,7 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
   cout << "Matrix populated.." << endl;
 
   // IF the number of events in a cell exceeds the minimum, then we can calibrate 
+
   // Make adjustments to the matrix M and vector b to exclude "bad" cells from calibration: 
   int badcells[kNcell];
   double xErr[kNcell]; // Set up error for TGraphErrors
@@ -521,16 +498,15 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
   HCalECal_HV << "Module" << '\t' << " HV" << endl;
 
   // Declare output calibration histograms
-  TH1D *Constants_chan = new TH1D( "Constants_chan", "", kNcell, 0.5, kNcell+0.5 );
-  TH1D *Constants = new TH1D( "Constants", "", 200, 0.0, 2.0 );
-  TH2D *Constants_rowcol = new TH2D( "Constants_rowcol", "", kNcols, 0.5, kNcols+0.5, kNrows, 0.5, kNrows+0.5 );
-  TH2D *Elastics_rowcol = new TH2D( "Elastics_rowcol", "", kNcols, 0.5, kNcols+0.5, kNrows, 0.5, kNrows+0.5 );
+  TH1D *Constants_chan = new TH1D("Constants_chan","",kNcell,0.5,kNcell+0.5);
+  TH1D *Constants = new TH1D("Constants","",200,0.0,2.0);
+  TH2D *Constants_rowcol = new TH2D("Constants_rowcol","",kNcols,0.5,kNcols+0.5,kNrows,0.5,kNrows+0.5);
 
-  TH1D *Old_chan = new TH1D( "Old_chan", "", kNcell, 0.5, kNcell+0.5 );
-  TH1D *Old_chan_rms = new TH1D( "Old_chan_rms","", kNcell, 0.5, kNcell+0.5 );
-  TH1D *Ratio = new TH1D( "Ratio","new/old", 200, 0.5, 1.5 );
-  TH1D *Ratio_chan = new TH1D( "Ratio_chan", "new/old by chan.", kNcell,0.5, kNcell+0.5 );
-  TH2D *Ratio_rowcol = new TH2D( "Ratio_rowcol", "new/old by row/col", kNcols, 0.5, kNcols+0.5, kNrows, 0.5, kNrows+0.5 );
+  TH1D *Old_chan = new TH1D( "Old_chan","",kNcell, 0.5, kNcell+0.5 );
+  TH1D *Old_chan_rms = new TH1D( "Old_chan_rms","",kNcell,0.5,kNcell+0.5 );
+  TH1D *Ratio = new TH1D( "Ratio","new/old",200,0.5, 1.5 );
+  TH1D *Ratio_chan = new TH1D( "Ratio_chan","new/old by chan.",kNcell,0.5, kNcell+0.5 );
+  TH2D *Ratio_rowcol = new TH2D( "Ratio_rowcol","new/old by row/col",kNcols,0.5,kNcols+0.5,kNrows,0.5,kNrows+0.5 );
 
   // Declare calibration variables
   float ncalibrated = 0.0;
@@ -570,9 +546,6 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
       Constants->Fill( solution(i)*E_targ );
       
       gCRatio[r][c] = solution[i]/oldconst_avg; // Ratio of new to old constants
-
-      cout << gCRatio[r][c] << endl;
-
       Ratio->Fill( gCRatio[r][c] );
       Ratio_chan->Fill( i+1, gCRatio[r][c] );
       CRatiovCh->SetBinContent( kNcols*r+c+1, gCRatio[r][c] );
@@ -600,11 +573,8 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
     if( badcells[i] == 0 ){ //if the cell was calibrated and the calibration result is between 0.1 and 10, write out the new constant to the file:
       sprintf( cconst, "%15.4g", solution(i) );
 
-      //CvCh->SetBinContent( i+1, E_targ*solution(i) );
-      CvCh->SetBinContent( i+1, solution(i) );
-
-      cout << "GOOD" << endl;
-
+      CvCh->SetBinContent( i+1, E_targ*solution(i) );
+      
     } else { //Otherwise, use the average calibration constant:
       if( i < kNrows*kNcols ){
 	//sprintf( cconst, "%15.4g", average_constant );
@@ -613,8 +583,6 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
       } else {
 	cout << "Error: looping outside of normal geometry for cconst" << endl;
       }
-      cout << "BAD" << endl;
-
     }
     
     badCvCh->SetBinContent(i+1,badcells[i]);
@@ -639,7 +607,7 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
 
     gTargetHV[r][c] = gHV[r][c]*pow(gCRatio[r][c],(1/gAlphas[r][c]));
 
-    HCalECal_HV << r*kNcols+c+1 << '\t' << -gTargetHV[r][c] << endl;
+    HCalECal_HV << r*12+c+1 << '\t' << -gTargetHV[r][c] << endl;
 
     char cconst[20];
     sprintf( cconst, "%15.4f", gTargetHV[r][c] );
@@ -651,8 +619,7 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
   }
 
   double yErr[kNcell] = {0.0};
-  //TGraphErrors *ccgraph = new TGraphErrors( kNcell, y, &solution[0], yErr, xErr );
-  TGraphErrors *ccgraph = new TGraphErrors( kNcell, y, &solution[0], yErr, yErr ); // TODO: Set no error until we have it worked out
+  TGraphErrors *ccgraph = new TGraphErrors( kNcell, y, &solution[0], yErr, xErr );
   ccgraph->GetXaxis()->SetLimits(0.0,288.0);
 
   //Write out root file for diagnostics and close
@@ -702,32 +669,11 @@ void hcal_eCal_p( const char *configfilename, int run = -1 ){
 
   for( int r=0; r<kNrows; r++ ){
     for( int c=0; c<kNcols; c++ ){
-
-      int m = r*kNcols+c;
-
       gIntSpec[r][c]->GetXaxis()->SetRange(-20,150); //For easier viewing
       gIntSpec[r][c]->Write(Form("intADC r%d c%d",r,c));
       gIntSpec[r][c]->Draw("AP");
-      //gATimeSpec[r][c]->GetXaxis()->SetRange(0,160); //For easier viewing
-      //gATimeSpec[r][c]->Fit("gaus","Q"); // Fit this distribution quietly "Q" (no output to screen)
-      /*
-      if(gATimeSpec[r][c]->GetEntries()!=0) {
-	f1=gATimeSpec[r][c]->GetFunction("gaus");
-	gATimeSpec[r][c]->SetTitle(Form( "ADC Time R%d C%d PMT%d Mean%d Amp%d Sigma%d Chi2%d", r, c, m, f1->GetParameter(1), f1->GetParameter(0), f1->GetParameter(2), f1->GetChisquare() ));
-      }
-      */
-
-      gATimeSpec[r][c]->SetTitle( Form("ADC Time r%d c%d window/40/80/NEV%f", r, c, gATimeSpec[r][c]->Integral(40,80)));
-      gATimeSpec[r][c]->Write(Form("ADCtime r%d c%d",r,c));
-      gATimeSpec[r][c]->Draw("AP");
-
-      if( gATimeSpec[r][c]->Integral(40,80) ) Elastics_rowcol->Fill( c+1, r+1, gATimeSpec[r][c]->Integral(40,80) ); // Range from latency tuned elastic peak
     }
   }
-
-  Elastics_rowcol->Write( "Elastics_rowcol" );
-  Elastics_rowcol->Draw( "colz" );
-
   fout->Write();
   fout->Close();
 
