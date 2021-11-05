@@ -1,0 +1,21 @@
+#LH2 zero field 1.92 GeV
+#/adaqfs/home/a-onl/sbs/Rootfiles/gmn_replayed_11287*
+#/adaqfs/home/a-onl/sbs/Rootfiles/gmn_replayed_11288*
+#/adaqfs/home/a-onl/sbs/Rootfiles/gmn_replayed_11289*
+#/adaqfs/home/a-onl/sbs/Rootfiles/gmn_replayed_11290*
+#/adaqfs/home/a-onl/sbs/Rootfiles/gmn_replayed_11291*
+#/adaqfs/home/a-onl/sbs/Rootfiles/gmn_replayed_11292*
+#/adaqfs/home/a-onl/sbs/Rootfiles/gmn_replayed_11296*
+#/adaqfs/home/a-onl/sbs/Rootfiles/gmn_replayed_11298*
+#LH2 NEW HV zero field 3.7 GeV
+/adaqfs/home/a-onl/sbs/Rootfiles/hcal_gmn_11587*
+#/adaqfs/home/a-onl/sbs/Rootfiles/gmn_replayed_11588*
+endlist
+endcut
+E_e 3.7278
+HCal_d 11.0
+HCal_th 31.9
+opticsCorr 1.05
+W_mean 0.91146
+W_sig 0.09066
+BB_th 36.0

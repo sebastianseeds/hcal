@@ -28,7 +28,7 @@ namespace hcalt {
   Double_t tdc[MAX_HCAL_TDC_MODULES+100] = {0.};
   Double_t a_time[MAX_HCAL_MODULES+1000] = {0.};
   //Cluster vars - TODO, check memory allocation for these 
-  Double_t nclus[MAX_HCAL_MODULES+1000] = {0.}; 
+  Double_t nclus = 0.0; 
   Double_t nblk[MAX_HCAL_MODULES+1000] = {0.};
   Double_t cid[MAX_HCAL_MODULES+1000] = {0.};
   Double_t cblkid[MAX_HCAL_MODULES+1000] = {0.};

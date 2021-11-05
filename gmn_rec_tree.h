@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Sat Oct 16 06:31:51 2021 by ROOT version 6.14/04
+// Sun Oct 17 01:45:40 2021 by ROOT version 6.24/06
 // from TTree T/Hall A Analyzer Output DST
-// found on file: gmn_replayed_11199_stream0_seg0_0.root
+// found on file: gmn_replayed_11251_stream0_seg0_0.root
 //////////////////////////////////////////////////////////
 
 #ifndef gmn_rec_tree_h
@@ -22,190 +22,118 @@ public :
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
-   Int_t           Ndata_bb_bbtrig_Ref_a;
-   Double_t        bb_bbtrig_Ref_a[1];   //[Ndata.bb.bbtrig.Ref.a]
-   Int_t           Ndata_bb_bbtrig_Ref_a_amp;
-   Double_t        bb_bbtrig_Ref_a_amp[1];   //[Ndata.bb.bbtrig.Ref.a_amp]
-   Int_t           Ndata_bb_bbtrig_Ref_a_amp_c;
-   Double_t        bb_bbtrig_Ref_a_amp_c[1];   //[Ndata.bb.bbtrig.Ref.a_amp_c]
-   Int_t           Ndata_bb_bbtrig_Ref_a_amp_p;
-   Double_t        bb_bbtrig_Ref_a_amp_p[1];   //[Ndata.bb.bbtrig.Ref.a_amp_p]
-   Int_t           Ndata_bb_bbtrig_Ref_a_c;
-   Double_t        bb_bbtrig_Ref_a_c[1];   //[Ndata.bb.bbtrig.Ref.a_c]
-   Int_t           Ndata_bb_bbtrig_Ref_a_mult;
-   Double_t        bb_bbtrig_Ref_a_mult[1];   //[Ndata.bb.bbtrig.Ref.a_mult]
-   Int_t           Ndata_bb_bbtrig_Ref_a_p;
-   Double_t        bb_bbtrig_Ref_a_p[1];   //[Ndata.bb.bbtrig.Ref.a_p]
-   Int_t           Ndata_bb_bbtrig_Ref_a_time;
-   Double_t        bb_bbtrig_Ref_a_time[1];   //[Ndata.bb.bbtrig.Ref.a_time]
-   Int_t           Ndata_bb_bbtrig_Ref_adcelemID;
-   Double_t        bb_bbtrig_Ref_adcelemID[1];   //[Ndata.bb.bbtrig.Ref.adcelemID]
-   Int_t           Ndata_bb_bbtrig_Ref_ped;
-   Double_t        bb_bbtrig_Ref_ped[1];   //[Ndata.bb.bbtrig.Ref.ped]
-   Int_t           Ndata_bb_bbtrig_Ref_tdc;
-   Double_t        bb_bbtrig_Ref_tdc[1];   //[Ndata.bb.bbtrig.Ref.tdc]
-   Int_t           Ndata_bb_bbtrig_Ref_tdc_mult;
-   Double_t        bb_bbtrig_Ref_tdc_mult[1];   //[Ndata.bb.bbtrig.Ref.tdc_mult]
-   Int_t           Ndata_bb_bbtrig_Ref_tdc_te;
-   Double_t        bb_bbtrig_Ref_tdc_te[1];   //[Ndata.bb.bbtrig.Ref.tdc_te]
-   Int_t           Ndata_bb_bbtrig_Ref_tdc_tot;
-   Double_t        bb_bbtrig_Ref_tdc_tot[1];   //[Ndata.bb.bbtrig.Ref.tdc_tot]
-   Int_t           Ndata_bb_bbtrig_Ref_tdcelemID;
-   Double_t        bb_bbtrig_Ref_tdcelemID[1];   //[Ndata.bb.bbtrig.Ref.tdcelemID]
-   Int_t           Ndata_bb_bbtrig_a;
-   Double_t        bb_bbtrig_a[25];   //[Ndata.bb.bbtrig.a]
-   Int_t           Ndata_bb_bbtrig_a_amp;
-   Double_t        bb_bbtrig_a_amp[25];   //[Ndata.bb.bbtrig.a_amp]
-   Int_t           Ndata_bb_bbtrig_a_amp_c;
-   Double_t        bb_bbtrig_a_amp_c[25];   //[Ndata.bb.bbtrig.a_amp_c]
-   Int_t           Ndata_bb_bbtrig_a_amp_p;
-   Double_t        bb_bbtrig_a_amp_p[25];   //[Ndata.bb.bbtrig.a_amp_p]
-   Int_t           Ndata_bb_bbtrig_a_amptrig_c;
-   Double_t        bb_bbtrig_a_amptrig_c[25];   //[Ndata.bb.bbtrig.a_amptrig_c]
-   Int_t           Ndata_bb_bbtrig_a_amptrig_p;
-   Double_t        bb_bbtrig_a_amptrig_p[25];   //[Ndata.bb.bbtrig.a_amptrig_p]
-   Int_t           Ndata_bb_bbtrig_a_c;
-   Double_t        bb_bbtrig_a_c[25];   //[Ndata.bb.bbtrig.a_c]
-   Int_t           Ndata_bb_bbtrig_a_mult;
-   Double_t        bb_bbtrig_a_mult[25];   //[Ndata.bb.bbtrig.a_mult]
-   Int_t           Ndata_bb_bbtrig_a_p;
-   Double_t        bb_bbtrig_a_p[25];   //[Ndata.bb.bbtrig.a_p]
-   Int_t           Ndata_bb_bbtrig_a_time;
-   Double_t        bb_bbtrig_a_time[25];   //[Ndata.bb.bbtrig.a_time]
-   Int_t           Ndata_bb_bbtrig_adccol;
-   Double_t        bb_bbtrig_adccol[25];   //[Ndata.bb.bbtrig.adccol]
-   Int_t           Ndata_bb_bbtrig_adcelemID;
-   Double_t        bb_bbtrig_adcelemID[25];   //[Ndata.bb.bbtrig.adcelemID]
-   Int_t           Ndata_bb_bbtrig_adclayer;
-   Double_t        bb_bbtrig_adclayer[25];   //[Ndata.bb.bbtrig.adclayer]
-   Int_t           Ndata_bb_bbtrig_adcrow;
-   Double_t        bb_bbtrig_adcrow[25];   //[Ndata.bb.bbtrig.adcrow]
-   Int_t           Ndata_bb_bbtrig_ped;
-   Double_t        bb_bbtrig_ped[25];   //[Ndata.bb.bbtrig.ped]
-   Int_t           Ndata_bb_bbtrig_tdc;
-   Double_t        bb_bbtrig_tdc[7];   //[Ndata.bb.bbtrig.tdc]
-   Int_t           Ndata_bb_bbtrig_tdc_mult;
-   Double_t        bb_bbtrig_tdc_mult[7];   //[Ndata.bb.bbtrig.tdc_mult]
-   Int_t           Ndata_bb_bbtrig_tdc_te;
-   Double_t        bb_bbtrig_tdc_te[7];   //[Ndata.bb.bbtrig.tdc_te]
-   Int_t           Ndata_bb_bbtrig_tdc_tot;
-   Double_t        bb_bbtrig_tdc_tot[7];   //[Ndata.bb.bbtrig.tdc_tot]
-   Int_t           Ndata_bb_bbtrig_tdccol;
-   Double_t        bb_bbtrig_tdccol[7];   //[Ndata.bb.bbtrig.tdccol]
-   Int_t           Ndata_bb_bbtrig_tdcelemID;
-   Double_t        bb_bbtrig_tdcelemID[7];   //[Ndata.bb.bbtrig.tdcelemID]
-   Int_t           Ndata_bb_bbtrig_tdclayer;
-   Double_t        bb_bbtrig_tdclayer[7];   //[Ndata.bb.bbtrig.tdclayer]
-   Int_t           Ndata_bb_bbtrig_tdcrow;
-   Double_t        bb_bbtrig_tdcrow[7];   //[Ndata.bb.bbtrig.tdcrow]
+   Int_t           Ndata_bb_eps_over_etot;
+   Double_t        bb_eps_over_etot[1];   //[Ndata.bb.eps_over_etot]
+   Int_t           Ndata_bb_etot_over_p;
+   Double_t        bb_etot_over_p[6];   //[Ndata.bb.etot_over_p]
    Int_t           Ndata_bb_gem_hit_ADCU;
-   Double_t        bb_gem_hit_ADCU[13];   //[Ndata.bb.gem.hit.ADCU]
+   Double_t        bb_gem_hit_ADCU[21];   //[Ndata.bb.gem.hit.ADCU]
    Int_t           Ndata_bb_gem_hit_ADCV;
-   Double_t        bb_gem_hit_ADCV[13];   //[Ndata.bb.gem.hit.ADCV]
+   Double_t        bb_gem_hit_ADCV[21];   //[Ndata.bb.gem.hit.ADCV]
    Int_t           Ndata_bb_gem_hit_ADCasym;
-   Double_t        bb_gem_hit_ADCasym[13];   //[Ndata.bb.gem.hit.ADCasym]
+   Double_t        bb_gem_hit_ADCasym[21];   //[Ndata.bb.gem.hit.ADCasym]
    Int_t           Ndata_bb_gem_hit_ADCavg;
-   Double_t        bb_gem_hit_ADCavg[13];   //[Ndata.bb.gem.hit.ADCavg]
+   Double_t        bb_gem_hit_ADCavg[21];   //[Ndata.bb.gem.hit.ADCavg]
    Int_t           Ndata_bb_gem_hit_ADCmaxsampU;
-   Double_t        bb_gem_hit_ADCmaxsampU[13];   //[Ndata.bb.gem.hit.ADCmaxsampU]
+   Double_t        bb_gem_hit_ADCmaxsampU[21];   //[Ndata.bb.gem.hit.ADCmaxsampU]
    Int_t           Ndata_bb_gem_hit_ADCmaxsampUclust;
-   Double_t        bb_gem_hit_ADCmaxsampUclust[13];   //[Ndata.bb.gem.hit.ADCmaxsampUclust]
+   Double_t        bb_gem_hit_ADCmaxsampUclust[21];   //[Ndata.bb.gem.hit.ADCmaxsampUclust]
    Int_t           Ndata_bb_gem_hit_ADCmaxsampV;
-   Double_t        bb_gem_hit_ADCmaxsampV[13];   //[Ndata.bb.gem.hit.ADCmaxsampV]
+   Double_t        bb_gem_hit_ADCmaxsampV[21];   //[Ndata.bb.gem.hit.ADCmaxsampV]
    Int_t           Ndata_bb_gem_hit_ADCmaxsampVclust;
-   Double_t        bb_gem_hit_ADCmaxsampVclust[13];   //[Ndata.bb.gem.hit.ADCmaxsampVclust]
+   Double_t        bb_gem_hit_ADCmaxsampVclust[21];   //[Ndata.bb.gem.hit.ADCmaxsampVclust]
    Int_t           Ndata_bb_gem_hit_ADCmaxstripU;
-   Double_t        bb_gem_hit_ADCmaxstripU[13];   //[Ndata.bb.gem.hit.ADCmaxstripU]
+   Double_t        bb_gem_hit_ADCmaxstripU[21];   //[Ndata.bb.gem.hit.ADCmaxstripU]
    Int_t           Ndata_bb_gem_hit_ADCmaxstripV;
-   Double_t        bb_gem_hit_ADCmaxstripV[13];   //[Ndata.bb.gem.hit.ADCmaxstripV]
+   Double_t        bb_gem_hit_ADCmaxstripV[21];   //[Ndata.bb.gem.hit.ADCmaxstripV]
    Int_t           Ndata_bb_gem_hit_BUILD_ALL_SAMPLES_U;
-   Double_t        bb_gem_hit_BUILD_ALL_SAMPLES_U[13];   //[Ndata.bb.gem.hit.BUILD_ALL_SAMPLES_U]
+   Double_t        bb_gem_hit_BUILD_ALL_SAMPLES_U[21];   //[Ndata.bb.gem.hit.BUILD_ALL_SAMPLES_U]
    Int_t           Ndata_bb_gem_hit_BUILD_ALL_SAMPLES_V;
-   Double_t        bb_gem_hit_BUILD_ALL_SAMPLES_V[13];   //[Ndata.bb.gem.hit.BUILD_ALL_SAMPLES_V]
+   Double_t        bb_gem_hit_BUILD_ALL_SAMPLES_V[21];   //[Ndata.bb.gem.hit.BUILD_ALL_SAMPLES_V]
    Int_t           Ndata_bb_gem_hit_CM_GOOD_U;
-   Double_t        bb_gem_hit_CM_GOOD_U[13];   //[Ndata.bb.gem.hit.CM_GOOD_U]
+   Double_t        bb_gem_hit_CM_GOOD_U[21];   //[Ndata.bb.gem.hit.CM_GOOD_U]
    Int_t           Ndata_bb_gem_hit_CM_GOOD_V;
-   Double_t        bb_gem_hit_CM_GOOD_V[13];   //[Ndata.bb.gem.hit.CM_GOOD_V]
+   Double_t        bb_gem_hit_CM_GOOD_V[21];   //[Ndata.bb.gem.hit.CM_GOOD_V]
    Int_t           Ndata_bb_gem_hit_ENABLE_CM_U;
-   Double_t        bb_gem_hit_ENABLE_CM_U[13];   //[Ndata.bb.gem.hit.ENABLE_CM_U]
+   Double_t        bb_gem_hit_ENABLE_CM_U[21];   //[Ndata.bb.gem.hit.ENABLE_CM_U]
    Int_t           Ndata_bb_gem_hit_ENABLE_CM_V;
-   Double_t        bb_gem_hit_ENABLE_CM_V[13];   //[Ndata.bb.gem.hit.ENABLE_CM_V]
+   Double_t        bb_gem_hit_ENABLE_CM_V[21];   //[Ndata.bb.gem.hit.ENABLE_CM_V]
    Int_t           Ndata_bb_gem_hit_Tavg;
-   Double_t        bb_gem_hit_Tavg[13];   //[Ndata.bb.gem.hit.Tavg]
+   Double_t        bb_gem_hit_Tavg[21];   //[Ndata.bb.gem.hit.Tavg]
    Int_t           Ndata_bb_gem_hit_Utime;
-   Double_t        bb_gem_hit_Utime[13];   //[Ndata.bb.gem.hit.Utime]
+   Double_t        bb_gem_hit_Utime[21];   //[Ndata.bb.gem.hit.Utime]
    Int_t           Ndata_bb_gem_hit_UtimeMaxStrip;
-   Double_t        bb_gem_hit_UtimeMaxStrip[13];   //[Ndata.bb.gem.hit.UtimeMaxStrip]
+   Double_t        bb_gem_hit_UtimeMaxStrip[21];   //[Ndata.bb.gem.hit.UtimeMaxStrip]
    Int_t           Ndata_bb_gem_hit_Vtime;
-   Double_t        bb_gem_hit_Vtime[13];   //[Ndata.bb.gem.hit.Vtime]
+   Double_t        bb_gem_hit_Vtime[21];   //[Ndata.bb.gem.hit.Vtime]
    Int_t           Ndata_bb_gem_hit_VtimeMaxStrip;
-   Double_t        bb_gem_hit_VtimeMaxStrip[13];   //[Ndata.bb.gem.hit.VtimeMaxStrip]
+   Double_t        bb_gem_hit_VtimeMaxStrip[21];   //[Ndata.bb.gem.hit.VtimeMaxStrip]
    Int_t           Ndata_bb_gem_hit_ccor_clust;
-   Double_t        bb_gem_hit_ccor_clust[13];   //[Ndata.bb.gem.hit.ccor_clust]
+   Double_t        bb_gem_hit_ccor_clust[21];   //[Ndata.bb.gem.hit.ccor_clust]
    Int_t           Ndata_bb_gem_hit_ccor_strip;
-   Double_t        bb_gem_hit_ccor_strip[13];   //[Ndata.bb.gem.hit.ccor_strip]
+   Double_t        bb_gem_hit_ccor_strip[21];   //[Ndata.bb.gem.hit.ccor_strip]
    Int_t           Ndata_bb_gem_hit_deltat;
-   Double_t        bb_gem_hit_deltat[13];   //[Ndata.bb.gem.hit.deltat]
+   Double_t        bb_gem_hit_deltat[21];   //[Ndata.bb.gem.hit.deltat]
    Int_t           Ndata_bb_gem_hit_eresidu;
-   Double_t        bb_gem_hit_eresidu[13];   //[Ndata.bb.gem.hit.eresidu]
+   Double_t        bb_gem_hit_eresidu[21];   //[Ndata.bb.gem.hit.eresidu]
    Int_t           Ndata_bb_gem_hit_eresidv;
-   Double_t        bb_gem_hit_eresidv[13];   //[Ndata.bb.gem.hit.eresidv]
+   Double_t        bb_gem_hit_eresidv[21];   //[Ndata.bb.gem.hit.eresidv]
    Int_t           Ndata_bb_gem_hit_isampmaxUclust;
-   Double_t        bb_gem_hit_isampmaxUclust[13];   //[Ndata.bb.gem.hit.isampmaxUclust]
+   Double_t        bb_gem_hit_isampmaxUclust[21];   //[Ndata.bb.gem.hit.isampmaxUclust]
    Int_t           Ndata_bb_gem_hit_isampmaxUstrip;
-   Double_t        bb_gem_hit_isampmaxUstrip[13];   //[Ndata.bb.gem.hit.isampmaxUstrip]
+   Double_t        bb_gem_hit_isampmaxUstrip[21];   //[Ndata.bb.gem.hit.isampmaxUstrip]
    Int_t           Ndata_bb_gem_hit_isampmaxVclust;
-   Double_t        bb_gem_hit_isampmaxVclust[13];   //[Ndata.bb.gem.hit.isampmaxVclust]
+   Double_t        bb_gem_hit_isampmaxVclust[21];   //[Ndata.bb.gem.hit.isampmaxVclust]
    Int_t           Ndata_bb_gem_hit_isampmaxVstrip;
-   Double_t        bb_gem_hit_isampmaxVstrip[13];   //[Ndata.bb.gem.hit.isampmaxVstrip]
+   Double_t        bb_gem_hit_isampmaxVstrip[21];   //[Ndata.bb.gem.hit.isampmaxVstrip]
    Int_t           Ndata_bb_gem_hit_layer;
-   Double_t        bb_gem_hit_layer[13];   //[Ndata.bb.gem.hit.layer]
+   Double_t        bb_gem_hit_layer[21];   //[Ndata.bb.gem.hit.layer]
    Int_t           Ndata_bb_gem_hit_module;
-   Double_t        bb_gem_hit_module[13];   //[Ndata.bb.gem.hit.module]
+   Double_t        bb_gem_hit_module[21];   //[Ndata.bb.gem.hit.module]
    Int_t           Ndata_bb_gem_hit_nstripu;
-   Double_t        bb_gem_hit_nstripu[13];   //[Ndata.bb.gem.hit.nstripu]
+   Double_t        bb_gem_hit_nstripu[21];   //[Ndata.bb.gem.hit.nstripu]
    Int_t           Ndata_bb_gem_hit_nstripv;
-   Double_t        bb_gem_hit_nstripv[13];   //[Ndata.bb.gem.hit.nstripv]
+   Double_t        bb_gem_hit_nstripv[21];   //[Ndata.bb.gem.hit.nstripv]
    Int_t           Ndata_bb_gem_hit_residu;
-   Double_t        bb_gem_hit_residu[13];   //[Ndata.bb.gem.hit.residu]
+   Double_t        bb_gem_hit_residu[21];   //[Ndata.bb.gem.hit.residu]
    Int_t           Ndata_bb_gem_hit_residv;
-   Double_t        bb_gem_hit_residv[13];   //[Ndata.bb.gem.hit.residv]
+   Double_t        bb_gem_hit_residv[21];   //[Ndata.bb.gem.hit.residv]
    Int_t           Ndata_bb_gem_hit_trackindex;
-   Double_t        bb_gem_hit_trackindex[13];   //[Ndata.bb.gem.hit.trackindex]
+   Double_t        bb_gem_hit_trackindex[21];   //[Ndata.bb.gem.hit.trackindex]
    Int_t           Ndata_bb_gem_hit_u;
-   Double_t        bb_gem_hit_u[13];   //[Ndata.bb.gem.hit.u]
+   Double_t        bb_gem_hit_u[21];   //[Ndata.bb.gem.hit.u]
    Int_t           Ndata_bb_gem_hit_umoment;
-   Double_t        bb_gem_hit_umoment[13];   //[Ndata.bb.gem.hit.umoment]
+   Double_t        bb_gem_hit_umoment[21];   //[Ndata.bb.gem.hit.umoment]
    Int_t           Ndata_bb_gem_hit_usigma;
-   Double_t        bb_gem_hit_usigma[13];   //[Ndata.bb.gem.hit.usigma]
+   Double_t        bb_gem_hit_usigma[21];   //[Ndata.bb.gem.hit.usigma]
    Int_t           Ndata_bb_gem_hit_ustriphi;
-   Double_t        bb_gem_hit_ustriphi[13];   //[Ndata.bb.gem.hit.ustriphi]
+   Double_t        bb_gem_hit_ustriphi[21];   //[Ndata.bb.gem.hit.ustriphi]
    Int_t           Ndata_bb_gem_hit_ustriplo;
-   Double_t        bb_gem_hit_ustriplo[13];   //[Ndata.bb.gem.hit.ustriplo]
+   Double_t        bb_gem_hit_ustriplo[21];   //[Ndata.bb.gem.hit.ustriplo]
    Int_t           Ndata_bb_gem_hit_ustripmax;
-   Double_t        bb_gem_hit_ustripmax[13];   //[Ndata.bb.gem.hit.ustripmax]
+   Double_t        bb_gem_hit_ustripmax[21];   //[Ndata.bb.gem.hit.ustripmax]
    Int_t           Ndata_bb_gem_hit_v;
-   Double_t        bb_gem_hit_v[13];   //[Ndata.bb.gem.hit.v]
+   Double_t        bb_gem_hit_v[21];   //[Ndata.bb.gem.hit.v]
    Int_t           Ndata_bb_gem_hit_vmoment;
-   Double_t        bb_gem_hit_vmoment[13];   //[Ndata.bb.gem.hit.vmoment]
+   Double_t        bb_gem_hit_vmoment[21];   //[Ndata.bb.gem.hit.vmoment]
    Int_t           Ndata_bb_gem_hit_vsigma;
-   Double_t        bb_gem_hit_vsigma[13];   //[Ndata.bb.gem.hit.vsigma]
+   Double_t        bb_gem_hit_vsigma[21];   //[Ndata.bb.gem.hit.vsigma]
    Int_t           Ndata_bb_gem_hit_vstriphi;
-   Double_t        bb_gem_hit_vstriphi[13];   //[Ndata.bb.gem.hit.vstriphi]
+   Double_t        bb_gem_hit_vstriphi[21];   //[Ndata.bb.gem.hit.vstriphi]
    Int_t           Ndata_bb_gem_hit_vstriplo;
-   Double_t        bb_gem_hit_vstriplo[13];   //[Ndata.bb.gem.hit.vstriplo]
+   Double_t        bb_gem_hit_vstriplo[21];   //[Ndata.bb.gem.hit.vstriplo]
    Int_t           Ndata_bb_gem_hit_vstripmax;
-   Double_t        bb_gem_hit_vstripmax[13];   //[Ndata.bb.gem.hit.vstripmax]
+   Double_t        bb_gem_hit_vstripmax[21];   //[Ndata.bb.gem.hit.vstripmax]
    Int_t           Ndata_bb_gem_hit_xglobal;
-   Double_t        bb_gem_hit_xglobal[13];   //[Ndata.bb.gem.hit.xglobal]
+   Double_t        bb_gem_hit_xglobal[21];   //[Ndata.bb.gem.hit.xglobal]
    Int_t           Ndata_bb_gem_hit_xlocal;
-   Double_t        bb_gem_hit_xlocal[13];   //[Ndata.bb.gem.hit.xlocal]
+   Double_t        bb_gem_hit_xlocal[21];   //[Ndata.bb.gem.hit.xlocal]
    Int_t           Ndata_bb_gem_hit_yglobal;
-   Double_t        bb_gem_hit_yglobal[13];   //[Ndata.bb.gem.hit.yglobal]
+   Double_t        bb_gem_hit_yglobal[21];   //[Ndata.bb.gem.hit.yglobal]
    Int_t           Ndata_bb_gem_hit_ylocal;
-   Double_t        bb_gem_hit_ylocal[13];   //[Ndata.bb.gem.hit.ylocal]
+   Double_t        bb_gem_hit_ylocal[21];   //[Ndata.bb.gem.hit.ylocal]
    Int_t           Ndata_bb_gem_hit_zglobal;
-   Double_t        bb_gem_hit_zglobal[13];   //[Ndata.bb.gem.hit.zglobal]
+   Double_t        bb_gem_hit_zglobal[21];   //[Ndata.bb.gem.hit.zglobal]
    Int_t           Ndata_bb_gem_n2Dhit_layer;
    Double_t        bb_gem_n2Dhit_layer[5];   //[Ndata.bb.gem.n2Dhit_layer]
    Int_t           Ndata_bb_gem_nclustu_layer;
@@ -217,237 +145,83 @@ public :
    Int_t           Ndata_bb_gem_nstripsv_layer;
    Double_t        bb_gem_nstripsv_layer[5];   //[Ndata.bb.gem.nstripsv_layer]
    Int_t           Ndata_bb_gem_track_chi2ndf;
-   Double_t        bb_gem_track_chi2ndf[4];   //[Ndata.bb.gem.track.chi2ndf]
+   Double_t        bb_gem_track_chi2ndf[7];   //[Ndata.bb.gem.track.chi2ndf]
    Int_t           Ndata_bb_gem_track_nhits;
-   Double_t        bb_gem_track_nhits[4];   //[Ndata.bb.gem.track.nhits]
+   Double_t        bb_gem_track_nhits[7];   //[Ndata.bb.gem.track.nhits]
    Int_t           Ndata_bb_gem_track_x;
-   Double_t        bb_gem_track_x[4];   //[Ndata.bb.gem.track.x]
+   Double_t        bb_gem_track_x[7];   //[Ndata.bb.gem.track.x]
    Int_t           Ndata_bb_gem_track_xp;
-   Double_t        bb_gem_track_xp[4];   //[Ndata.bb.gem.track.xp]
+   Double_t        bb_gem_track_xp[7];   //[Ndata.bb.gem.track.xp]
    Int_t           Ndata_bb_gem_track_y;
-   Double_t        bb_gem_track_y[4];   //[Ndata.bb.gem.track.y]
+   Double_t        bb_gem_track_y[7];   //[Ndata.bb.gem.track.y]
    Int_t           Ndata_bb_gem_track_yp;
-   Double_t        bb_gem_track_yp[4];   //[Ndata.bb.gem.track.yp]
-   Int_t           Ndata_bb_grinch_adc_a;
-   Double_t        bb_grinch_adc_a[63];   //[Ndata.bb.grinch_adc.a]
-   Int_t           Ndata_bb_grinch_adc_a_amp;
-   Double_t        bb_grinch_adc_a_amp[63];   //[Ndata.bb.grinch_adc.a_amp]
-   Int_t           Ndata_bb_grinch_adc_a_amp_c;
-   Double_t        bb_grinch_adc_a_amp_c[63];   //[Ndata.bb.grinch_adc.a_amp_c]
-   Int_t           Ndata_bb_grinch_adc_a_amp_p;
-   Double_t        bb_grinch_adc_a_amp_p[63];   //[Ndata.bb.grinch_adc.a_amp_p]
-   Int_t           Ndata_bb_grinch_adc_a_amptrig_c;
-   Double_t        bb_grinch_adc_a_amptrig_c[63];   //[Ndata.bb.grinch_adc.a_amptrig_c]
-   Int_t           Ndata_bb_grinch_adc_a_amptrig_p;
-   Double_t        bb_grinch_adc_a_amptrig_p[63];   //[Ndata.bb.grinch_adc.a_amptrig_p]
-   Int_t           Ndata_bb_grinch_adc_a_c;
-   Double_t        bb_grinch_adc_a_c[63];   //[Ndata.bb.grinch_adc.a_c]
-   Int_t           Ndata_bb_grinch_adc_a_mult;
-   Double_t        bb_grinch_adc_a_mult[126];   //[Ndata.bb.grinch_adc.a_mult]
-   Int_t           Ndata_bb_grinch_adc_a_p;
-   Double_t        bb_grinch_adc_a_p[63];   //[Ndata.bb.grinch_adc.a_p]
-   Int_t           Ndata_bb_grinch_adc_a_time;
-   Double_t        bb_grinch_adc_a_time[63];   //[Ndata.bb.grinch_adc.a_time]
-   Int_t           Ndata_bb_grinch_adc_adccol;
-   Double_t        bb_grinch_adc_adccol[63];   //[Ndata.bb.grinch_adc.adccol]
-   Int_t           Ndata_bb_grinch_adc_adcelemID;
-   Double_t        bb_grinch_adc_adcelemID[63];   //[Ndata.bb.grinch_adc.adcelemID]
-   Int_t           Ndata_bb_grinch_adc_adclayer;
-   Double_t        bb_grinch_adc_adclayer[63];   //[Ndata.bb.grinch_adc.adclayer]
-   Int_t           Ndata_bb_grinch_adc_adcrow;
-   Double_t        bb_grinch_adc_adcrow[63];   //[Ndata.bb.grinch_adc.adcrow]
-   Int_t           Ndata_bb_grinch_adc_ped;
-   Double_t        bb_grinch_adc_ped[63];   //[Ndata.bb.grinch_adc.ped]
+   Double_t        bb_gem_track_yp[7];   //[Ndata.bb.gem.track.yp]
    Int_t           Ndata_bb_grinch_tdc_tdc;
-   Double_t        bb_grinch_tdc_tdc[5];   //[Ndata.bb.grinch_tdc.tdc]
+   Double_t        bb_grinch_tdc_tdc[14];   //[Ndata.bb.grinch_tdc.tdc]
    Int_t           Ndata_bb_grinch_tdc_tdc_mult;
-   Double_t        bb_grinch_tdc_tdc_mult[5];   //[Ndata.bb.grinch_tdc.tdc_mult]
+   Double_t        bb_grinch_tdc_tdc_mult[14];   //[Ndata.bb.grinch_tdc.tdc_mult]
    Int_t           Ndata_bb_grinch_tdc_tdc_te;
-   Double_t        bb_grinch_tdc_tdc_te[5];   //[Ndata.bb.grinch_tdc.tdc_te]
+   Double_t        bb_grinch_tdc_tdc_te[14];   //[Ndata.bb.grinch_tdc.tdc_te]
    Int_t           Ndata_bb_grinch_tdc_tdc_tot;
-   Double_t        bb_grinch_tdc_tdc_tot[5];   //[Ndata.bb.grinch_tdc.tdc_tot]
+   Double_t        bb_grinch_tdc_tdc_tot[14];   //[Ndata.bb.grinch_tdc.tdc_tot]
    Int_t           Ndata_bb_grinch_tdc_tdccol;
-   Double_t        bb_grinch_tdc_tdccol[5];   //[Ndata.bb.grinch_tdc.tdccol]
+   Double_t        bb_grinch_tdc_tdccol[14];   //[Ndata.bb.grinch_tdc.tdccol]
    Int_t           Ndata_bb_grinch_tdc_tdcelemID;
-   Double_t        bb_grinch_tdc_tdcelemID[5];   //[Ndata.bb.grinch_tdc.tdcelemID]
+   Double_t        bb_grinch_tdc_tdcelemID[14];   //[Ndata.bb.grinch_tdc.tdcelemID]
    Int_t           Ndata_bb_grinch_tdc_tdclayer;
-   Double_t        bb_grinch_tdc_tdclayer[5];   //[Ndata.bb.grinch_tdc.tdclayer]
+   Double_t        bb_grinch_tdc_tdclayer[14];   //[Ndata.bb.grinch_tdc.tdclayer]
    Int_t           Ndata_bb_grinch_tdc_tdcrow;
-   Double_t        bb_grinch_tdc_tdcrow[5];   //[Ndata.bb.grinch_tdc.tdcrow]
-   Int_t           Ndata_bb_hodoadc_Ref_a;
-   Double_t        bb_hodoadc_Ref_a[1];   //[Ndata.bb.hodoadc.Ref.a]
-   Int_t           Ndata_bb_hodoadc_Ref_a_amp;
-   Double_t        bb_hodoadc_Ref_a_amp[1];   //[Ndata.bb.hodoadc.Ref.a_amp]
-   Int_t           Ndata_bb_hodoadc_Ref_a_amp_c;
-   Double_t        bb_hodoadc_Ref_a_amp_c[1];   //[Ndata.bb.hodoadc.Ref.a_amp_c]
-   Int_t           Ndata_bb_hodoadc_Ref_a_amp_p;
-   Double_t        bb_hodoadc_Ref_a_amp_p[1];   //[Ndata.bb.hodoadc.Ref.a_amp_p]
-   Int_t           Ndata_bb_hodoadc_Ref_a_c;
-   Double_t        bb_hodoadc_Ref_a_c[1];   //[Ndata.bb.hodoadc.Ref.a_c]
-   Int_t           Ndata_bb_hodoadc_Ref_a_mult;
-   Double_t        bb_hodoadc_Ref_a_mult[1];   //[Ndata.bb.hodoadc.Ref.a_mult]
-   Int_t           Ndata_bb_hodoadc_Ref_a_p;
-   Double_t        bb_hodoadc_Ref_a_p[1];   //[Ndata.bb.hodoadc.Ref.a_p]
-   Int_t           Ndata_bb_hodoadc_Ref_a_time;
-   Double_t        bb_hodoadc_Ref_a_time[1];   //[Ndata.bb.hodoadc.Ref.a_time]
-   Int_t           Ndata_bb_hodoadc_Ref_adcelemID;
-   Double_t        bb_hodoadc_Ref_adcelemID[1];   //[Ndata.bb.hodoadc.Ref.adcelemID]
-   Int_t           Ndata_bb_hodoadc_Ref_ped;
-   Double_t        bb_hodoadc_Ref_ped[1];   //[Ndata.bb.hodoadc.Ref.ped]
-   Int_t           Ndata_bb_hodoadc_a;
-   Double_t        bb_hodoadc_a[26];   //[Ndata.bb.hodoadc.a]
-   Int_t           Ndata_bb_hodoadc_a_amp;
-   Double_t        bb_hodoadc_a_amp[26];   //[Ndata.bb.hodoadc.a_amp]
-   Int_t           Ndata_bb_hodoadc_a_amp_c;
-   Double_t        bb_hodoadc_a_amp_c[26];   //[Ndata.bb.hodoadc.a_amp_c]
-   Int_t           Ndata_bb_hodoadc_a_amp_p;
-   Double_t        bb_hodoadc_a_amp_p[26];   //[Ndata.bb.hodoadc.a_amp_p]
-   Int_t           Ndata_bb_hodoadc_a_amptrig_c;
-   Double_t        bb_hodoadc_a_amptrig_c[26];   //[Ndata.bb.hodoadc.a_amptrig_c]
-   Int_t           Ndata_bb_hodoadc_a_amptrig_p;
-   Double_t        bb_hodoadc_a_amptrig_p[26];   //[Ndata.bb.hodoadc.a_amptrig_p]
-   Int_t           Ndata_bb_hodoadc_a_c;
-   Double_t        bb_hodoadc_a_c[26];   //[Ndata.bb.hodoadc.a_c]
-   Int_t           Ndata_bb_hodoadc_a_mult;
-   Double_t        bb_hodoadc_a_mult[26];   //[Ndata.bb.hodoadc.a_mult]
-   Int_t           Ndata_bb_hodoadc_a_p;
-   Double_t        bb_hodoadc_a_p[26];   //[Ndata.bb.hodoadc.a_p]
-   Int_t           Ndata_bb_hodoadc_a_time;
-   Double_t        bb_hodoadc_a_time[26];   //[Ndata.bb.hodoadc.a_time]
-   Int_t           Ndata_bb_hodoadc_adccol;
-   Double_t        bb_hodoadc_adccol[26];   //[Ndata.bb.hodoadc.adccol]
-   Int_t           Ndata_bb_hodoadc_adcelemID;
-   Double_t        bb_hodoadc_adcelemID[26];   //[Ndata.bb.hodoadc.adcelemID]
-   Int_t           Ndata_bb_hodoadc_adclayer;
-   Double_t        bb_hodoadc_adclayer[26];   //[Ndata.bb.hodoadc.adclayer]
-   Int_t           Ndata_bb_hodoadc_adcrow;
-   Double_t        bb_hodoadc_adcrow[26];   //[Ndata.bb.hodoadc.adcrow]
+   Double_t        bb_grinch_tdc_tdcrow[14];   //[Ndata.bb.grinch_tdc.tdcrow]
    Int_t           Ndata_bb_hodoadc_bar_adc_L_a;
-   Double_t        bb_hodoadc_bar_adc_L_a[13];   //[Ndata.bb.hodoadc.bar.adc.L.a]
+   Double_t        bb_hodoadc_bar_adc_L_a[20];   //[Ndata.bb.hodoadc.bar.adc.L.a]
    Int_t           Ndata_bb_hodoadc_bar_adc_L_ac;
-   Double_t        bb_hodoadc_bar_adc_L_ac[13];   //[Ndata.bb.hodoadc.bar.adc.L.ac]
+   Double_t        bb_hodoadc_bar_adc_L_ac[20];   //[Ndata.bb.hodoadc.bar.adc.L.ac]
    Int_t           Ndata_bb_hodoadc_bar_adc_L_ap;
-   Double_t        bb_hodoadc_bar_adc_L_ap[13];   //[Ndata.bb.hodoadc.bar.adc.L.ap]
+   Double_t        bb_hodoadc_bar_adc_L_ap[20];   //[Ndata.bb.hodoadc.bar.adc.L.ap]
    Int_t           Ndata_bb_hodoadc_bar_adc_R_a;
-   Double_t        bb_hodoadc_bar_adc_R_a[13];   //[Ndata.bb.hodoadc.bar.adc.R.a]
+   Double_t        bb_hodoadc_bar_adc_R_a[20];   //[Ndata.bb.hodoadc.bar.adc.R.a]
    Int_t           Ndata_bb_hodoadc_bar_adc_R_ac;
-   Double_t        bb_hodoadc_bar_adc_R_ac[13];   //[Ndata.bb.hodoadc.bar.adc.R.ac]
+   Double_t        bb_hodoadc_bar_adc_R_ac[20];   //[Ndata.bb.hodoadc.bar.adc.R.ac]
    Int_t           Ndata_bb_hodoadc_bar_adc_R_ap;
-   Double_t        bb_hodoadc_bar_adc_R_ap[13];   //[Ndata.bb.hodoadc.bar.adc.R.ap]
+   Double_t        bb_hodoadc_bar_adc_R_ap[20];   //[Ndata.bb.hodoadc.bar.adc.R.ap]
    Int_t           Ndata_bb_hodoadc_bar_adc_id;
-   Double_t        bb_hodoadc_bar_adc_id[13];   //[Ndata.bb.hodoadc.bar.adc.id]
+   Double_t        bb_hodoadc_bar_adc_id[20];   //[Ndata.bb.hodoadc.bar.adc.id]
    Int_t           Ndata_bb_hodoadc_bar_adc_mean;
-   Double_t        bb_hodoadc_bar_adc_mean[13];   //[Ndata.bb.hodoadc.bar.adc.mean]
-   Int_t           Ndata_bb_hodoadc_clus_size;
-   Double_t        bb_hodoadc_clus_size[1];   //[Ndata.bb.hodoadc.clus.size]
-   Int_t           Ndata_bb_hodoadc_clus_tmean;
-   Double_t        bb_hodoadc_clus_tmean[1];   //[Ndata.bb.hodoadc.clus.tmean]
-   Int_t           Ndata_bb_hodoadc_clus_totmean;
-   Double_t        bb_hodoadc_clus_totmean[1];   //[Ndata.bb.hodoadc.clus.totmean]
-   Int_t           Ndata_bb_hodoadc_clus_xmean;
-   Double_t        bb_hodoadc_clus_xmean[1];   //[Ndata.bb.hodoadc.clus.xmean]
-   Int_t           Ndata_bb_hodoadc_clus_ymean;
-   Double_t        bb_hodoadc_clus_ymean[1];   //[Ndata.bb.hodoadc.clus.ymean]
-   Int_t           Ndata_bb_hodoadc_ped;
-   Double_t        bb_hodoadc_ped[26];   //[Ndata.bb.hodoadc.ped]
-   Int_t           Ndata_bb_hodotdc_Ref_tdc;
-   Double_t        bb_hodotdc_Ref_tdc[2];   //[Ndata.bb.hodotdc.Ref.tdc]
-   Int_t           Ndata_bb_hodotdc_Ref_tdc_mult;
-   Double_t        bb_hodotdc_Ref_tdc_mult[2];   //[Ndata.bb.hodotdc.Ref.tdc_mult]
-   Int_t           Ndata_bb_hodotdc_Ref_tdc_te;
-   Double_t        bb_hodotdc_Ref_tdc_te[2];   //[Ndata.bb.hodotdc.Ref.tdc_te]
-   Int_t           Ndata_bb_hodotdc_Ref_tdc_tot;
-   Double_t        bb_hodotdc_Ref_tdc_tot[2];   //[Ndata.bb.hodotdc.Ref.tdc_tot]
-   Int_t           Ndata_bb_hodotdc_Ref_tdcelemID;
-   Double_t        bb_hodotdc_Ref_tdcelemID[2];   //[Ndata.bb.hodotdc.Ref.tdcelemID]
+   Double_t        bb_hodoadc_bar_adc_mean[20];   //[Ndata.bb.hodoadc.bar.adc.mean]
    Int_t           Ndata_bb_hodotdc_bar_tdc_L_le;
-   Double_t        bb_hodotdc_bar_tdc_L_le[35];   //[Ndata.bb.hodotdc.bar.tdc.L.le]
+   Double_t        bb_hodotdc_bar_tdc_L_le[66];   //[Ndata.bb.hodotdc.bar.tdc.L.le]
    Int_t           Ndata_bb_hodotdc_bar_tdc_L_leW;
-   Double_t        bb_hodotdc_bar_tdc_L_leW[35];   //[Ndata.bb.hodotdc.bar.tdc.L.leW]
+   Double_t        bb_hodotdc_bar_tdc_L_leW[66];   //[Ndata.bb.hodotdc.bar.tdc.L.leW]
    Int_t           Ndata_bb_hodotdc_bar_tdc_L_te;
-   Double_t        bb_hodotdc_bar_tdc_L_te[35];   //[Ndata.bb.hodotdc.bar.tdc.L.te]
+   Double_t        bb_hodotdc_bar_tdc_L_te[66];   //[Ndata.bb.hodotdc.bar.tdc.L.te]
    Int_t           Ndata_bb_hodotdc_bar_tdc_L_teW;
-   Double_t        bb_hodotdc_bar_tdc_L_teW[35];   //[Ndata.bb.hodotdc.bar.tdc.L.teW]
+   Double_t        bb_hodotdc_bar_tdc_L_teW[66];   //[Ndata.bb.hodotdc.bar.tdc.L.teW]
    Int_t           Ndata_bb_hodotdc_bar_tdc_L_tot;
-   Double_t        bb_hodotdc_bar_tdc_L_tot[35];   //[Ndata.bb.hodotdc.bar.tdc.L.tot]
+   Double_t        bb_hodotdc_bar_tdc_L_tot[66];   //[Ndata.bb.hodotdc.bar.tdc.L.tot]
    Int_t           Ndata_bb_hodotdc_bar_tdc_L_totW;
-   Double_t        bb_hodotdc_bar_tdc_L_totW[35];   //[Ndata.bb.hodotdc.bar.tdc.L.totW]
+   Double_t        bb_hodotdc_bar_tdc_L_totW[66];   //[Ndata.bb.hodotdc.bar.tdc.L.totW]
    Int_t           Ndata_bb_hodotdc_bar_tdc_R_le;
-   Double_t        bb_hodotdc_bar_tdc_R_le[35];   //[Ndata.bb.hodotdc.bar.tdc.R.le]
+   Double_t        bb_hodotdc_bar_tdc_R_le[66];   //[Ndata.bb.hodotdc.bar.tdc.R.le]
    Int_t           Ndata_bb_hodotdc_bar_tdc_R_leW;
-   Double_t        bb_hodotdc_bar_tdc_R_leW[35];   //[Ndata.bb.hodotdc.bar.tdc.R.leW]
+   Double_t        bb_hodotdc_bar_tdc_R_leW[66];   //[Ndata.bb.hodotdc.bar.tdc.R.leW]
    Int_t           Ndata_bb_hodotdc_bar_tdc_R_te;
-   Double_t        bb_hodotdc_bar_tdc_R_te[35];   //[Ndata.bb.hodotdc.bar.tdc.R.te]
+   Double_t        bb_hodotdc_bar_tdc_R_te[66];   //[Ndata.bb.hodotdc.bar.tdc.R.te]
    Int_t           Ndata_bb_hodotdc_bar_tdc_R_teW;
-   Double_t        bb_hodotdc_bar_tdc_R_teW[35];   //[Ndata.bb.hodotdc.bar.tdc.R.teW]
+   Double_t        bb_hodotdc_bar_tdc_R_teW[66];   //[Ndata.bb.hodotdc.bar.tdc.R.teW]
    Int_t           Ndata_bb_hodotdc_bar_tdc_R_tot;
-   Double_t        bb_hodotdc_bar_tdc_R_tot[35];   //[Ndata.bb.hodotdc.bar.tdc.R.tot]
+   Double_t        bb_hodotdc_bar_tdc_R_tot[66];   //[Ndata.bb.hodotdc.bar.tdc.R.tot]
    Int_t           Ndata_bb_hodotdc_bar_tdc_R_totW;
-   Double_t        bb_hodotdc_bar_tdc_R_totW[35];   //[Ndata.bb.hodotdc.bar.tdc.R.totW]
+   Double_t        bb_hodotdc_bar_tdc_R_totW[66];   //[Ndata.bb.hodotdc.bar.tdc.R.totW]
    Int_t           Ndata_bb_hodotdc_bar_tdc_id;
-   Double_t        bb_hodotdc_bar_tdc_id[35];   //[Ndata.bb.hodotdc.bar.tdc.id]
+   Double_t        bb_hodotdc_bar_tdc_id[66];   //[Ndata.bb.hodotdc.bar.tdc.id]
    Int_t           Ndata_bb_hodotdc_bar_tdc_meantime;
-   Double_t        bb_hodotdc_bar_tdc_meantime[35];   //[Ndata.bb.hodotdc.bar.tdc.meantime]
+   Double_t        bb_hodotdc_bar_tdc_meantime[66];   //[Ndata.bb.hodotdc.bar.tdc.meantime]
    Int_t           Ndata_bb_hodotdc_bar_tdc_timediff;
-   Double_t        bb_hodotdc_bar_tdc_timediff[35];   //[Ndata.bb.hodotdc.bar.tdc.timediff]
+   Double_t        bb_hodotdc_bar_tdc_timediff[66];   //[Ndata.bb.hodotdc.bar.tdc.timediff]
    Int_t           Ndata_bb_hodotdc_bar_tdc_timehitpos;
-   Double_t        bb_hodotdc_bar_tdc_timehitpos[35];   //[Ndata.bb.hodotdc.bar.tdc.timehitpos]
+   Double_t        bb_hodotdc_bar_tdc_timehitpos[66];   //[Ndata.bb.hodotdc.bar.tdc.timehitpos]
    Int_t           Ndata_bb_hodotdc_bar_tdc_vpos;
-   Double_t        bb_hodotdc_bar_tdc_vpos[35];   //[Ndata.bb.hodotdc.bar.tdc.vpos]
-   Int_t           Ndata_bb_hodotdc_clus_size;
-   Double_t        bb_hodotdc_clus_size[19];   //[Ndata.bb.hodotdc.clus.size]
-   Int_t           Ndata_bb_hodotdc_clus_tmean;
-   Double_t        bb_hodotdc_clus_tmean[19];   //[Ndata.bb.hodotdc.clus.tmean]
-   Int_t           Ndata_bb_hodotdc_clus_totmean;
-   Double_t        bb_hodotdc_clus_totmean[19];   //[Ndata.bb.hodotdc.clus.totmean]
-   Int_t           Ndata_bb_hodotdc_clus_xmean;
-   Double_t        bb_hodotdc_clus_xmean[19];   //[Ndata.bb.hodotdc.clus.xmean]
-   Int_t           Ndata_bb_hodotdc_clus_ymean;
-   Double_t        bb_hodotdc_clus_ymean[19];   //[Ndata.bb.hodotdc.clus.ymean]
-   Int_t           Ndata_bb_hodotdc_tdc;
-   Double_t        bb_hodotdc_tdc[73];   //[Ndata.bb.hodotdc.tdc]
-   Int_t           Ndata_bb_hodotdc_tdc_mult;
-   Double_t        bb_hodotdc_tdc_mult[73];   //[Ndata.bb.hodotdc.tdc_mult]
-   Int_t           Ndata_bb_hodotdc_tdc_te;
-   Double_t        bb_hodotdc_tdc_te[73];   //[Ndata.bb.hodotdc.tdc_te]
-   Int_t           Ndata_bb_hodotdc_tdc_tot;
-   Double_t        bb_hodotdc_tdc_tot[73];   //[Ndata.bb.hodotdc.tdc_tot]
-   Int_t           Ndata_bb_hodotdc_tdccol;
-   Double_t        bb_hodotdc_tdccol[73];   //[Ndata.bb.hodotdc.tdccol]
-   Int_t           Ndata_bb_hodotdc_tdcelemID;
-   Double_t        bb_hodotdc_tdcelemID[73];   //[Ndata.bb.hodotdc.tdcelemID]
-   Int_t           Ndata_bb_hodotdc_tdclayer;
-   Double_t        bb_hodotdc_tdclayer[73];   //[Ndata.bb.hodotdc.tdclayer]
-   Int_t           Ndata_bb_hodotdc_tdcrow;
-   Double_t        bb_hodotdc_tdcrow[73];   //[Ndata.bb.hodotdc.tdcrow]
-   Int_t           Ndata_bb_ps_a;
-   Double_t        bb_ps_a[18];   //[Ndata.bb.ps.a]
-   Int_t           Ndata_bb_ps_a_amp;
-   Double_t        bb_ps_a_amp[18];   //[Ndata.bb.ps.a_amp]
-   Int_t           Ndata_bb_ps_a_amp_c;
-   Double_t        bb_ps_a_amp_c[18];   //[Ndata.bb.ps.a_amp_c]
-   Int_t           Ndata_bb_ps_a_amp_p;
-   Double_t        bb_ps_a_amp_p[18];   //[Ndata.bb.ps.a_amp_p]
-   Int_t           Ndata_bb_ps_a_amptrig_c;
-   Double_t        bb_ps_a_amptrig_c[18];   //[Ndata.bb.ps.a_amptrig_c]
-   Int_t           Ndata_bb_ps_a_amptrig_p;
-   Double_t        bb_ps_a_amptrig_p[18];   //[Ndata.bb.ps.a_amptrig_p]
-   Int_t           Ndata_bb_ps_a_c;
-   Double_t        bb_ps_a_c[18];   //[Ndata.bb.ps.a_c]
-   Int_t           Ndata_bb_ps_a_mult;
-   Double_t        bb_ps_a_mult[36];   //[Ndata.bb.ps.a_mult]
-   Int_t           Ndata_bb_ps_a_p;
-   Double_t        bb_ps_a_p[18];   //[Ndata.bb.ps.a_p]
-   Int_t           Ndata_bb_ps_a_time;
-   Double_t        bb_ps_a_time[18];   //[Ndata.bb.ps.a_time]
-   Int_t           Ndata_bb_ps_adccol;
-   Double_t        bb_ps_adccol[18];   //[Ndata.bb.ps.adccol]
-   Int_t           Ndata_bb_ps_adcelemID;
-   Double_t        bb_ps_adcelemID[18];   //[Ndata.bb.ps.adcelemID]
-   Int_t           Ndata_bb_ps_adclayer;
-   Double_t        bb_ps_adclayer[18];   //[Ndata.bb.ps.adclayer]
-   Int_t           Ndata_bb_ps_adcrow;
-   Double_t        bb_ps_adcrow[18];   //[Ndata.bb.ps.adcrow]
+   Double_t        bb_hodotdc_bar_tdc_vpos[66];   //[Ndata.bb.hodotdc.bar.tdc.vpos]
    Int_t           Ndata_bb_ps_clus_col;
    Double_t        bb_ps_clus_col[5];   //[Ndata.bb.ps.clus.col]
    Int_t           Ndata_bb_ps_clus_e;
@@ -469,215 +243,153 @@ public :
    Int_t           Ndata_bb_ps_clus_y;
    Double_t        bb_ps_clus_y[5];   //[Ndata.bb.ps.clus.y]
    Int_t           Ndata_bb_ps_clus_blk_col;
-   Double_t        bb_ps_clus_blk_col[7];   //[Ndata.bb.ps.clus_blk.col]
+   Double_t        bb_ps_clus_blk_col[5];   //[Ndata.bb.ps.clus_blk.col]
    Int_t           Ndata_bb_ps_clus_blk_e;
-   Double_t        bb_ps_clus_blk_e[7];   //[Ndata.bb.ps.clus_blk.e]
+   Double_t        bb_ps_clus_blk_e[5];   //[Ndata.bb.ps.clus_blk.e]
    Int_t           Ndata_bb_ps_clus_blk_e_c;
-   Double_t        bb_ps_clus_blk_e_c[7];   //[Ndata.bb.ps.clus_blk.e_c]
+   Double_t        bb_ps_clus_blk_e_c[5];   //[Ndata.bb.ps.clus_blk.e_c]
    Int_t           Ndata_bb_ps_clus_blk_id;
-   Double_t        bb_ps_clus_blk_id[7];   //[Ndata.bb.ps.clus_blk.id]
+   Double_t        bb_ps_clus_blk_id[5];   //[Ndata.bb.ps.clus_blk.id]
    Int_t           Ndata_bb_ps_clus_blk_row;
-   Double_t        bb_ps_clus_blk_row[7];   //[Ndata.bb.ps.clus_blk.row]
+   Double_t        bb_ps_clus_blk_row[5];   //[Ndata.bb.ps.clus_blk.row]
    Int_t           Ndata_bb_ps_clus_blk_x;
-   Double_t        bb_ps_clus_blk_x[7];   //[Ndata.bb.ps.clus_blk.x]
+   Double_t        bb_ps_clus_blk_x[5];   //[Ndata.bb.ps.clus_blk.x]
    Int_t           Ndata_bb_ps_clus_blk_y;
-   Double_t        bb_ps_clus_blk_y[7];   //[Ndata.bb.ps.clus_blk.y]
-   Int_t           Ndata_bb_ps_e_res;
-   Double_t        bb_ps_e_res[5];   //[Ndata.bb.ps.e_res]
-   Int_t           Ndata_bb_ps_goodblock_atime;
-   Double_t        bb_ps_goodblock_atime[18];   //[Ndata.bb.ps.goodblock.atime]
-   Int_t           Ndata_bb_ps_goodblock_col;
-   Double_t        bb_ps_goodblock_col[18];   //[Ndata.bb.ps.goodblock.col]
-   Int_t           Ndata_bb_ps_goodblock_e;
-   Double_t        bb_ps_goodblock_e[18];   //[Ndata.bb.ps.goodblock.e]
-   Int_t           Ndata_bb_ps_goodblock_id;
-   Double_t        bb_ps_goodblock_id[18];   //[Ndata.bb.ps.goodblock.id]
-   Int_t           Ndata_bb_ps_goodblock_row;
-   Double_t        bb_ps_goodblock_row[18];   //[Ndata.bb.ps.goodblock.row]
-   Int_t           Ndata_bb_ps_goodblock_x;
-   Double_t        bb_ps_goodblock_x[18];   //[Ndata.bb.ps.goodblock.x]
-   Int_t           Ndata_bb_ps_goodblock_y;
-   Double_t        bb_ps_goodblock_y[18];   //[Ndata.bb.ps.goodblock.y]
-   Int_t           Ndata_bb_ps_ped;
-   Double_t        bb_ps_ped[18];   //[Ndata.bb.ps.ped]
-   Int_t           Ndata_bb_ps_x_res;
-   Double_t        bb_ps_x_res[5];   //[Ndata.bb.ps.x_res]
-   Int_t           Ndata_bb_ps_y_res;
-   Double_t        bb_ps_y_res[5];   //[Ndata.bb.ps.y_res]
-   Int_t           Ndata_bb_sh_a;
-   Double_t        bb_sh_a[34];   //[Ndata.bb.sh.a]
-   Int_t           Ndata_bb_sh_a_amp;
-   Double_t        bb_sh_a_amp[34];   //[Ndata.bb.sh.a_amp]
-   Int_t           Ndata_bb_sh_a_amp_c;
-   Double_t        bb_sh_a_amp_c[34];   //[Ndata.bb.sh.a_amp_c]
-   Int_t           Ndata_bb_sh_a_amp_p;
-   Double_t        bb_sh_a_amp_p[34];   //[Ndata.bb.sh.a_amp_p]
-   Int_t           Ndata_bb_sh_a_amptrig_c;
-   Double_t        bb_sh_a_amptrig_c[34];   //[Ndata.bb.sh.a_amptrig_c]
-   Int_t           Ndata_bb_sh_a_amptrig_p;
-   Double_t        bb_sh_a_amptrig_p[34];   //[Ndata.bb.sh.a_amptrig_p]
-   Int_t           Ndata_bb_sh_a_c;
-   Double_t        bb_sh_a_c[34];   //[Ndata.bb.sh.a_c]
-   Int_t           Ndata_bb_sh_a_mult;
-   Double_t        bb_sh_a_mult[68];   //[Ndata.bb.sh.a_mult]
-   Int_t           Ndata_bb_sh_a_p;
-   Double_t        bb_sh_a_p[34];   //[Ndata.bb.sh.a_p]
-   Int_t           Ndata_bb_sh_a_time;
-   Double_t        bb_sh_a_time[34];   //[Ndata.bb.sh.a_time]
-   Int_t           Ndata_bb_sh_adccol;
-   Double_t        bb_sh_adccol[34];   //[Ndata.bb.sh.adccol]
-   Int_t           Ndata_bb_sh_adcelemID;
-   Double_t        bb_sh_adcelemID[34];   //[Ndata.bb.sh.adcelemID]
-   Int_t           Ndata_bb_sh_adclayer;
-   Double_t        bb_sh_adclayer[34];   //[Ndata.bb.sh.adclayer]
-   Int_t           Ndata_bb_sh_adcrow;
-   Double_t        bb_sh_adcrow[34];   //[Ndata.bb.sh.adcrow]
+   Double_t        bb_ps_clus_blk_y[5];   //[Ndata.bb.ps.clus_blk.y]
    Int_t           Ndata_bb_sh_clus_col;
-   Double_t        bb_sh_clus_col[6];   //[Ndata.bb.sh.clus.col]
+   Double_t        bb_sh_clus_col[5];   //[Ndata.bb.sh.clus.col]
    Int_t           Ndata_bb_sh_clus_e;
-   Double_t        bb_sh_clus_e[6];   //[Ndata.bb.sh.clus.e]
+   Double_t        bb_sh_clus_e[5];   //[Ndata.bb.sh.clus.e]
    Int_t           Ndata_bb_sh_clus_e_c;
-   Double_t        bb_sh_clus_e_c[6];   //[Ndata.bb.sh.clus.e_c]
+   Double_t        bb_sh_clus_e_c[5];   //[Ndata.bb.sh.clus.e_c]
    Int_t           Ndata_bb_sh_clus_eblk;
-   Double_t        bb_sh_clus_eblk[6];   //[Ndata.bb.sh.clus.eblk]
+   Double_t        bb_sh_clus_eblk[5];   //[Ndata.bb.sh.clus.eblk]
    Int_t           Ndata_bb_sh_clus_eblk_c;
-   Double_t        bb_sh_clus_eblk_c[6];   //[Ndata.bb.sh.clus.eblk_c]
+   Double_t        bb_sh_clus_eblk_c[5];   //[Ndata.bb.sh.clus.eblk_c]
    Int_t           Ndata_bb_sh_clus_id;
-   Double_t        bb_sh_clus_id[6];   //[Ndata.bb.sh.clus.id]
+   Double_t        bb_sh_clus_id[5];   //[Ndata.bb.sh.clus.id]
    Int_t           Ndata_bb_sh_clus_nblk;
-   Double_t        bb_sh_clus_nblk[6];   //[Ndata.bb.sh.clus.nblk]
+   Double_t        bb_sh_clus_nblk[5];   //[Ndata.bb.sh.clus.nblk]
    Int_t           Ndata_bb_sh_clus_row;
-   Double_t        bb_sh_clus_row[6];   //[Ndata.bb.sh.clus.row]
+   Double_t        bb_sh_clus_row[5];   //[Ndata.bb.sh.clus.row]
    Int_t           Ndata_bb_sh_clus_x;
-   Double_t        bb_sh_clus_x[6];   //[Ndata.bb.sh.clus.x]
+   Double_t        bb_sh_clus_x[5];   //[Ndata.bb.sh.clus.x]
    Int_t           Ndata_bb_sh_clus_y;
-   Double_t        bb_sh_clus_y[6];   //[Ndata.bb.sh.clus.y]
+   Double_t        bb_sh_clus_y[5];   //[Ndata.bb.sh.clus.y]
    Int_t           Ndata_bb_sh_clus_blk_col;
-   Double_t        bb_sh_clus_blk_col[18];   //[Ndata.bb.sh.clus_blk.col]
+   Double_t        bb_sh_clus_blk_col[12];   //[Ndata.bb.sh.clus_blk.col]
    Int_t           Ndata_bb_sh_clus_blk_e;
-   Double_t        bb_sh_clus_blk_e[18];   //[Ndata.bb.sh.clus_blk.e]
+   Double_t        bb_sh_clus_blk_e[12];   //[Ndata.bb.sh.clus_blk.e]
    Int_t           Ndata_bb_sh_clus_blk_e_c;
-   Double_t        bb_sh_clus_blk_e_c[18];   //[Ndata.bb.sh.clus_blk.e_c]
+   Double_t        bb_sh_clus_blk_e_c[12];   //[Ndata.bb.sh.clus_blk.e_c]
    Int_t           Ndata_bb_sh_clus_blk_id;
-   Double_t        bb_sh_clus_blk_id[18];   //[Ndata.bb.sh.clus_blk.id]
+   Double_t        bb_sh_clus_blk_id[12];   //[Ndata.bb.sh.clus_blk.id]
    Int_t           Ndata_bb_sh_clus_blk_row;
-   Double_t        bb_sh_clus_blk_row[18];   //[Ndata.bb.sh.clus_blk.row]
+   Double_t        bb_sh_clus_blk_row[12];   //[Ndata.bb.sh.clus_blk.row]
    Int_t           Ndata_bb_sh_clus_blk_x;
-   Double_t        bb_sh_clus_blk_x[18];   //[Ndata.bb.sh.clus_blk.x]
+   Double_t        bb_sh_clus_blk_x[12];   //[Ndata.bb.sh.clus_blk.x]
    Int_t           Ndata_bb_sh_clus_blk_y;
-   Double_t        bb_sh_clus_blk_y[18];   //[Ndata.bb.sh.clus_blk.y]
-   Int_t           Ndata_bb_sh_e_res;
-   Double_t        bb_sh_e_res[6];   //[Ndata.bb.sh.e_res]
-   Int_t           Ndata_bb_sh_goodblock_atime;
-   Double_t        bb_sh_goodblock_atime[34];   //[Ndata.bb.sh.goodblock.atime]
-   Int_t           Ndata_bb_sh_goodblock_col;
-   Double_t        bb_sh_goodblock_col[34];   //[Ndata.bb.sh.goodblock.col]
-   Int_t           Ndata_bb_sh_goodblock_e;
-   Double_t        bb_sh_goodblock_e[34];   //[Ndata.bb.sh.goodblock.e]
-   Int_t           Ndata_bb_sh_goodblock_id;
-   Double_t        bb_sh_goodblock_id[34];   //[Ndata.bb.sh.goodblock.id]
-   Int_t           Ndata_bb_sh_goodblock_row;
-   Double_t        bb_sh_goodblock_row[34];   //[Ndata.bb.sh.goodblock.row]
-   Int_t           Ndata_bb_sh_goodblock_x;
-   Double_t        bb_sh_goodblock_x[34];   //[Ndata.bb.sh.goodblock.x]
-   Int_t           Ndata_bb_sh_goodblock_y;
-   Double_t        bb_sh_goodblock_y[34];   //[Ndata.bb.sh.goodblock.y]
-   Int_t           Ndata_bb_sh_ped;
-   Double_t        bb_sh_ped[34];   //[Ndata.bb.sh.ped]
-   Int_t           Ndata_bb_sh_x_res;
-   Double_t        bb_sh_x_res[6];   //[Ndata.bb.sh.x_res]
-   Int_t           Ndata_bb_sh_y_res;
-   Double_t        bb_sh_y_res[6];   //[Ndata.bb.sh.y_res]
+   Double_t        bb_sh_clus_blk_y[12];   //[Ndata.bb.sh.clus_blk.y]
    Int_t           Ndata_bb_tr_beta;
-   Double_t        bb_tr_beta[4];   //[Ndata.bb.tr.beta]
+   Double_t        bb_tr_beta[7];   //[Ndata.bb.tr.beta]
    Int_t           Ndata_bb_tr_chi2;
-   Double_t        bb_tr_chi2[4];   //[Ndata.bb.tr.chi2]
+   Double_t        bb_tr_chi2[7];   //[Ndata.bb.tr.chi2]
    Int_t           Ndata_bb_tr_d_ph;
-   Double_t        bb_tr_d_ph[4];   //[Ndata.bb.tr.d_ph]
+   Double_t        bb_tr_d_ph[7];   //[Ndata.bb.tr.d_ph]
    Int_t           Ndata_bb_tr_d_th;
-   Double_t        bb_tr_d_th[4];   //[Ndata.bb.tr.d_th]
+   Double_t        bb_tr_d_th[7];   //[Ndata.bb.tr.d_th]
    Int_t           Ndata_bb_tr_d_x;
-   Double_t        bb_tr_d_x[4];   //[Ndata.bb.tr.d_x]
+   Double_t        bb_tr_d_x[7];   //[Ndata.bb.tr.d_x]
    Int_t           Ndata_bb_tr_d_y;
-   Double_t        bb_tr_d_y[4];   //[Ndata.bb.tr.d_y]
+   Double_t        bb_tr_d_y[7];   //[Ndata.bb.tr.d_y]
    Int_t           Ndata_bb_tr_dbeta;
-   Double_t        bb_tr_dbeta[4];   //[Ndata.bb.tr.dbeta]
+   Double_t        bb_tr_dbeta[7];   //[Ndata.bb.tr.dbeta]
    Int_t           Ndata_bb_tr_dtime;
-   Double_t        bb_tr_dtime[4];   //[Ndata.bb.tr.dtime]
+   Double_t        bb_tr_dtime[7];   //[Ndata.bb.tr.dtime]
    Int_t           Ndata_bb_tr_flag;
-   Double_t        bb_tr_flag[4];   //[Ndata.bb.tr.flag]
+   Double_t        bb_tr_flag[7];   //[Ndata.bb.tr.flag]
    Int_t           Ndata_bb_tr_ndof;
-   Double_t        bb_tr_ndof[4];   //[Ndata.bb.tr.ndof]
+   Double_t        bb_tr_ndof[7];   //[Ndata.bb.tr.ndof]
    Int_t           Ndata_bb_tr_p;
-   Double_t        bb_tr_p[4];   //[Ndata.bb.tr.p]
+   Double_t        bb_tr_p[7];   //[Ndata.bb.tr.p]
    Int_t           Ndata_bb_tr_pathl;
-   Double_t        bb_tr_pathl[4];   //[Ndata.bb.tr.pathl]
+   Double_t        bb_tr_pathl[7];   //[Ndata.bb.tr.pathl]
    Int_t           Ndata_bb_tr_ph;
-   Double_t        bb_tr_ph[4];   //[Ndata.bb.tr.ph]
+   Double_t        bb_tr_ph[7];   //[Ndata.bb.tr.ph]
    Int_t           Ndata_bb_tr_px;
-   Double_t        bb_tr_px[4];   //[Ndata.bb.tr.px]
+   Double_t        bb_tr_px[7];   //[Ndata.bb.tr.px]
    Int_t           Ndata_bb_tr_py;
-   Double_t        bb_tr_py[4];   //[Ndata.bb.tr.py]
+   Double_t        bb_tr_py[7];   //[Ndata.bb.tr.py]
    Int_t           Ndata_bb_tr_pz;
-   Double_t        bb_tr_pz[4];   //[Ndata.bb.tr.pz]
+   Double_t        bb_tr_pz[7];   //[Ndata.bb.tr.pz]
    Int_t           Ndata_bb_tr_r_ph;
-   Double_t        bb_tr_r_ph[4];   //[Ndata.bb.tr.r_ph]
+   Double_t        bb_tr_r_ph[7];   //[Ndata.bb.tr.r_ph]
    Int_t           Ndata_bb_tr_r_th;
-   Double_t        bb_tr_r_th[4];   //[Ndata.bb.tr.r_th]
+   Double_t        bb_tr_r_th[7];   //[Ndata.bb.tr.r_th]
    Int_t           Ndata_bb_tr_r_x;
-   Double_t        bb_tr_r_x[4];   //[Ndata.bb.tr.r_x]
+   Double_t        bb_tr_r_x[7];   //[Ndata.bb.tr.r_x]
    Int_t           Ndata_bb_tr_r_y;
-   Double_t        bb_tr_r_y[4];   //[Ndata.bb.tr.r_y]
+   Double_t        bb_tr_r_y[7];   //[Ndata.bb.tr.r_y]
    Int_t           Ndata_bb_tr_tg_dp;
-   Double_t        bb_tr_tg_dp[4];   //[Ndata.bb.tr.tg_dp]
+   Double_t        bb_tr_tg_dp[7];   //[Ndata.bb.tr.tg_dp]
    Int_t           Ndata_bb_tr_tg_ph;
-   Double_t        bb_tr_tg_ph[4];   //[Ndata.bb.tr.tg_ph]
+   Double_t        bb_tr_tg_ph[7];   //[Ndata.bb.tr.tg_ph]
    Int_t           Ndata_bb_tr_tg_th;
-   Double_t        bb_tr_tg_th[4];   //[Ndata.bb.tr.tg_th]
+   Double_t        bb_tr_tg_th[7];   //[Ndata.bb.tr.tg_th]
+   Int_t           Ndata_bb_tr_tg_x;
+   Double_t        bb_tr_tg_x[7];   //[Ndata.bb.tr.tg_x]
    Int_t           Ndata_bb_tr_tg_y;
-   Double_t        bb_tr_tg_y[4];   //[Ndata.bb.tr.tg_y]
+   Double_t        bb_tr_tg_y[7];   //[Ndata.bb.tr.tg_y]
    Int_t           Ndata_bb_tr_th;
-   Double_t        bb_tr_th[4];   //[Ndata.bb.tr.th]
+   Double_t        bb_tr_th[7];   //[Ndata.bb.tr.th]
    Int_t           Ndata_bb_tr_time;
-   Double_t        bb_tr_time[4];   //[Ndata.bb.tr.time]
+   Double_t        bb_tr_time[7];   //[Ndata.bb.tr.time]
    Int_t           Ndata_bb_tr_vx;
-   Double_t        bb_tr_vx[4];   //[Ndata.bb.tr.vx]
+   Double_t        bb_tr_vx[7];   //[Ndata.bb.tr.vx]
    Int_t           Ndata_bb_tr_vy;
-   Double_t        bb_tr_vy[4];   //[Ndata.bb.tr.vy]
+   Double_t        bb_tr_vy[7];   //[Ndata.bb.tr.vy]
    Int_t           Ndata_bb_tr_vz;
-   Double_t        bb_tr_vz[4];   //[Ndata.bb.tr.vz]
+   Double_t        bb_tr_vz[7];   //[Ndata.bb.tr.vz]
    Int_t           Ndata_bb_tr_x;
-   Double_t        bb_tr_x[4];   //[Ndata.bb.tr.x]
+   Double_t        bb_tr_x[7];   //[Ndata.bb.tr.x]
    Int_t           Ndata_bb_tr_y;
-   Double_t        bb_tr_y[4];   //[Ndata.bb.tr.y]
+   Double_t        bb_tr_y[7];   //[Ndata.bb.tr.y]
+   Int_t           Ndata_bb_x_bcp;
+   Double_t        bb_x_bcp[1];   //[Ndata.bb.x_bcp]
+   Int_t           Ndata_bb_x_fcp;
+   Double_t        bb_x_fcp[1];   //[Ndata.bb.x_fcp]
+   Int_t           Ndata_bb_y_bcp;
+   Double_t        bb_y_bcp[1];   //[Ndata.bb.y_bcp]
+   Int_t           Ndata_bb_y_fcp;
+   Double_t        bb_y_fcp[1];   //[Ndata.bb.y_fcp]
    Int_t           Ndata_sbs_hcal_a_amp;
-   Double_t        sbs_hcal_a_amp[13];   //[Ndata.sbs.hcal.a_amp]
+   Double_t        sbs_hcal_a_amp[16];   //[Ndata.sbs.hcal.a_amp]
    Int_t           Ndata_sbs_hcal_a_c;
-   Double_t        sbs_hcal_a_c[13];   //[Ndata.sbs.hcal.a_c]
+   Double_t        sbs_hcal_a_c[16];   //[Ndata.sbs.hcal.a_c]
    Int_t           Ndata_sbs_hcal_a_p;
-   Double_t        sbs_hcal_a_p[13];   //[Ndata.sbs.hcal.a_p]
+   Double_t        sbs_hcal_a_p[16];   //[Ndata.sbs.hcal.a_p]
    Int_t           Ndata_sbs_hcal_a_time;
-   Double_t        sbs_hcal_a_time[13];   //[Ndata.sbs.hcal.a_time]
+   Double_t        sbs_hcal_a_time[16];   //[Ndata.sbs.hcal.a_time]
    Int_t           Ndata_sbs_hcal_adccol;
-   Double_t        sbs_hcal_adccol[13];   //[Ndata.sbs.hcal.adccol]
+   Double_t        sbs_hcal_adccol[16];   //[Ndata.sbs.hcal.adccol]
    Int_t           Ndata_sbs_hcal_adcrow;
-   Double_t        sbs_hcal_adcrow[13];   //[Ndata.sbs.hcal.adcrow]
+   Double_t        sbs_hcal_adcrow[16];   //[Ndata.sbs.hcal.adcrow]
    Int_t           Ndata_sbs_hcal_clus_col;
-   Double_t        sbs_hcal_clus_col[7];   //[Ndata.sbs.hcal.clus.col]
+   Double_t        sbs_hcal_clus_col[10];   //[Ndata.sbs.hcal.clus.col]
    Int_t           Ndata_sbs_hcal_clus_e;
-   Double_t        sbs_hcal_clus_e[7];   //[Ndata.sbs.hcal.clus.e]
+   Double_t        sbs_hcal_clus_e[10];   //[Ndata.sbs.hcal.clus.e]
    Int_t           Ndata_sbs_hcal_clus_eblk;
-   Double_t        sbs_hcal_clus_eblk[7];   //[Ndata.sbs.hcal.clus.eblk]
+   Double_t        sbs_hcal_clus_eblk[10];   //[Ndata.sbs.hcal.clus.eblk]
    Int_t           Ndata_sbs_hcal_clus_id;
-   Double_t        sbs_hcal_clus_id[7];   //[Ndata.sbs.hcal.clus.id]
+   Double_t        sbs_hcal_clus_id[10];   //[Ndata.sbs.hcal.clus.id]
    Int_t           Ndata_sbs_hcal_clus_nblk;
-   Double_t        sbs_hcal_clus_nblk[7];   //[Ndata.sbs.hcal.clus.nblk]
+   Double_t        sbs_hcal_clus_nblk[10];   //[Ndata.sbs.hcal.clus.nblk]
    Int_t           Ndata_sbs_hcal_clus_row;
-   Double_t        sbs_hcal_clus_row[7];   //[Ndata.sbs.hcal.clus.row]
+   Double_t        sbs_hcal_clus_row[10];   //[Ndata.sbs.hcal.clus.row]
    Int_t           Ndata_sbs_hcal_clus_blk_e;
-   Double_t        sbs_hcal_clus_blk_e[5];   //[Ndata.sbs.hcal.clus_blk.e]
+   Double_t        sbs_hcal_clus_blk_e[6];   //[Ndata.sbs.hcal.clus_blk.e]
    Int_t           Ndata_sbs_hcal_clus_blk_id;
-   Double_t        sbs_hcal_clus_blk_id[5];   //[Ndata.sbs.hcal.clus_blk.id]
+   Double_t        sbs_hcal_clus_blk_id[6];   //[Ndata.sbs.hcal.clus_blk.id]
    Double_t        BB_gold_beta;
    Double_t        BB_gold_dp;
    Double_t        BB_gold_index;
@@ -690,10 +402,6 @@ public :
    Double_t        BB_gold_th;
    Double_t        BB_gold_x;
    Double_t        BB_gold_y;
-   Double_t        bb_bbtrig_ngoodADChits;
-   Double_t        bb_bbtrig_ngoodTDChits;
-   Double_t        bb_bbtrig_nhits;
-   Double_t        bb_bbtrig_nrefhits;
    Double_t        bb_gem_hit_ngoodhits;
    Double_t        bb_gem_nlayershit;
    Double_t        bb_gem_nlayershitu;
@@ -701,69 +409,27 @@ public :
    Double_t        bb_gem_nlayershitv;
    Double_t        bb_gem_track_besttrack;
    Double_t        bb_gem_track_ntrack;
-   Double_t        bb_grinch_adc_ngoodADChits;
-   Double_t        bb_grinch_adc_ngoodTDChits;
-   Double_t        bb_grinch_adc_nhits;
-   Double_t        bb_grinch_adc_nrefhits;
    Double_t        bb_grinch_tdc_ngoodADChits;
    Double_t        bb_grinch_tdc_ngoodTDChits;
    Double_t        bb_grinch_tdc_nhits;
    Double_t        bb_grinch_tdc_nrefhits;
-   Double_t        bb_hodoadc_nclus;
-   Double_t        bb_hodoadc_ngoodADChits;
-   Double_t        bb_hodoadc_ngoodTDChits;
-   Double_t        bb_hodoadc_nhits;
-   Double_t        bb_hodoadc_nrefhits;
    Double_t        bb_hodotdc_bar_ngoodbars;
    Double_t        bb_hodotdc_nclus;
-   Double_t        bb_hodotdc_ngoodADChits;
-   Double_t        bb_hodotdc_ngoodTDChits;
-   Double_t        bb_hodotdc_nhits;
-   Double_t        bb_hodotdc_nrefhits;
-   Double_t        bb_ps_colblk;
    Double_t        bb_ps_e;
    Double_t        bb_ps_e_c;
-   Double_t        bb_ps_e_m_res;
-   Double_t        bb_ps_eblk;
-   Double_t        bb_ps_eblk_c;
-   Double_t        bb_ps_idblk;
    Double_t        bb_ps_nblk;
    Double_t        bb_ps_nclus;
    Double_t        bb_ps_ngoodADChits;
-   Double_t        bb_ps_ngoodTDChits;
-   Double_t        bb_ps_nhits;
-   Double_t        bb_ps_nrefhits;
-   Double_t        bb_ps_rowblk;
    Double_t        bb_ps_x;
-   Double_t        bb_ps_x_m_res;
    Double_t        bb_ps_y;
-   Double_t        bb_ps_y_m_res;
-   Double_t        bb_sh_colblk;
    Double_t        bb_sh_e;
    Double_t        bb_sh_e_c;
-   Double_t        bb_sh_e_m_res;
-   Double_t        bb_sh_eblk;
-   Double_t        bb_sh_eblk_c;
-   Double_t        bb_sh_idblk;
    Double_t        bb_sh_nblk;
    Double_t        bb_sh_nclus;
    Double_t        bb_sh_ngoodADChits;
-   Double_t        bb_sh_ngoodTDChits;
-   Double_t        bb_sh_nhits;
-   Double_t        bb_sh_nrefhits;
-   Double_t        bb_sh_rowblk;
    Double_t        bb_sh_x;
-   Double_t        bb_sh_x_m_res;
    Double_t        bb_sh_y;
-   Double_t        bb_sh_y_m_res;
    Double_t        bb_tr_n;
-   Double_t        g_evlen;
-   Double_t        g_evnum;
-   Double_t        g_evtime;
-   Double_t        g_evtyp;
-   Double_t        g_runnum;
-   Double_t        g_runtime;
-   Double_t        g_runtype;
    Double_t        sbs_hcal_e;
    Double_t        sbs_hcal_nblk;
    Double_t        sbs_hcal_nclus;
@@ -780,82 +446,10 @@ public :
    UInt_t          fEvtHdr_fRun;
 
    // List of branches
-   TBranch        *b_Ndata_bb_bbtrig_Ref_a;   //!
-   TBranch        *b_bb_bbtrig_Ref_a;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_a_amp;   //!
-   TBranch        *b_bb_bbtrig_Ref_a_amp;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_a_amp_c;   //!
-   TBranch        *b_bb_bbtrig_Ref_a_amp_c;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_a_amp_p;   //!
-   TBranch        *b_bb_bbtrig_Ref_a_amp_p;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_a_c;   //!
-   TBranch        *b_bb_bbtrig_Ref_a_c;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_a_mult;   //!
-   TBranch        *b_bb_bbtrig_Ref_a_mult;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_a_p;   //!
-   TBranch        *b_bb_bbtrig_Ref_a_p;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_a_time;   //!
-   TBranch        *b_bb_bbtrig_Ref_a_time;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_adcelemID;   //!
-   TBranch        *b_bb_bbtrig_Ref_adcelemID;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_ped;   //!
-   TBranch        *b_bb_bbtrig_Ref_ped;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_tdc;   //!
-   TBranch        *b_bb_bbtrig_Ref_tdc;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_tdc_mult;   //!
-   TBranch        *b_bb_bbtrig_Ref_tdc_mult;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_tdc_te;   //!
-   TBranch        *b_bb_bbtrig_Ref_tdc_te;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_tdc_tot;   //!
-   TBranch        *b_bb_bbtrig_Ref_tdc_tot;   //!
-   TBranch        *b_Ndata_bb_bbtrig_Ref_tdcelemID;   //!
-   TBranch        *b_bb_bbtrig_Ref_tdcelemID;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a;   //!
-   TBranch        *b_bb_bbtrig_a;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a_amp;   //!
-   TBranch        *b_bb_bbtrig_a_amp;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a_amp_c;   //!
-   TBranch        *b_bb_bbtrig_a_amp_c;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a_amp_p;   //!
-   TBranch        *b_bb_bbtrig_a_amp_p;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a_amptrig_c;   //!
-   TBranch        *b_bb_bbtrig_a_amptrig_c;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a_amptrig_p;   //!
-   TBranch        *b_bb_bbtrig_a_amptrig_p;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a_c;   //!
-   TBranch        *b_bb_bbtrig_a_c;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a_mult;   //!
-   TBranch        *b_bb_bbtrig_a_mult;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a_p;   //!
-   TBranch        *b_bb_bbtrig_a_p;   //!
-   TBranch        *b_Ndata_bb_bbtrig_a_time;   //!
-   TBranch        *b_bb_bbtrig_a_time;   //!
-   TBranch        *b_Ndata_bb_bbtrig_adccol;   //!
-   TBranch        *b_bb_bbtrig_adccol;   //!
-   TBranch        *b_Ndata_bb_bbtrig_adcelemID;   //!
-   TBranch        *b_bb_bbtrig_adcelemID;   //!
-   TBranch        *b_Ndata_bb_bbtrig_adclayer;   //!
-   TBranch        *b_bb_bbtrig_adclayer;   //!
-   TBranch        *b_Ndata_bb_bbtrig_adcrow;   //!
-   TBranch        *b_bb_bbtrig_adcrow;   //!
-   TBranch        *b_Ndata_bb_bbtrig_ped;   //!
-   TBranch        *b_bb_bbtrig_ped;   //!
-   TBranch        *b_Ndata_bb_bbtrig_tdc;   //!
-   TBranch        *b_bb_bbtrig_tdc;   //!
-   TBranch        *b_Ndata_bb_bbtrig_tdc_mult;   //!
-   TBranch        *b_bb_bbtrig_tdc_mult;   //!
-   TBranch        *b_Ndata_bb_bbtrig_tdc_te;   //!
-   TBranch        *b_bb_bbtrig_tdc_te;   //!
-   TBranch        *b_Ndata_bb_bbtrig_tdc_tot;   //!
-   TBranch        *b_bb_bbtrig_tdc_tot;   //!
-   TBranch        *b_Ndata_bb_bbtrig_tdccol;   //!
-   TBranch        *b_bb_bbtrig_tdccol;   //!
-   TBranch        *b_Ndata_bb_bbtrig_tdcelemID;   //!
-   TBranch        *b_bb_bbtrig_tdcelemID;   //!
-   TBranch        *b_Ndata_bb_bbtrig_tdclayer;   //!
-   TBranch        *b_bb_bbtrig_tdclayer;   //!
-   TBranch        *b_Ndata_bb_bbtrig_tdcrow;   //!
-   TBranch        *b_bb_bbtrig_tdcrow;   //!
+   TBranch        *b_Ndata_bb_eps_over_etot;   //!
+   TBranch        *b_bb_eps_over_etot;   //!
+   TBranch        *b_Ndata_bb_etot_over_p;   //!
+   TBranch        *b_bb_etot_over_p;   //!
    TBranch        *b_Ndata_bb_gem_hit_ADCU;   //!
    TBranch        *b_bb_gem_hit_ADCU;   //!
    TBranch        *b_Ndata_bb_gem_hit_ADCV;   //!
@@ -986,36 +580,6 @@ public :
    TBranch        *b_bb_gem_track_y;   //!
    TBranch        *b_Ndata_bb_gem_track_yp;   //!
    TBranch        *b_bb_gem_track_yp;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a;   //!
-   TBranch        *b_bb_grinch_adc_a;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a_amp;   //!
-   TBranch        *b_bb_grinch_adc_a_amp;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a_amp_c;   //!
-   TBranch        *b_bb_grinch_adc_a_amp_c;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a_amp_p;   //!
-   TBranch        *b_bb_grinch_adc_a_amp_p;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a_amptrig_c;   //!
-   TBranch        *b_bb_grinch_adc_a_amptrig_c;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a_amptrig_p;   //!
-   TBranch        *b_bb_grinch_adc_a_amptrig_p;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a_c;   //!
-   TBranch        *b_bb_grinch_adc_a_c;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a_mult;   //!
-   TBranch        *b_bb_grinch_adc_a_mult;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a_p;   //!
-   TBranch        *b_bb_grinch_adc_a_p;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_a_time;   //!
-   TBranch        *b_bb_grinch_adc_a_time;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_adccol;   //!
-   TBranch        *b_bb_grinch_adc_adccol;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_adcelemID;   //!
-   TBranch        *b_bb_grinch_adc_adcelemID;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_adclayer;   //!
-   TBranch        *b_bb_grinch_adc_adclayer;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_adcrow;   //!
-   TBranch        *b_bb_grinch_adc_adcrow;   //!
-   TBranch        *b_Ndata_bb_grinch_adc_ped;   //!
-   TBranch        *b_bb_grinch_adc_ped;   //!
    TBranch        *b_Ndata_bb_grinch_tdc_tdc;   //!
    TBranch        *b_bb_grinch_tdc_tdc;   //!
    TBranch        *b_Ndata_bb_grinch_tdc_tdc_mult;   //!
@@ -1032,54 +596,6 @@ public :
    TBranch        *b_bb_grinch_tdc_tdclayer;   //!
    TBranch        *b_Ndata_bb_grinch_tdc_tdcrow;   //!
    TBranch        *b_bb_grinch_tdc_tdcrow;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_a;   //!
-   TBranch        *b_bb_hodoadc_Ref_a;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_a_amp;   //!
-   TBranch        *b_bb_hodoadc_Ref_a_amp;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_a_amp_c;   //!
-   TBranch        *b_bb_hodoadc_Ref_a_amp_c;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_a_amp_p;   //!
-   TBranch        *b_bb_hodoadc_Ref_a_amp_p;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_a_c;   //!
-   TBranch        *b_bb_hodoadc_Ref_a_c;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_a_mult;   //!
-   TBranch        *b_bb_hodoadc_Ref_a_mult;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_a_p;   //!
-   TBranch        *b_bb_hodoadc_Ref_a_p;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_a_time;   //!
-   TBranch        *b_bb_hodoadc_Ref_a_time;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_adcelemID;   //!
-   TBranch        *b_bb_hodoadc_Ref_adcelemID;   //!
-   TBranch        *b_Ndata_bb_hodoadc_Ref_ped;   //!
-   TBranch        *b_bb_hodoadc_Ref_ped;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a;   //!
-   TBranch        *b_bb_hodoadc_a;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a_amp;   //!
-   TBranch        *b_bb_hodoadc_a_amp;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a_amp_c;   //!
-   TBranch        *b_bb_hodoadc_a_amp_c;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a_amp_p;   //!
-   TBranch        *b_bb_hodoadc_a_amp_p;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a_amptrig_c;   //!
-   TBranch        *b_bb_hodoadc_a_amptrig_c;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a_amptrig_p;   //!
-   TBranch        *b_bb_hodoadc_a_amptrig_p;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a_c;   //!
-   TBranch        *b_bb_hodoadc_a_c;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a_mult;   //!
-   TBranch        *b_bb_hodoadc_a_mult;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a_p;   //!
-   TBranch        *b_bb_hodoadc_a_p;   //!
-   TBranch        *b_Ndata_bb_hodoadc_a_time;   //!
-   TBranch        *b_bb_hodoadc_a_time;   //!
-   TBranch        *b_Ndata_bb_hodoadc_adccol;   //!
-   TBranch        *b_bb_hodoadc_adccol;   //!
-   TBranch        *b_Ndata_bb_hodoadc_adcelemID;   //!
-   TBranch        *b_bb_hodoadc_adcelemID;   //!
-   TBranch        *b_Ndata_bb_hodoadc_adclayer;   //!
-   TBranch        *b_bb_hodoadc_adclayer;   //!
-   TBranch        *b_Ndata_bb_hodoadc_adcrow;   //!
-   TBranch        *b_bb_hodoadc_adcrow;   //!
    TBranch        *b_Ndata_bb_hodoadc_bar_adc_L_a;   //!
    TBranch        *b_bb_hodoadc_bar_adc_L_a;   //!
    TBranch        *b_Ndata_bb_hodoadc_bar_adc_L_ac;   //!
@@ -1096,28 +612,6 @@ public :
    TBranch        *b_bb_hodoadc_bar_adc_id;   //!
    TBranch        *b_Ndata_bb_hodoadc_bar_adc_mean;   //!
    TBranch        *b_bb_hodoadc_bar_adc_mean;   //!
-   TBranch        *b_Ndata_bb_hodoadc_clus_size;   //!
-   TBranch        *b_bb_hodoadc_clus_size;   //!
-   TBranch        *b_Ndata_bb_hodoadc_clus_tmean;   //!
-   TBranch        *b_bb_hodoadc_clus_tmean;   //!
-   TBranch        *b_Ndata_bb_hodoadc_clus_totmean;   //!
-   TBranch        *b_bb_hodoadc_clus_totmean;   //!
-   TBranch        *b_Ndata_bb_hodoadc_clus_xmean;   //!
-   TBranch        *b_bb_hodoadc_clus_xmean;   //!
-   TBranch        *b_Ndata_bb_hodoadc_clus_ymean;   //!
-   TBranch        *b_bb_hodoadc_clus_ymean;   //!
-   TBranch        *b_Ndata_bb_hodoadc_ped;   //!
-   TBranch        *b_bb_hodoadc_ped;   //!
-   TBranch        *b_Ndata_bb_hodotdc_Ref_tdc;   //!
-   TBranch        *b_bb_hodotdc_Ref_tdc;   //!
-   TBranch        *b_Ndata_bb_hodotdc_Ref_tdc_mult;   //!
-   TBranch        *b_bb_hodotdc_Ref_tdc_mult;   //!
-   TBranch        *b_Ndata_bb_hodotdc_Ref_tdc_te;   //!
-   TBranch        *b_bb_hodotdc_Ref_tdc_te;   //!
-   TBranch        *b_Ndata_bb_hodotdc_Ref_tdc_tot;   //!
-   TBranch        *b_bb_hodotdc_Ref_tdc_tot;   //!
-   TBranch        *b_Ndata_bb_hodotdc_Ref_tdcelemID;   //!
-   TBranch        *b_bb_hodotdc_Ref_tdcelemID;   //!
    TBranch        *b_Ndata_bb_hodotdc_bar_tdc_L_le;   //!
    TBranch        *b_bb_hodotdc_bar_tdc_L_le;   //!
    TBranch        *b_Ndata_bb_hodotdc_bar_tdc_L_leW;   //!
@@ -1152,60 +646,6 @@ public :
    TBranch        *b_bb_hodotdc_bar_tdc_timehitpos;   //!
    TBranch        *b_Ndata_bb_hodotdc_bar_tdc_vpos;   //!
    TBranch        *b_bb_hodotdc_bar_tdc_vpos;   //!
-   TBranch        *b_Ndata_bb_hodotdc_clus_size;   //!
-   TBranch        *b_bb_hodotdc_clus_size;   //!
-   TBranch        *b_Ndata_bb_hodotdc_clus_tmean;   //!
-   TBranch        *b_bb_hodotdc_clus_tmean;   //!
-   TBranch        *b_Ndata_bb_hodotdc_clus_totmean;   //!
-   TBranch        *b_bb_hodotdc_clus_totmean;   //!
-   TBranch        *b_Ndata_bb_hodotdc_clus_xmean;   //!
-   TBranch        *b_bb_hodotdc_clus_xmean;   //!
-   TBranch        *b_Ndata_bb_hodotdc_clus_ymean;   //!
-   TBranch        *b_bb_hodotdc_clus_ymean;   //!
-   TBranch        *b_Ndata_bb_hodotdc_tdc;   //!
-   TBranch        *b_bb_hodotdc_tdc;   //!
-   TBranch        *b_Ndata_bb_hodotdc_tdc_mult;   //!
-   TBranch        *b_bb_hodotdc_tdc_mult;   //!
-   TBranch        *b_Ndata_bb_hodotdc_tdc_te;   //!
-   TBranch        *b_bb_hodotdc_tdc_te;   //!
-   TBranch        *b_Ndata_bb_hodotdc_tdc_tot;   //!
-   TBranch        *b_bb_hodotdc_tdc_tot;   //!
-   TBranch        *b_Ndata_bb_hodotdc_tdccol;   //!
-   TBranch        *b_bb_hodotdc_tdccol;   //!
-   TBranch        *b_Ndata_bb_hodotdc_tdcelemID;   //!
-   TBranch        *b_bb_hodotdc_tdcelemID;   //!
-   TBranch        *b_Ndata_bb_hodotdc_tdclayer;   //!
-   TBranch        *b_bb_hodotdc_tdclayer;   //!
-   TBranch        *b_Ndata_bb_hodotdc_tdcrow;   //!
-   TBranch        *b_bb_hodotdc_tdcrow;   //!
-   TBranch        *b_Ndata_bb_ps_a;   //!
-   TBranch        *b_bb_ps_a;   //!
-   TBranch        *b_Ndata_bb_ps_a_amp;   //!
-   TBranch        *b_bb_ps_a_amp;   //!
-   TBranch        *b_Ndata_bb_ps_a_amp_c;   //!
-   TBranch        *b_bb_ps_a_amp_c;   //!
-   TBranch        *b_Ndata_bb_ps_a_amp_p;   //!
-   TBranch        *b_bb_ps_a_amp_p;   //!
-   TBranch        *b_Ndata_bb_ps_a_amptrig_c;   //!
-   TBranch        *b_bb_ps_a_amptrig_c;   //!
-   TBranch        *b_Ndata_bb_ps_a_amptrig_p;   //!
-   TBranch        *b_bb_ps_a_amptrig_p;   //!
-   TBranch        *b_Ndata_bb_ps_a_c;   //!
-   TBranch        *b_bb_ps_a_c;   //!
-   TBranch        *b_Ndata_bb_ps_a_mult;   //!
-   TBranch        *b_bb_ps_a_mult;   //!
-   TBranch        *b_Ndata_bb_ps_a_p;   //!
-   TBranch        *b_bb_ps_a_p;   //!
-   TBranch        *b_Ndata_bb_ps_a_time;   //!
-   TBranch        *b_bb_ps_a_time;   //!
-   TBranch        *b_Ndata_bb_ps_adccol;   //!
-   TBranch        *b_bb_ps_adccol;   //!
-   TBranch        *b_Ndata_bb_ps_adcelemID;   //!
-   TBranch        *b_bb_ps_adcelemID;   //!
-   TBranch        *b_Ndata_bb_ps_adclayer;   //!
-   TBranch        *b_bb_ps_adclayer;   //!
-   TBranch        *b_Ndata_bb_ps_adcrow;   //!
-   TBranch        *b_bb_ps_adcrow;   //!
    TBranch        *b_Ndata_bb_ps_clus_col;   //!
    TBranch        *b_bb_ps_clus_col;   //!
    TBranch        *b_Ndata_bb_ps_clus_e;   //!
@@ -1240,56 +680,6 @@ public :
    TBranch        *b_bb_ps_clus_blk_x;   //!
    TBranch        *b_Ndata_bb_ps_clus_blk_y;   //!
    TBranch        *b_bb_ps_clus_blk_y;   //!
-   TBranch        *b_Ndata_bb_ps_e_res;   //!
-   TBranch        *b_bb_ps_e_res;   //!
-   TBranch        *b_Ndata_bb_ps_goodblock_atime;   //!
-   TBranch        *b_bb_ps_goodblock_atime;   //!
-   TBranch        *b_Ndata_bb_ps_goodblock_col;   //!
-   TBranch        *b_bb_ps_goodblock_col;   //!
-   TBranch        *b_Ndata_bb_ps_goodblock_e;   //!
-   TBranch        *b_bb_ps_goodblock_e;   //!
-   TBranch        *b_Ndata_bb_ps_goodblock_id;   //!
-   TBranch        *b_bb_ps_goodblock_id;   //!
-   TBranch        *b_Ndata_bb_ps_goodblock_row;   //!
-   TBranch        *b_bb_ps_goodblock_row;   //!
-   TBranch        *b_Ndata_bb_ps_goodblock_x;   //!
-   TBranch        *b_bb_ps_goodblock_x;   //!
-   TBranch        *b_Ndata_bb_ps_goodblock_y;   //!
-   TBranch        *b_bb_ps_goodblock_y;   //!
-   TBranch        *b_Ndata_bb_ps_ped;   //!
-   TBranch        *b_bb_ps_ped;   //!
-   TBranch        *b_Ndata_bb_ps_x_res;   //!
-   TBranch        *b_bb_ps_x_res;   //!
-   TBranch        *b_Ndata_bb_ps_y_res;   //!
-   TBranch        *b_bb_ps_y_res;   //!
-   TBranch        *b_Ndata_bb_sh_a;   //!
-   TBranch        *b_bb_sh_a;   //!
-   TBranch        *b_Ndata_bb_sh_a_amp;   //!
-   TBranch        *b_bb_sh_a_amp;   //!
-   TBranch        *b_Ndata_bb_sh_a_amp_c;   //!
-   TBranch        *b_bb_sh_a_amp_c;   //!
-   TBranch        *b_Ndata_bb_sh_a_amp_p;   //!
-   TBranch        *b_bb_sh_a_amp_p;   //!
-   TBranch        *b_Ndata_bb_sh_a_amptrig_c;   //!
-   TBranch        *b_bb_sh_a_amptrig_c;   //!
-   TBranch        *b_Ndata_bb_sh_a_amptrig_p;   //!
-   TBranch        *b_bb_sh_a_amptrig_p;   //!
-   TBranch        *b_Ndata_bb_sh_a_c;   //!
-   TBranch        *b_bb_sh_a_c;   //!
-   TBranch        *b_Ndata_bb_sh_a_mult;   //!
-   TBranch        *b_bb_sh_a_mult;   //!
-   TBranch        *b_Ndata_bb_sh_a_p;   //!
-   TBranch        *b_bb_sh_a_p;   //!
-   TBranch        *b_Ndata_bb_sh_a_time;   //!
-   TBranch        *b_bb_sh_a_time;   //!
-   TBranch        *b_Ndata_bb_sh_adccol;   //!
-   TBranch        *b_bb_sh_adccol;   //!
-   TBranch        *b_Ndata_bb_sh_adcelemID;   //!
-   TBranch        *b_bb_sh_adcelemID;   //!
-   TBranch        *b_Ndata_bb_sh_adclayer;   //!
-   TBranch        *b_bb_sh_adclayer;   //!
-   TBranch        *b_Ndata_bb_sh_adcrow;   //!
-   TBranch        *b_bb_sh_adcrow;   //!
    TBranch        *b_Ndata_bb_sh_clus_col;   //!
    TBranch        *b_bb_sh_clus_col;   //!
    TBranch        *b_Ndata_bb_sh_clus_e;   //!
@@ -1324,28 +714,6 @@ public :
    TBranch        *b_bb_sh_clus_blk_x;   //!
    TBranch        *b_Ndata_bb_sh_clus_blk_y;   //!
    TBranch        *b_bb_sh_clus_blk_y;   //!
-   TBranch        *b_Ndata_bb_sh_e_res;   //!
-   TBranch        *b_bb_sh_e_res;   //!
-   TBranch        *b_Ndata_bb_sh_goodblock_atime;   //!
-   TBranch        *b_bb_sh_goodblock_atime;   //!
-   TBranch        *b_Ndata_bb_sh_goodblock_col;   //!
-   TBranch        *b_bb_sh_goodblock_col;   //!
-   TBranch        *b_Ndata_bb_sh_goodblock_e;   //!
-   TBranch        *b_bb_sh_goodblock_e;   //!
-   TBranch        *b_Ndata_bb_sh_goodblock_id;   //!
-   TBranch        *b_bb_sh_goodblock_id;   //!
-   TBranch        *b_Ndata_bb_sh_goodblock_row;   //!
-   TBranch        *b_bb_sh_goodblock_row;   //!
-   TBranch        *b_Ndata_bb_sh_goodblock_x;   //!
-   TBranch        *b_bb_sh_goodblock_x;   //!
-   TBranch        *b_Ndata_bb_sh_goodblock_y;   //!
-   TBranch        *b_bb_sh_goodblock_y;   //!
-   TBranch        *b_Ndata_bb_sh_ped;   //!
-   TBranch        *b_bb_sh_ped;   //!
-   TBranch        *b_Ndata_bb_sh_x_res;   //!
-   TBranch        *b_bb_sh_x_res;   //!
-   TBranch        *b_Ndata_bb_sh_y_res;   //!
-   TBranch        *b_bb_sh_y_res;   //!
    TBranch        *b_Ndata_bb_tr_beta;   //!
    TBranch        *b_bb_tr_beta;   //!
    TBranch        *b_Ndata_bb_tr_chi2;   //!
@@ -1392,6 +760,8 @@ public :
    TBranch        *b_bb_tr_tg_ph;   //!
    TBranch        *b_Ndata_bb_tr_tg_th;   //!
    TBranch        *b_bb_tr_tg_th;   //!
+   TBranch        *b_Ndata_bb_tr_tg_x;   //!
+   TBranch        *b_bb_tr_tg_x;   //!
    TBranch        *b_Ndata_bb_tr_tg_y;   //!
    TBranch        *b_bb_tr_tg_y;   //!
    TBranch        *b_Ndata_bb_tr_th;   //!
@@ -1408,6 +778,14 @@ public :
    TBranch        *b_bb_tr_x;   //!
    TBranch        *b_Ndata_bb_tr_y;   //!
    TBranch        *b_bb_tr_y;   //!
+   TBranch        *b_Ndata_bb_x_bcp;   //!
+   TBranch        *b_bb_x_bcp;   //!
+   TBranch        *b_Ndata_bb_x_fcp;   //!
+   TBranch        *b_bb_x_fcp;   //!
+   TBranch        *b_Ndata_bb_y_bcp;   //!
+   TBranch        *b_bb_y_bcp;   //!
+   TBranch        *b_Ndata_bb_y_fcp;   //!
+   TBranch        *b_bb_y_fcp;   //!
    TBranch        *b_Ndata_sbs_hcal_a_amp;   //!
    TBranch        *b_sbs_hcal_a_amp;   //!
    TBranch        *b_Ndata_sbs_hcal_a_c;   //!
@@ -1448,10 +826,6 @@ public :
    TBranch        *b_BB_gold_th;   //!
    TBranch        *b_BB_gold_x;   //!
    TBranch        *b_BB_gold_y;   //!
-   TBranch        *b_bb_bbtrig_ngoodADChits;   //!
-   TBranch        *b_bb_bbtrig_ngoodTDChits;   //!
-   TBranch        *b_bb_bbtrig_nhits;   //!
-   TBranch        *b_bb_bbtrig_nrefhits;   //!
    TBranch        *b_bb_gem_hit_ngoodhits;   //!
    TBranch        *b_bb_gem_nlayershit;   //!
    TBranch        *b_bb_gem_nlayershitu;   //!
@@ -1459,69 +833,27 @@ public :
    TBranch        *b_bb_gem_nlayershitv;   //!
    TBranch        *b_bb_gem_track_besttrack;   //!
    TBranch        *b_bb_gem_track_ntrack;   //!
-   TBranch        *b_bb_grinch_adc_ngoodADChits;   //!
-   TBranch        *b_bb_grinch_adc_ngoodTDChits;   //!
-   TBranch        *b_bb_grinch_adc_nhits;   //!
-   TBranch        *b_bb_grinch_adc_nrefhits;   //!
    TBranch        *b_bb_grinch_tdc_ngoodADChits;   //!
    TBranch        *b_bb_grinch_tdc_ngoodTDChits;   //!
    TBranch        *b_bb_grinch_tdc_nhits;   //!
    TBranch        *b_bb_grinch_tdc_nrefhits;   //!
-   TBranch        *b_bb_hodoadc_nclus;   //!
-   TBranch        *b_bb_hodoadc_ngoodADChits;   //!
-   TBranch        *b_bb_hodoadc_ngoodTDChits;   //!
-   TBranch        *b_bb_hodoadc_nhits;   //!
-   TBranch        *b_bb_hodoadc_nrefhits;   //!
    TBranch        *b_bb_hodotdc_bar_ngoodbars;   //!
    TBranch        *b_bb_hodotdc_nclus;   //!
-   TBranch        *b_bb_hodotdc_ngoodADChits;   //!
-   TBranch        *b_bb_hodotdc_ngoodTDChits;   //!
-   TBranch        *b_bb_hodotdc_nhits;   //!
-   TBranch        *b_bb_hodotdc_nrefhits;   //!
-   TBranch        *b_bb_ps_colblk;   //!
    TBranch        *b_bb_ps_e;   //!
    TBranch        *b_bb_ps_e_c;   //!
-   TBranch        *b_bb_ps_e_m_res;   //!
-   TBranch        *b_bb_ps_eblk;   //!
-   TBranch        *b_bb_ps_eblk_c;   //!
-   TBranch        *b_bb_ps_idblk;   //!
    TBranch        *b_bb_ps_nblk;   //!
    TBranch        *b_bb_ps_nclus;   //!
    TBranch        *b_bb_ps_ngoodADChits;   //!
-   TBranch        *b_bb_ps_ngoodTDChits;   //!
-   TBranch        *b_bb_ps_nhits;   //!
-   TBranch        *b_bb_ps_nrefhits;   //!
-   TBranch        *b_bb_ps_rowblk;   //!
    TBranch        *b_bb_ps_x;   //!
-   TBranch        *b_bb_ps_x_m_res;   //!
    TBranch        *b_bb_ps_y;   //!
-   TBranch        *b_bb_ps_y_m_res;   //!
-   TBranch        *b_bb_sh_colblk;   //!
    TBranch        *b_bb_sh_e;   //!
    TBranch        *b_bb_sh_e_c;   //!
-   TBranch        *b_bb_sh_e_m_res;   //!
-   TBranch        *b_bb_sh_eblk;   //!
-   TBranch        *b_bb_sh_eblk_c;   //!
-   TBranch        *b_bb_sh_idblk;   //!
    TBranch        *b_bb_sh_nblk;   //!
    TBranch        *b_bb_sh_nclus;   //!
    TBranch        *b_bb_sh_ngoodADChits;   //!
-   TBranch        *b_bb_sh_ngoodTDChits;   //!
-   TBranch        *b_bb_sh_nhits;   //!
-   TBranch        *b_bb_sh_nrefhits;   //!
-   TBranch        *b_bb_sh_rowblk;   //!
    TBranch        *b_bb_sh_x;   //!
-   TBranch        *b_bb_sh_x_m_res;   //!
    TBranch        *b_bb_sh_y;   //!
-   TBranch        *b_bb_sh_y_m_res;   //!
    TBranch        *b_bb_tr_n;   //!
-   TBranch        *b_g_evlen;   //!
-   TBranch        *b_g_evnum;   //!
-   TBranch        *b_g_evtime;   //!
-   TBranch        *b_g_evtyp;   //!
-   TBranch        *b_g_runnum;   //!
-   TBranch        *b_g_runtime;   //!
-   TBranch        *b_g_runtype;   //!
    TBranch        *b_sbs_hcal_e;   //!
    TBranch        *b_sbs_hcal_nblk;   //!
    TBranch        *b_sbs_hcal_nclus;   //!
@@ -1555,9 +887,9 @@ gmn_rec_tree::gmn_rec_tree(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("gmn_replayed_11199_stream0_seg0_0.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("gmn_replayed_11251_stream0_seg0_0.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("gmn_replayed_11199_stream0_seg0_0.root");
+         f = new TFile("gmn_replayed_11251_stream0_seg0_0.root");
       }
       f->GetObject("T",tree);
 
@@ -1606,82 +938,10 @@ void gmn_rec_tree::Init(TTree *tree)
    fCurrent = -1;
    fChain->SetMakeClass(1);
 
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.a", &Ndata_bb_bbtrig_Ref_a, &b_Ndata_bb_bbtrig_Ref_a);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.a", &bb_bbtrig_Ref_a, &b_bb_bbtrig_Ref_a);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.a_amp", &Ndata_bb_bbtrig_Ref_a_amp, &b_Ndata_bb_bbtrig_Ref_a_amp);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.a_amp", &bb_bbtrig_Ref_a_amp, &b_bb_bbtrig_Ref_a_amp);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.a_amp_c", &Ndata_bb_bbtrig_Ref_a_amp_c, &b_Ndata_bb_bbtrig_Ref_a_amp_c);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.a_amp_c", &bb_bbtrig_Ref_a_amp_c, &b_bb_bbtrig_Ref_a_amp_c);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.a_amp_p", &Ndata_bb_bbtrig_Ref_a_amp_p, &b_Ndata_bb_bbtrig_Ref_a_amp_p);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.a_amp_p", &bb_bbtrig_Ref_a_amp_p, &b_bb_bbtrig_Ref_a_amp_p);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.a_c", &Ndata_bb_bbtrig_Ref_a_c, &b_Ndata_bb_bbtrig_Ref_a_c);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.a_c", &bb_bbtrig_Ref_a_c, &b_bb_bbtrig_Ref_a_c);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.a_mult", &Ndata_bb_bbtrig_Ref_a_mult, &b_Ndata_bb_bbtrig_Ref_a_mult);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.a_mult", &bb_bbtrig_Ref_a_mult, &b_bb_bbtrig_Ref_a_mult);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.a_p", &Ndata_bb_bbtrig_Ref_a_p, &b_Ndata_bb_bbtrig_Ref_a_p);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.a_p", &bb_bbtrig_Ref_a_p, &b_bb_bbtrig_Ref_a_p);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.a_time", &Ndata_bb_bbtrig_Ref_a_time, &b_Ndata_bb_bbtrig_Ref_a_time);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.a_time", &bb_bbtrig_Ref_a_time, &b_bb_bbtrig_Ref_a_time);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.adcelemID", &Ndata_bb_bbtrig_Ref_adcelemID, &b_Ndata_bb_bbtrig_Ref_adcelemID);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.adcelemID", &bb_bbtrig_Ref_adcelemID, &b_bb_bbtrig_Ref_adcelemID);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.ped", &Ndata_bb_bbtrig_Ref_ped, &b_Ndata_bb_bbtrig_Ref_ped);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.ped", &bb_bbtrig_Ref_ped, &b_bb_bbtrig_Ref_ped);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.tdc", &Ndata_bb_bbtrig_Ref_tdc, &b_Ndata_bb_bbtrig_Ref_tdc);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.tdc", bb_bbtrig_Ref_tdc, &b_bb_bbtrig_Ref_tdc);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.tdc_mult", &Ndata_bb_bbtrig_Ref_tdc_mult, &b_Ndata_bb_bbtrig_Ref_tdc_mult);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.tdc_mult", bb_bbtrig_Ref_tdc_mult, &b_bb_bbtrig_Ref_tdc_mult);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.tdc_te", &Ndata_bb_bbtrig_Ref_tdc_te, &b_Ndata_bb_bbtrig_Ref_tdc_te);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.tdc_te", bb_bbtrig_Ref_tdc_te, &b_bb_bbtrig_Ref_tdc_te);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.tdc_tot", &Ndata_bb_bbtrig_Ref_tdc_tot, &b_Ndata_bb_bbtrig_Ref_tdc_tot);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.tdc_tot", bb_bbtrig_Ref_tdc_tot, &b_bb_bbtrig_Ref_tdc_tot);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.Ref.tdcelemID", &Ndata_bb_bbtrig_Ref_tdcelemID, &b_Ndata_bb_bbtrig_Ref_tdcelemID);
-   fChain->SetBranchAddress("bb.bbtrig.Ref.tdcelemID", bb_bbtrig_Ref_tdcelemID, &b_bb_bbtrig_Ref_tdcelemID);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a", &Ndata_bb_bbtrig_a, &b_Ndata_bb_bbtrig_a);
-   fChain->SetBranchAddress("bb.bbtrig.a", bb_bbtrig_a, &b_bb_bbtrig_a);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a_amp", &Ndata_bb_bbtrig_a_amp, &b_Ndata_bb_bbtrig_a_amp);
-   fChain->SetBranchAddress("bb.bbtrig.a_amp", bb_bbtrig_a_amp, &b_bb_bbtrig_a_amp);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a_amp_c", &Ndata_bb_bbtrig_a_amp_c, &b_Ndata_bb_bbtrig_a_amp_c);
-   fChain->SetBranchAddress("bb.bbtrig.a_amp_c", bb_bbtrig_a_amp_c, &b_bb_bbtrig_a_amp_c);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a_amp_p", &Ndata_bb_bbtrig_a_amp_p, &b_Ndata_bb_bbtrig_a_amp_p);
-   fChain->SetBranchAddress("bb.bbtrig.a_amp_p", bb_bbtrig_a_amp_p, &b_bb_bbtrig_a_amp_p);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a_amptrig_c", &Ndata_bb_bbtrig_a_amptrig_c, &b_Ndata_bb_bbtrig_a_amptrig_c);
-   fChain->SetBranchAddress("bb.bbtrig.a_amptrig_c", bb_bbtrig_a_amptrig_c, &b_bb_bbtrig_a_amptrig_c);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a_amptrig_p", &Ndata_bb_bbtrig_a_amptrig_p, &b_Ndata_bb_bbtrig_a_amptrig_p);
-   fChain->SetBranchAddress("bb.bbtrig.a_amptrig_p", bb_bbtrig_a_amptrig_p, &b_bb_bbtrig_a_amptrig_p);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a_c", &Ndata_bb_bbtrig_a_c, &b_Ndata_bb_bbtrig_a_c);
-   fChain->SetBranchAddress("bb.bbtrig.a_c", bb_bbtrig_a_c, &b_bb_bbtrig_a_c);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a_mult", &Ndata_bb_bbtrig_a_mult, &b_Ndata_bb_bbtrig_a_mult);
-   fChain->SetBranchAddress("bb.bbtrig.a_mult", bb_bbtrig_a_mult, &b_bb_bbtrig_a_mult);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a_p", &Ndata_bb_bbtrig_a_p, &b_Ndata_bb_bbtrig_a_p);
-   fChain->SetBranchAddress("bb.bbtrig.a_p", bb_bbtrig_a_p, &b_bb_bbtrig_a_p);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.a_time", &Ndata_bb_bbtrig_a_time, &b_Ndata_bb_bbtrig_a_time);
-   fChain->SetBranchAddress("bb.bbtrig.a_time", bb_bbtrig_a_time, &b_bb_bbtrig_a_time);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.adccol", &Ndata_bb_bbtrig_adccol, &b_Ndata_bb_bbtrig_adccol);
-   fChain->SetBranchAddress("bb.bbtrig.adccol", bb_bbtrig_adccol, &b_bb_bbtrig_adccol);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.adcelemID", &Ndata_bb_bbtrig_adcelemID, &b_Ndata_bb_bbtrig_adcelemID);
-   fChain->SetBranchAddress("bb.bbtrig.adcelemID", bb_bbtrig_adcelemID, &b_bb_bbtrig_adcelemID);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.adclayer", &Ndata_bb_bbtrig_adclayer, &b_Ndata_bb_bbtrig_adclayer);
-   fChain->SetBranchAddress("bb.bbtrig.adclayer", bb_bbtrig_adclayer, &b_bb_bbtrig_adclayer);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.adcrow", &Ndata_bb_bbtrig_adcrow, &b_Ndata_bb_bbtrig_adcrow);
-   fChain->SetBranchAddress("bb.bbtrig.adcrow", bb_bbtrig_adcrow, &b_bb_bbtrig_adcrow);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.ped", &Ndata_bb_bbtrig_ped, &b_Ndata_bb_bbtrig_ped);
-   fChain->SetBranchAddress("bb.bbtrig.ped", bb_bbtrig_ped, &b_bb_bbtrig_ped);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.tdc", &Ndata_bb_bbtrig_tdc, &b_Ndata_bb_bbtrig_tdc);
-   fChain->SetBranchAddress("bb.bbtrig.tdc", bb_bbtrig_tdc, &b_bb_bbtrig_tdc);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.tdc_mult", &Ndata_bb_bbtrig_tdc_mult, &b_Ndata_bb_bbtrig_tdc_mult);
-   fChain->SetBranchAddress("bb.bbtrig.tdc_mult", bb_bbtrig_tdc_mult, &b_bb_bbtrig_tdc_mult);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.tdc_te", &Ndata_bb_bbtrig_tdc_te, &b_Ndata_bb_bbtrig_tdc_te);
-   fChain->SetBranchAddress("bb.bbtrig.tdc_te", bb_bbtrig_tdc_te, &b_bb_bbtrig_tdc_te);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.tdc_tot", &Ndata_bb_bbtrig_tdc_tot, &b_Ndata_bb_bbtrig_tdc_tot);
-   fChain->SetBranchAddress("bb.bbtrig.tdc_tot", bb_bbtrig_tdc_tot, &b_bb_bbtrig_tdc_tot);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.tdccol", &Ndata_bb_bbtrig_tdccol, &b_Ndata_bb_bbtrig_tdccol);
-   fChain->SetBranchAddress("bb.bbtrig.tdccol", bb_bbtrig_tdccol, &b_bb_bbtrig_tdccol);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.tdcelemID", &Ndata_bb_bbtrig_tdcelemID, &b_Ndata_bb_bbtrig_tdcelemID);
-   fChain->SetBranchAddress("bb.bbtrig.tdcelemID", bb_bbtrig_tdcelemID, &b_bb_bbtrig_tdcelemID);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.tdclayer", &Ndata_bb_bbtrig_tdclayer, &b_Ndata_bb_bbtrig_tdclayer);
-   fChain->SetBranchAddress("bb.bbtrig.tdclayer", bb_bbtrig_tdclayer, &b_bb_bbtrig_tdclayer);
-   fChain->SetBranchAddress("Ndata.bb.bbtrig.tdcrow", &Ndata_bb_bbtrig_tdcrow, &b_Ndata_bb_bbtrig_tdcrow);
-   fChain->SetBranchAddress("bb.bbtrig.tdcrow", bb_bbtrig_tdcrow, &b_bb_bbtrig_tdcrow);
+   fChain->SetBranchAddress("Ndata.bb.eps_over_etot", &Ndata_bb_eps_over_etot, &b_Ndata_bb_eps_over_etot);
+   fChain->SetBranchAddress("bb.eps_over_etot", bb_eps_over_etot, &b_bb_eps_over_etot);
+   fChain->SetBranchAddress("Ndata.bb.etot_over_p", &Ndata_bb_etot_over_p, &b_Ndata_bb_etot_over_p);
+   fChain->SetBranchAddress("bb.etot_over_p", bb_etot_over_p, &b_bb_etot_over_p);
    fChain->SetBranchAddress("Ndata.bb.gem.hit.ADCU", &Ndata_bb_gem_hit_ADCU, &b_Ndata_bb_gem_hit_ADCU);
    fChain->SetBranchAddress("bb.gem.hit.ADCU", bb_gem_hit_ADCU, &b_bb_gem_hit_ADCU);
    fChain->SetBranchAddress("Ndata.bb.gem.hit.ADCV", &Ndata_bb_gem_hit_ADCV, &b_Ndata_bb_gem_hit_ADCV);
@@ -1812,36 +1072,6 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("bb.gem.track.y", bb_gem_track_y, &b_bb_gem_track_y);
    fChain->SetBranchAddress("Ndata.bb.gem.track.yp", &Ndata_bb_gem_track_yp, &b_Ndata_bb_gem_track_yp);
    fChain->SetBranchAddress("bb.gem.track.yp", bb_gem_track_yp, &b_bb_gem_track_yp);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a", &Ndata_bb_grinch_adc_a, &b_Ndata_bb_grinch_adc_a);
-   fChain->SetBranchAddress("bb.grinch_adc.a", bb_grinch_adc_a, &b_bb_grinch_adc_a);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a_amp", &Ndata_bb_grinch_adc_a_amp, &b_Ndata_bb_grinch_adc_a_amp);
-   fChain->SetBranchAddress("bb.grinch_adc.a_amp", bb_grinch_adc_a_amp, &b_bb_grinch_adc_a_amp);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a_amp_c", &Ndata_bb_grinch_adc_a_amp_c, &b_Ndata_bb_grinch_adc_a_amp_c);
-   fChain->SetBranchAddress("bb.grinch_adc.a_amp_c", bb_grinch_adc_a_amp_c, &b_bb_grinch_adc_a_amp_c);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a_amp_p", &Ndata_bb_grinch_adc_a_amp_p, &b_Ndata_bb_grinch_adc_a_amp_p);
-   fChain->SetBranchAddress("bb.grinch_adc.a_amp_p", bb_grinch_adc_a_amp_p, &b_bb_grinch_adc_a_amp_p);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a_amptrig_c", &Ndata_bb_grinch_adc_a_amptrig_c, &b_Ndata_bb_grinch_adc_a_amptrig_c);
-   fChain->SetBranchAddress("bb.grinch_adc.a_amptrig_c", bb_grinch_adc_a_amptrig_c, &b_bb_grinch_adc_a_amptrig_c);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a_amptrig_p", &Ndata_bb_grinch_adc_a_amptrig_p, &b_Ndata_bb_grinch_adc_a_amptrig_p);
-   fChain->SetBranchAddress("bb.grinch_adc.a_amptrig_p", bb_grinch_adc_a_amptrig_p, &b_bb_grinch_adc_a_amptrig_p);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a_c", &Ndata_bb_grinch_adc_a_c, &b_Ndata_bb_grinch_adc_a_c);
-   fChain->SetBranchAddress("bb.grinch_adc.a_c", bb_grinch_adc_a_c, &b_bb_grinch_adc_a_c);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a_mult", &Ndata_bb_grinch_adc_a_mult, &b_Ndata_bb_grinch_adc_a_mult);
-   fChain->SetBranchAddress("bb.grinch_adc.a_mult", bb_grinch_adc_a_mult, &b_bb_grinch_adc_a_mult);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a_p", &Ndata_bb_grinch_adc_a_p, &b_Ndata_bb_grinch_adc_a_p);
-   fChain->SetBranchAddress("bb.grinch_adc.a_p", bb_grinch_adc_a_p, &b_bb_grinch_adc_a_p);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.a_time", &Ndata_bb_grinch_adc_a_time, &b_Ndata_bb_grinch_adc_a_time);
-   fChain->SetBranchAddress("bb.grinch_adc.a_time", bb_grinch_adc_a_time, &b_bb_grinch_adc_a_time);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.adccol", &Ndata_bb_grinch_adc_adccol, &b_Ndata_bb_grinch_adc_adccol);
-   fChain->SetBranchAddress("bb.grinch_adc.adccol", bb_grinch_adc_adccol, &b_bb_grinch_adc_adccol);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.adcelemID", &Ndata_bb_grinch_adc_adcelemID, &b_Ndata_bb_grinch_adc_adcelemID);
-   fChain->SetBranchAddress("bb.grinch_adc.adcelemID", bb_grinch_adc_adcelemID, &b_bb_grinch_adc_adcelemID);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.adclayer", &Ndata_bb_grinch_adc_adclayer, &b_Ndata_bb_grinch_adc_adclayer);
-   fChain->SetBranchAddress("bb.grinch_adc.adclayer", bb_grinch_adc_adclayer, &b_bb_grinch_adc_adclayer);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.adcrow", &Ndata_bb_grinch_adc_adcrow, &b_Ndata_bb_grinch_adc_adcrow);
-   fChain->SetBranchAddress("bb.grinch_adc.adcrow", bb_grinch_adc_adcrow, &b_bb_grinch_adc_adcrow);
-   fChain->SetBranchAddress("Ndata.bb.grinch_adc.ped", &Ndata_bb_grinch_adc_ped, &b_Ndata_bb_grinch_adc_ped);
-   fChain->SetBranchAddress("bb.grinch_adc.ped", bb_grinch_adc_ped, &b_bb_grinch_adc_ped);
    fChain->SetBranchAddress("Ndata.bb.grinch_tdc.tdc", &Ndata_bb_grinch_tdc_tdc, &b_Ndata_bb_grinch_tdc_tdc);
    fChain->SetBranchAddress("bb.grinch_tdc.tdc", bb_grinch_tdc_tdc, &b_bb_grinch_tdc_tdc);
    fChain->SetBranchAddress("Ndata.bb.grinch_tdc.tdc_mult", &Ndata_bb_grinch_tdc_tdc_mult, &b_Ndata_bb_grinch_tdc_tdc_mult);
@@ -1858,54 +1088,6 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("bb.grinch_tdc.tdclayer", bb_grinch_tdc_tdclayer, &b_bb_grinch_tdc_tdclayer);
    fChain->SetBranchAddress("Ndata.bb.grinch_tdc.tdcrow", &Ndata_bb_grinch_tdc_tdcrow, &b_Ndata_bb_grinch_tdc_tdcrow);
    fChain->SetBranchAddress("bb.grinch_tdc.tdcrow", bb_grinch_tdc_tdcrow, &b_bb_grinch_tdc_tdcrow);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.a", &Ndata_bb_hodoadc_Ref_a, &b_Ndata_bb_hodoadc_Ref_a);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.a", &bb_hodoadc_Ref_a, &b_bb_hodoadc_Ref_a);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.a_amp", &Ndata_bb_hodoadc_Ref_a_amp, &b_Ndata_bb_hodoadc_Ref_a_amp);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.a_amp", &bb_hodoadc_Ref_a_amp, &b_bb_hodoadc_Ref_a_amp);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.a_amp_c", &Ndata_bb_hodoadc_Ref_a_amp_c, &b_Ndata_bb_hodoadc_Ref_a_amp_c);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.a_amp_c", &bb_hodoadc_Ref_a_amp_c, &b_bb_hodoadc_Ref_a_amp_c);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.a_amp_p", &Ndata_bb_hodoadc_Ref_a_amp_p, &b_Ndata_bb_hodoadc_Ref_a_amp_p);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.a_amp_p", &bb_hodoadc_Ref_a_amp_p, &b_bb_hodoadc_Ref_a_amp_p);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.a_c", &Ndata_bb_hodoadc_Ref_a_c, &b_Ndata_bb_hodoadc_Ref_a_c);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.a_c", &bb_hodoadc_Ref_a_c, &b_bb_hodoadc_Ref_a_c);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.a_mult", &Ndata_bb_hodoadc_Ref_a_mult, &b_Ndata_bb_hodoadc_Ref_a_mult);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.a_mult", &bb_hodoadc_Ref_a_mult, &b_bb_hodoadc_Ref_a_mult);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.a_p", &Ndata_bb_hodoadc_Ref_a_p, &b_Ndata_bb_hodoadc_Ref_a_p);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.a_p", &bb_hodoadc_Ref_a_p, &b_bb_hodoadc_Ref_a_p);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.a_time", &Ndata_bb_hodoadc_Ref_a_time, &b_Ndata_bb_hodoadc_Ref_a_time);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.a_time", &bb_hodoadc_Ref_a_time, &b_bb_hodoadc_Ref_a_time);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.adcelemID", &Ndata_bb_hodoadc_Ref_adcelemID, &b_Ndata_bb_hodoadc_Ref_adcelemID);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.adcelemID", &bb_hodoadc_Ref_adcelemID, &b_bb_hodoadc_Ref_adcelemID);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.Ref.ped", &Ndata_bb_hodoadc_Ref_ped, &b_Ndata_bb_hodoadc_Ref_ped);
-   fChain->SetBranchAddress("bb.hodoadc.Ref.ped", &bb_hodoadc_Ref_ped, &b_bb_hodoadc_Ref_ped);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a", &Ndata_bb_hodoadc_a, &b_Ndata_bb_hodoadc_a);
-   fChain->SetBranchAddress("bb.hodoadc.a", bb_hodoadc_a, &b_bb_hodoadc_a);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a_amp", &Ndata_bb_hodoadc_a_amp, &b_Ndata_bb_hodoadc_a_amp);
-   fChain->SetBranchAddress("bb.hodoadc.a_amp", bb_hodoadc_a_amp, &b_bb_hodoadc_a_amp);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a_amp_c", &Ndata_bb_hodoadc_a_amp_c, &b_Ndata_bb_hodoadc_a_amp_c);
-   fChain->SetBranchAddress("bb.hodoadc.a_amp_c", bb_hodoadc_a_amp_c, &b_bb_hodoadc_a_amp_c);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a_amp_p", &Ndata_bb_hodoadc_a_amp_p, &b_Ndata_bb_hodoadc_a_amp_p);
-   fChain->SetBranchAddress("bb.hodoadc.a_amp_p", bb_hodoadc_a_amp_p, &b_bb_hodoadc_a_amp_p);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a_amptrig_c", &Ndata_bb_hodoadc_a_amptrig_c, &b_Ndata_bb_hodoadc_a_amptrig_c);
-   fChain->SetBranchAddress("bb.hodoadc.a_amptrig_c", bb_hodoadc_a_amptrig_c, &b_bb_hodoadc_a_amptrig_c);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a_amptrig_p", &Ndata_bb_hodoadc_a_amptrig_p, &b_Ndata_bb_hodoadc_a_amptrig_p);
-   fChain->SetBranchAddress("bb.hodoadc.a_amptrig_p", bb_hodoadc_a_amptrig_p, &b_bb_hodoadc_a_amptrig_p);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a_c", &Ndata_bb_hodoadc_a_c, &b_Ndata_bb_hodoadc_a_c);
-   fChain->SetBranchAddress("bb.hodoadc.a_c", bb_hodoadc_a_c, &b_bb_hodoadc_a_c);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a_mult", &Ndata_bb_hodoadc_a_mult, &b_Ndata_bb_hodoadc_a_mult);
-   fChain->SetBranchAddress("bb.hodoadc.a_mult", bb_hodoadc_a_mult, &b_bb_hodoadc_a_mult);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a_p", &Ndata_bb_hodoadc_a_p, &b_Ndata_bb_hodoadc_a_p);
-   fChain->SetBranchAddress("bb.hodoadc.a_p", bb_hodoadc_a_p, &b_bb_hodoadc_a_p);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.a_time", &Ndata_bb_hodoadc_a_time, &b_Ndata_bb_hodoadc_a_time);
-   fChain->SetBranchAddress("bb.hodoadc.a_time", bb_hodoadc_a_time, &b_bb_hodoadc_a_time);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.adccol", &Ndata_bb_hodoadc_adccol, &b_Ndata_bb_hodoadc_adccol);
-   fChain->SetBranchAddress("bb.hodoadc.adccol", bb_hodoadc_adccol, &b_bb_hodoadc_adccol);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.adcelemID", &Ndata_bb_hodoadc_adcelemID, &b_Ndata_bb_hodoadc_adcelemID);
-   fChain->SetBranchAddress("bb.hodoadc.adcelemID", bb_hodoadc_adcelemID, &b_bb_hodoadc_adcelemID);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.adclayer", &Ndata_bb_hodoadc_adclayer, &b_Ndata_bb_hodoadc_adclayer);
-   fChain->SetBranchAddress("bb.hodoadc.adclayer", bb_hodoadc_adclayer, &b_bb_hodoadc_adclayer);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.adcrow", &Ndata_bb_hodoadc_adcrow, &b_Ndata_bb_hodoadc_adcrow);
-   fChain->SetBranchAddress("bb.hodoadc.adcrow", bb_hodoadc_adcrow, &b_bb_hodoadc_adcrow);
    fChain->SetBranchAddress("Ndata.bb.hodoadc.bar.adc.L.a", &Ndata_bb_hodoadc_bar_adc_L_a, &b_Ndata_bb_hodoadc_bar_adc_L_a);
    fChain->SetBranchAddress("bb.hodoadc.bar.adc.L.a", bb_hodoadc_bar_adc_L_a, &b_bb_hodoadc_bar_adc_L_a);
    fChain->SetBranchAddress("Ndata.bb.hodoadc.bar.adc.L.ac", &Ndata_bb_hodoadc_bar_adc_L_ac, &b_Ndata_bb_hodoadc_bar_adc_L_ac);
@@ -1922,28 +1104,6 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("bb.hodoadc.bar.adc.id", bb_hodoadc_bar_adc_id, &b_bb_hodoadc_bar_adc_id);
    fChain->SetBranchAddress("Ndata.bb.hodoadc.bar.adc.mean", &Ndata_bb_hodoadc_bar_adc_mean, &b_Ndata_bb_hodoadc_bar_adc_mean);
    fChain->SetBranchAddress("bb.hodoadc.bar.adc.mean", bb_hodoadc_bar_adc_mean, &b_bb_hodoadc_bar_adc_mean);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.clus.size", &Ndata_bb_hodoadc_clus_size, &b_Ndata_bb_hodoadc_clus_size);
-   fChain->SetBranchAddress("bb.hodoadc.clus.size", &bb_hodoadc_clus_size, &b_bb_hodoadc_clus_size);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.clus.tmean", &Ndata_bb_hodoadc_clus_tmean, &b_Ndata_bb_hodoadc_clus_tmean);
-   fChain->SetBranchAddress("bb.hodoadc.clus.tmean", &bb_hodoadc_clus_tmean, &b_bb_hodoadc_clus_tmean);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.clus.totmean", &Ndata_bb_hodoadc_clus_totmean, &b_Ndata_bb_hodoadc_clus_totmean);
-   fChain->SetBranchAddress("bb.hodoadc.clus.totmean", &bb_hodoadc_clus_totmean, &b_bb_hodoadc_clus_totmean);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.clus.xmean", &Ndata_bb_hodoadc_clus_xmean, &b_Ndata_bb_hodoadc_clus_xmean);
-   fChain->SetBranchAddress("bb.hodoadc.clus.xmean", &bb_hodoadc_clus_xmean, &b_bb_hodoadc_clus_xmean);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.clus.ymean", &Ndata_bb_hodoadc_clus_ymean, &b_Ndata_bb_hodoadc_clus_ymean);
-   fChain->SetBranchAddress("bb.hodoadc.clus.ymean", &bb_hodoadc_clus_ymean, &b_bb_hodoadc_clus_ymean);
-   fChain->SetBranchAddress("Ndata.bb.hodoadc.ped", &Ndata_bb_hodoadc_ped, &b_Ndata_bb_hodoadc_ped);
-   fChain->SetBranchAddress("bb.hodoadc.ped", bb_hodoadc_ped, &b_bb_hodoadc_ped);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.Ref.tdc", &Ndata_bb_hodotdc_Ref_tdc, &b_Ndata_bb_hodotdc_Ref_tdc);
-   fChain->SetBranchAddress("bb.hodotdc.Ref.tdc", bb_hodotdc_Ref_tdc, &b_bb_hodotdc_Ref_tdc);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.Ref.tdc_mult", &Ndata_bb_hodotdc_Ref_tdc_mult, &b_Ndata_bb_hodotdc_Ref_tdc_mult);
-   fChain->SetBranchAddress("bb.hodotdc.Ref.tdc_mult", bb_hodotdc_Ref_tdc_mult, &b_bb_hodotdc_Ref_tdc_mult);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.Ref.tdc_te", &Ndata_bb_hodotdc_Ref_tdc_te, &b_Ndata_bb_hodotdc_Ref_tdc_te);
-   fChain->SetBranchAddress("bb.hodotdc.Ref.tdc_te", bb_hodotdc_Ref_tdc_te, &b_bb_hodotdc_Ref_tdc_te);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.Ref.tdc_tot", &Ndata_bb_hodotdc_Ref_tdc_tot, &b_Ndata_bb_hodotdc_Ref_tdc_tot);
-   fChain->SetBranchAddress("bb.hodotdc.Ref.tdc_tot", bb_hodotdc_Ref_tdc_tot, &b_bb_hodotdc_Ref_tdc_tot);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.Ref.tdcelemID", &Ndata_bb_hodotdc_Ref_tdcelemID, &b_Ndata_bb_hodotdc_Ref_tdcelemID);
-   fChain->SetBranchAddress("bb.hodotdc.Ref.tdcelemID", bb_hodotdc_Ref_tdcelemID, &b_bb_hodotdc_Ref_tdcelemID);
    fChain->SetBranchAddress("Ndata.bb.hodotdc.bar.tdc.L.le", &Ndata_bb_hodotdc_bar_tdc_L_le, &b_Ndata_bb_hodotdc_bar_tdc_L_le);
    fChain->SetBranchAddress("bb.hodotdc.bar.tdc.L.le", bb_hodotdc_bar_tdc_L_le, &b_bb_hodotdc_bar_tdc_L_le);
    fChain->SetBranchAddress("Ndata.bb.hodotdc.bar.tdc.L.leW", &Ndata_bb_hodotdc_bar_tdc_L_leW, &b_Ndata_bb_hodotdc_bar_tdc_L_leW);
@@ -1978,60 +1138,6 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("bb.hodotdc.bar.tdc.timehitpos", bb_hodotdc_bar_tdc_timehitpos, &b_bb_hodotdc_bar_tdc_timehitpos);
    fChain->SetBranchAddress("Ndata.bb.hodotdc.bar.tdc.vpos", &Ndata_bb_hodotdc_bar_tdc_vpos, &b_Ndata_bb_hodotdc_bar_tdc_vpos);
    fChain->SetBranchAddress("bb.hodotdc.bar.tdc.vpos", bb_hodotdc_bar_tdc_vpos, &b_bb_hodotdc_bar_tdc_vpos);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.clus.size", &Ndata_bb_hodotdc_clus_size, &b_Ndata_bb_hodotdc_clus_size);
-   fChain->SetBranchAddress("bb.hodotdc.clus.size", bb_hodotdc_clus_size, &b_bb_hodotdc_clus_size);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.clus.tmean", &Ndata_bb_hodotdc_clus_tmean, &b_Ndata_bb_hodotdc_clus_tmean);
-   fChain->SetBranchAddress("bb.hodotdc.clus.tmean", bb_hodotdc_clus_tmean, &b_bb_hodotdc_clus_tmean);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.clus.totmean", &Ndata_bb_hodotdc_clus_totmean, &b_Ndata_bb_hodotdc_clus_totmean);
-   fChain->SetBranchAddress("bb.hodotdc.clus.totmean", bb_hodotdc_clus_totmean, &b_bb_hodotdc_clus_totmean);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.clus.xmean", &Ndata_bb_hodotdc_clus_xmean, &b_Ndata_bb_hodotdc_clus_xmean);
-   fChain->SetBranchAddress("bb.hodotdc.clus.xmean", bb_hodotdc_clus_xmean, &b_bb_hodotdc_clus_xmean);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.clus.ymean", &Ndata_bb_hodotdc_clus_ymean, &b_Ndata_bb_hodotdc_clus_ymean);
-   fChain->SetBranchAddress("bb.hodotdc.clus.ymean", bb_hodotdc_clus_ymean, &b_bb_hodotdc_clus_ymean);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.tdc", &Ndata_bb_hodotdc_tdc, &b_Ndata_bb_hodotdc_tdc);
-   fChain->SetBranchAddress("bb.hodotdc.tdc", bb_hodotdc_tdc, &b_bb_hodotdc_tdc);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.tdc_mult", &Ndata_bb_hodotdc_tdc_mult, &b_Ndata_bb_hodotdc_tdc_mult);
-   fChain->SetBranchAddress("bb.hodotdc.tdc_mult", bb_hodotdc_tdc_mult, &b_bb_hodotdc_tdc_mult);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.tdc_te", &Ndata_bb_hodotdc_tdc_te, &b_Ndata_bb_hodotdc_tdc_te);
-   fChain->SetBranchAddress("bb.hodotdc.tdc_te", bb_hodotdc_tdc_te, &b_bb_hodotdc_tdc_te);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.tdc_tot", &Ndata_bb_hodotdc_tdc_tot, &b_Ndata_bb_hodotdc_tdc_tot);
-   fChain->SetBranchAddress("bb.hodotdc.tdc_tot", bb_hodotdc_tdc_tot, &b_bb_hodotdc_tdc_tot);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.tdccol", &Ndata_bb_hodotdc_tdccol, &b_Ndata_bb_hodotdc_tdccol);
-   fChain->SetBranchAddress("bb.hodotdc.tdccol", bb_hodotdc_tdccol, &b_bb_hodotdc_tdccol);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.tdcelemID", &Ndata_bb_hodotdc_tdcelemID, &b_Ndata_bb_hodotdc_tdcelemID);
-   fChain->SetBranchAddress("bb.hodotdc.tdcelemID", bb_hodotdc_tdcelemID, &b_bb_hodotdc_tdcelemID);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.tdclayer", &Ndata_bb_hodotdc_tdclayer, &b_Ndata_bb_hodotdc_tdclayer);
-   fChain->SetBranchAddress("bb.hodotdc.tdclayer", bb_hodotdc_tdclayer, &b_bb_hodotdc_tdclayer);
-   fChain->SetBranchAddress("Ndata.bb.hodotdc.tdcrow", &Ndata_bb_hodotdc_tdcrow, &b_Ndata_bb_hodotdc_tdcrow);
-   fChain->SetBranchAddress("bb.hodotdc.tdcrow", bb_hodotdc_tdcrow, &b_bb_hodotdc_tdcrow);
-   fChain->SetBranchAddress("Ndata.bb.ps.a", &Ndata_bb_ps_a, &b_Ndata_bb_ps_a);
-   fChain->SetBranchAddress("bb.ps.a", bb_ps_a, &b_bb_ps_a);
-   fChain->SetBranchAddress("Ndata.bb.ps.a_amp", &Ndata_bb_ps_a_amp, &b_Ndata_bb_ps_a_amp);
-   fChain->SetBranchAddress("bb.ps.a_amp", bb_ps_a_amp, &b_bb_ps_a_amp);
-   fChain->SetBranchAddress("Ndata.bb.ps.a_amp_c", &Ndata_bb_ps_a_amp_c, &b_Ndata_bb_ps_a_amp_c);
-   fChain->SetBranchAddress("bb.ps.a_amp_c", bb_ps_a_amp_c, &b_bb_ps_a_amp_c);
-   fChain->SetBranchAddress("Ndata.bb.ps.a_amp_p", &Ndata_bb_ps_a_amp_p, &b_Ndata_bb_ps_a_amp_p);
-   fChain->SetBranchAddress("bb.ps.a_amp_p", bb_ps_a_amp_p, &b_bb_ps_a_amp_p);
-   fChain->SetBranchAddress("Ndata.bb.ps.a_amptrig_c", &Ndata_bb_ps_a_amptrig_c, &b_Ndata_bb_ps_a_amptrig_c);
-   fChain->SetBranchAddress("bb.ps.a_amptrig_c", bb_ps_a_amptrig_c, &b_bb_ps_a_amptrig_c);
-   fChain->SetBranchAddress("Ndata.bb.ps.a_amptrig_p", &Ndata_bb_ps_a_amptrig_p, &b_Ndata_bb_ps_a_amptrig_p);
-   fChain->SetBranchAddress("bb.ps.a_amptrig_p", bb_ps_a_amptrig_p, &b_bb_ps_a_amptrig_p);
-   fChain->SetBranchAddress("Ndata.bb.ps.a_c", &Ndata_bb_ps_a_c, &b_Ndata_bb_ps_a_c);
-   fChain->SetBranchAddress("bb.ps.a_c", bb_ps_a_c, &b_bb_ps_a_c);
-   fChain->SetBranchAddress("Ndata.bb.ps.a_mult", &Ndata_bb_ps_a_mult, &b_Ndata_bb_ps_a_mult);
-   fChain->SetBranchAddress("bb.ps.a_mult", bb_ps_a_mult, &b_bb_ps_a_mult);
-   fChain->SetBranchAddress("Ndata.bb.ps.a_p", &Ndata_bb_ps_a_p, &b_Ndata_bb_ps_a_p);
-   fChain->SetBranchAddress("bb.ps.a_p", bb_ps_a_p, &b_bb_ps_a_p);
-   fChain->SetBranchAddress("Ndata.bb.ps.a_time", &Ndata_bb_ps_a_time, &b_Ndata_bb_ps_a_time);
-   fChain->SetBranchAddress("bb.ps.a_time", bb_ps_a_time, &b_bb_ps_a_time);
-   fChain->SetBranchAddress("Ndata.bb.ps.adccol", &Ndata_bb_ps_adccol, &b_Ndata_bb_ps_adccol);
-   fChain->SetBranchAddress("bb.ps.adccol", bb_ps_adccol, &b_bb_ps_adccol);
-   fChain->SetBranchAddress("Ndata.bb.ps.adcelemID", &Ndata_bb_ps_adcelemID, &b_Ndata_bb_ps_adcelemID);
-   fChain->SetBranchAddress("bb.ps.adcelemID", bb_ps_adcelemID, &b_bb_ps_adcelemID);
-   fChain->SetBranchAddress("Ndata.bb.ps.adclayer", &Ndata_bb_ps_adclayer, &b_Ndata_bb_ps_adclayer);
-   fChain->SetBranchAddress("bb.ps.adclayer", bb_ps_adclayer, &b_bb_ps_adclayer);
-   fChain->SetBranchAddress("Ndata.bb.ps.adcrow", &Ndata_bb_ps_adcrow, &b_Ndata_bb_ps_adcrow);
-   fChain->SetBranchAddress("bb.ps.adcrow", bb_ps_adcrow, &b_bb_ps_adcrow);
    fChain->SetBranchAddress("Ndata.bb.ps.clus.col", &Ndata_bb_ps_clus_col, &b_Ndata_bb_ps_clus_col);
    fChain->SetBranchAddress("bb.ps.clus.col", bb_ps_clus_col, &b_bb_ps_clus_col);
    fChain->SetBranchAddress("Ndata.bb.ps.clus.e", &Ndata_bb_ps_clus_e, &b_Ndata_bb_ps_clus_e);
@@ -2066,56 +1172,6 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("bb.ps.clus_blk.x", bb_ps_clus_blk_x, &b_bb_ps_clus_blk_x);
    fChain->SetBranchAddress("Ndata.bb.ps.clus_blk.y", &Ndata_bb_ps_clus_blk_y, &b_Ndata_bb_ps_clus_blk_y);
    fChain->SetBranchAddress("bb.ps.clus_blk.y", bb_ps_clus_blk_y, &b_bb_ps_clus_blk_y);
-   fChain->SetBranchAddress("Ndata.bb.ps.e_res", &Ndata_bb_ps_e_res, &b_Ndata_bb_ps_e_res);
-   fChain->SetBranchAddress("bb.ps.e_res", bb_ps_e_res, &b_bb_ps_e_res);
-   fChain->SetBranchAddress("Ndata.bb.ps.goodblock.atime", &Ndata_bb_ps_goodblock_atime, &b_Ndata_bb_ps_goodblock_atime);
-   fChain->SetBranchAddress("bb.ps.goodblock.atime", bb_ps_goodblock_atime, &b_bb_ps_goodblock_atime);
-   fChain->SetBranchAddress("Ndata.bb.ps.goodblock.col", &Ndata_bb_ps_goodblock_col, &b_Ndata_bb_ps_goodblock_col);
-   fChain->SetBranchAddress("bb.ps.goodblock.col", bb_ps_goodblock_col, &b_bb_ps_goodblock_col);
-   fChain->SetBranchAddress("Ndata.bb.ps.goodblock.e", &Ndata_bb_ps_goodblock_e, &b_Ndata_bb_ps_goodblock_e);
-   fChain->SetBranchAddress("bb.ps.goodblock.e", bb_ps_goodblock_e, &b_bb_ps_goodblock_e);
-   fChain->SetBranchAddress("Ndata.bb.ps.goodblock.id", &Ndata_bb_ps_goodblock_id, &b_Ndata_bb_ps_goodblock_id);
-   fChain->SetBranchAddress("bb.ps.goodblock.id", bb_ps_goodblock_id, &b_bb_ps_goodblock_id);
-   fChain->SetBranchAddress("Ndata.bb.ps.goodblock.row", &Ndata_bb_ps_goodblock_row, &b_Ndata_bb_ps_goodblock_row);
-   fChain->SetBranchAddress("bb.ps.goodblock.row", bb_ps_goodblock_row, &b_bb_ps_goodblock_row);
-   fChain->SetBranchAddress("Ndata.bb.ps.goodblock.x", &Ndata_bb_ps_goodblock_x, &b_Ndata_bb_ps_goodblock_x);
-   fChain->SetBranchAddress("bb.ps.goodblock.x", bb_ps_goodblock_x, &b_bb_ps_goodblock_x);
-   fChain->SetBranchAddress("Ndata.bb.ps.goodblock.y", &Ndata_bb_ps_goodblock_y, &b_Ndata_bb_ps_goodblock_y);
-   fChain->SetBranchAddress("bb.ps.goodblock.y", bb_ps_goodblock_y, &b_bb_ps_goodblock_y);
-   fChain->SetBranchAddress("Ndata.bb.ps.ped", &Ndata_bb_ps_ped, &b_Ndata_bb_ps_ped);
-   fChain->SetBranchAddress("bb.ps.ped", bb_ps_ped, &b_bb_ps_ped);
-   fChain->SetBranchAddress("Ndata.bb.ps.x_res", &Ndata_bb_ps_x_res, &b_Ndata_bb_ps_x_res);
-   fChain->SetBranchAddress("bb.ps.x_res", bb_ps_x_res, &b_bb_ps_x_res);
-   fChain->SetBranchAddress("Ndata.bb.ps.y_res", &Ndata_bb_ps_y_res, &b_Ndata_bb_ps_y_res);
-   fChain->SetBranchAddress("bb.ps.y_res", bb_ps_y_res, &b_bb_ps_y_res);
-   fChain->SetBranchAddress("Ndata.bb.sh.a", &Ndata_bb_sh_a, &b_Ndata_bb_sh_a);
-   fChain->SetBranchAddress("bb.sh.a", bb_sh_a, &b_bb_sh_a);
-   fChain->SetBranchAddress("Ndata.bb.sh.a_amp", &Ndata_bb_sh_a_amp, &b_Ndata_bb_sh_a_amp);
-   fChain->SetBranchAddress("bb.sh.a_amp", bb_sh_a_amp, &b_bb_sh_a_amp);
-   fChain->SetBranchAddress("Ndata.bb.sh.a_amp_c", &Ndata_bb_sh_a_amp_c, &b_Ndata_bb_sh_a_amp_c);
-   fChain->SetBranchAddress("bb.sh.a_amp_c", bb_sh_a_amp_c, &b_bb_sh_a_amp_c);
-   fChain->SetBranchAddress("Ndata.bb.sh.a_amp_p", &Ndata_bb_sh_a_amp_p, &b_Ndata_bb_sh_a_amp_p);
-   fChain->SetBranchAddress("bb.sh.a_amp_p", bb_sh_a_amp_p, &b_bb_sh_a_amp_p);
-   fChain->SetBranchAddress("Ndata.bb.sh.a_amptrig_c", &Ndata_bb_sh_a_amptrig_c, &b_Ndata_bb_sh_a_amptrig_c);
-   fChain->SetBranchAddress("bb.sh.a_amptrig_c", bb_sh_a_amptrig_c, &b_bb_sh_a_amptrig_c);
-   fChain->SetBranchAddress("Ndata.bb.sh.a_amptrig_p", &Ndata_bb_sh_a_amptrig_p, &b_Ndata_bb_sh_a_amptrig_p);
-   fChain->SetBranchAddress("bb.sh.a_amptrig_p", bb_sh_a_amptrig_p, &b_bb_sh_a_amptrig_p);
-   fChain->SetBranchAddress("Ndata.bb.sh.a_c", &Ndata_bb_sh_a_c, &b_Ndata_bb_sh_a_c);
-   fChain->SetBranchAddress("bb.sh.a_c", bb_sh_a_c, &b_bb_sh_a_c);
-   fChain->SetBranchAddress("Ndata.bb.sh.a_mult", &Ndata_bb_sh_a_mult, &b_Ndata_bb_sh_a_mult);
-   fChain->SetBranchAddress("bb.sh.a_mult", bb_sh_a_mult, &b_bb_sh_a_mult);
-   fChain->SetBranchAddress("Ndata.bb.sh.a_p", &Ndata_bb_sh_a_p, &b_Ndata_bb_sh_a_p);
-   fChain->SetBranchAddress("bb.sh.a_p", bb_sh_a_p, &b_bb_sh_a_p);
-   fChain->SetBranchAddress("Ndata.bb.sh.a_time", &Ndata_bb_sh_a_time, &b_Ndata_bb_sh_a_time);
-   fChain->SetBranchAddress("bb.sh.a_time", bb_sh_a_time, &b_bb_sh_a_time);
-   fChain->SetBranchAddress("Ndata.bb.sh.adccol", &Ndata_bb_sh_adccol, &b_Ndata_bb_sh_adccol);
-   fChain->SetBranchAddress("bb.sh.adccol", bb_sh_adccol, &b_bb_sh_adccol);
-   fChain->SetBranchAddress("Ndata.bb.sh.adcelemID", &Ndata_bb_sh_adcelemID, &b_Ndata_bb_sh_adcelemID);
-   fChain->SetBranchAddress("bb.sh.adcelemID", bb_sh_adcelemID, &b_bb_sh_adcelemID);
-   fChain->SetBranchAddress("Ndata.bb.sh.adclayer", &Ndata_bb_sh_adclayer, &b_Ndata_bb_sh_adclayer);
-   fChain->SetBranchAddress("bb.sh.adclayer", bb_sh_adclayer, &b_bb_sh_adclayer);
-   fChain->SetBranchAddress("Ndata.bb.sh.adcrow", &Ndata_bb_sh_adcrow, &b_Ndata_bb_sh_adcrow);
-   fChain->SetBranchAddress("bb.sh.adcrow", bb_sh_adcrow, &b_bb_sh_adcrow);
    fChain->SetBranchAddress("Ndata.bb.sh.clus.col", &Ndata_bb_sh_clus_col, &b_Ndata_bb_sh_clus_col);
    fChain->SetBranchAddress("bb.sh.clus.col", bb_sh_clus_col, &b_bb_sh_clus_col);
    fChain->SetBranchAddress("Ndata.bb.sh.clus.e", &Ndata_bb_sh_clus_e, &b_Ndata_bb_sh_clus_e);
@@ -2150,28 +1206,6 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("bb.sh.clus_blk.x", bb_sh_clus_blk_x, &b_bb_sh_clus_blk_x);
    fChain->SetBranchAddress("Ndata.bb.sh.clus_blk.y", &Ndata_bb_sh_clus_blk_y, &b_Ndata_bb_sh_clus_blk_y);
    fChain->SetBranchAddress("bb.sh.clus_blk.y", bb_sh_clus_blk_y, &b_bb_sh_clus_blk_y);
-   fChain->SetBranchAddress("Ndata.bb.sh.e_res", &Ndata_bb_sh_e_res, &b_Ndata_bb_sh_e_res);
-   fChain->SetBranchAddress("bb.sh.e_res", bb_sh_e_res, &b_bb_sh_e_res);
-   fChain->SetBranchAddress("Ndata.bb.sh.goodblock.atime", &Ndata_bb_sh_goodblock_atime, &b_Ndata_bb_sh_goodblock_atime);
-   fChain->SetBranchAddress("bb.sh.goodblock.atime", bb_sh_goodblock_atime, &b_bb_sh_goodblock_atime);
-   fChain->SetBranchAddress("Ndata.bb.sh.goodblock.col", &Ndata_bb_sh_goodblock_col, &b_Ndata_bb_sh_goodblock_col);
-   fChain->SetBranchAddress("bb.sh.goodblock.col", bb_sh_goodblock_col, &b_bb_sh_goodblock_col);
-   fChain->SetBranchAddress("Ndata.bb.sh.goodblock.e", &Ndata_bb_sh_goodblock_e, &b_Ndata_bb_sh_goodblock_e);
-   fChain->SetBranchAddress("bb.sh.goodblock.e", bb_sh_goodblock_e, &b_bb_sh_goodblock_e);
-   fChain->SetBranchAddress("Ndata.bb.sh.goodblock.id", &Ndata_bb_sh_goodblock_id, &b_Ndata_bb_sh_goodblock_id);
-   fChain->SetBranchAddress("bb.sh.goodblock.id", bb_sh_goodblock_id, &b_bb_sh_goodblock_id);
-   fChain->SetBranchAddress("Ndata.bb.sh.goodblock.row", &Ndata_bb_sh_goodblock_row, &b_Ndata_bb_sh_goodblock_row);
-   fChain->SetBranchAddress("bb.sh.goodblock.row", bb_sh_goodblock_row, &b_bb_sh_goodblock_row);
-   fChain->SetBranchAddress("Ndata.bb.sh.goodblock.x", &Ndata_bb_sh_goodblock_x, &b_Ndata_bb_sh_goodblock_x);
-   fChain->SetBranchAddress("bb.sh.goodblock.x", bb_sh_goodblock_x, &b_bb_sh_goodblock_x);
-   fChain->SetBranchAddress("Ndata.bb.sh.goodblock.y", &Ndata_bb_sh_goodblock_y, &b_Ndata_bb_sh_goodblock_y);
-   fChain->SetBranchAddress("bb.sh.goodblock.y", bb_sh_goodblock_y, &b_bb_sh_goodblock_y);
-   fChain->SetBranchAddress("Ndata.bb.sh.ped", &Ndata_bb_sh_ped, &b_Ndata_bb_sh_ped);
-   fChain->SetBranchAddress("bb.sh.ped", bb_sh_ped, &b_bb_sh_ped);
-   fChain->SetBranchAddress("Ndata.bb.sh.x_res", &Ndata_bb_sh_x_res, &b_Ndata_bb_sh_x_res);
-   fChain->SetBranchAddress("bb.sh.x_res", bb_sh_x_res, &b_bb_sh_x_res);
-   fChain->SetBranchAddress("Ndata.bb.sh.y_res", &Ndata_bb_sh_y_res, &b_Ndata_bb_sh_y_res);
-   fChain->SetBranchAddress("bb.sh.y_res", bb_sh_y_res, &b_bb_sh_y_res);
    fChain->SetBranchAddress("Ndata.bb.tr.beta", &Ndata_bb_tr_beta, &b_Ndata_bb_tr_beta);
    fChain->SetBranchAddress("bb.tr.beta", bb_tr_beta, &b_bb_tr_beta);
    fChain->SetBranchAddress("Ndata.bb.tr.chi2", &Ndata_bb_tr_chi2, &b_Ndata_bb_tr_chi2);
@@ -2218,6 +1252,8 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("bb.tr.tg_ph", bb_tr_tg_ph, &b_bb_tr_tg_ph);
    fChain->SetBranchAddress("Ndata.bb.tr.tg_th", &Ndata_bb_tr_tg_th, &b_Ndata_bb_tr_tg_th);
    fChain->SetBranchAddress("bb.tr.tg_th", bb_tr_tg_th, &b_bb_tr_tg_th);
+   fChain->SetBranchAddress("Ndata.bb.tr.tg_x", &Ndata_bb_tr_tg_x, &b_Ndata_bb_tr_tg_x);
+   fChain->SetBranchAddress("bb.tr.tg_x", bb_tr_tg_x, &b_bb_tr_tg_x);
    fChain->SetBranchAddress("Ndata.bb.tr.tg_y", &Ndata_bb_tr_tg_y, &b_Ndata_bb_tr_tg_y);
    fChain->SetBranchAddress("bb.tr.tg_y", bb_tr_tg_y, &b_bb_tr_tg_y);
    fChain->SetBranchAddress("Ndata.bb.tr.th", &Ndata_bb_tr_th, &b_Ndata_bb_tr_th);
@@ -2234,6 +1270,14 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("bb.tr.x", bb_tr_x, &b_bb_tr_x);
    fChain->SetBranchAddress("Ndata.bb.tr.y", &Ndata_bb_tr_y, &b_Ndata_bb_tr_y);
    fChain->SetBranchAddress("bb.tr.y", bb_tr_y, &b_bb_tr_y);
+   fChain->SetBranchAddress("Ndata.bb.x_bcp", &Ndata_bb_x_bcp, &b_Ndata_bb_x_bcp);
+   fChain->SetBranchAddress("bb.x_bcp", bb_x_bcp, &b_bb_x_bcp);
+   fChain->SetBranchAddress("Ndata.bb.x_fcp", &Ndata_bb_x_fcp, &b_Ndata_bb_x_fcp);
+   fChain->SetBranchAddress("bb.x_fcp", bb_x_fcp, &b_bb_x_fcp);
+   fChain->SetBranchAddress("Ndata.bb.y_bcp", &Ndata_bb_y_bcp, &b_Ndata_bb_y_bcp);
+   fChain->SetBranchAddress("bb.y_bcp", bb_y_bcp, &b_bb_y_bcp);
+   fChain->SetBranchAddress("Ndata.bb.y_fcp", &Ndata_bb_y_fcp, &b_Ndata_bb_y_fcp);
+   fChain->SetBranchAddress("bb.y_fcp", bb_y_fcp, &b_bb_y_fcp);
    fChain->SetBranchAddress("Ndata.sbs.hcal.a_amp", &Ndata_sbs_hcal_a_amp, &b_Ndata_sbs_hcal_a_amp);
    fChain->SetBranchAddress("sbs.hcal.a_amp", sbs_hcal_a_amp, &b_sbs_hcal_a_amp);
    fChain->SetBranchAddress("Ndata.sbs.hcal.a_c", &Ndata_sbs_hcal_a_c, &b_Ndata_sbs_hcal_a_c);
@@ -2274,10 +1318,6 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("BB.gold.th", &BB_gold_th, &b_BB_gold_th);
    fChain->SetBranchAddress("BB.gold.x", &BB_gold_x, &b_BB_gold_x);
    fChain->SetBranchAddress("BB.gold.y", &BB_gold_y, &b_BB_gold_y);
-   fChain->SetBranchAddress("bb.bbtrig.ngoodADChits", &bb_bbtrig_ngoodADChits, &b_bb_bbtrig_ngoodADChits);
-   fChain->SetBranchAddress("bb.bbtrig.ngoodTDChits", &bb_bbtrig_ngoodTDChits, &b_bb_bbtrig_ngoodTDChits);
-   fChain->SetBranchAddress("bb.bbtrig.nhits", &bb_bbtrig_nhits, &b_bb_bbtrig_nhits);
-   fChain->SetBranchAddress("bb.bbtrig.nrefhits", &bb_bbtrig_nrefhits, &b_bb_bbtrig_nrefhits);
    fChain->SetBranchAddress("bb.gem.hit.ngoodhits", &bb_gem_hit_ngoodhits, &b_bb_gem_hit_ngoodhits);
    fChain->SetBranchAddress("bb.gem.nlayershit", &bb_gem_nlayershit, &b_bb_gem_nlayershit);
    fChain->SetBranchAddress("bb.gem.nlayershitu", &bb_gem_nlayershitu, &b_bb_gem_nlayershitu);
@@ -2285,69 +1325,27 @@ void gmn_rec_tree::Init(TTree *tree)
    fChain->SetBranchAddress("bb.gem.nlayershitv", &bb_gem_nlayershitv, &b_bb_gem_nlayershitv);
    fChain->SetBranchAddress("bb.gem.track.besttrack", &bb_gem_track_besttrack, &b_bb_gem_track_besttrack);
    fChain->SetBranchAddress("bb.gem.track.ntrack", &bb_gem_track_ntrack, &b_bb_gem_track_ntrack);
-   fChain->SetBranchAddress("bb.grinch_adc.ngoodADChits", &bb_grinch_adc_ngoodADChits, &b_bb_grinch_adc_ngoodADChits);
-   fChain->SetBranchAddress("bb.grinch_adc.ngoodTDChits", &bb_grinch_adc_ngoodTDChits, &b_bb_grinch_adc_ngoodTDChits);
-   fChain->SetBranchAddress("bb.grinch_adc.nhits", &bb_grinch_adc_nhits, &b_bb_grinch_adc_nhits);
-   fChain->SetBranchAddress("bb.grinch_adc.nrefhits", &bb_grinch_adc_nrefhits, &b_bb_grinch_adc_nrefhits);
    fChain->SetBranchAddress("bb.grinch_tdc.ngoodADChits", &bb_grinch_tdc_ngoodADChits, &b_bb_grinch_tdc_ngoodADChits);
    fChain->SetBranchAddress("bb.grinch_tdc.ngoodTDChits", &bb_grinch_tdc_ngoodTDChits, &b_bb_grinch_tdc_ngoodTDChits);
    fChain->SetBranchAddress("bb.grinch_tdc.nhits", &bb_grinch_tdc_nhits, &b_bb_grinch_tdc_nhits);
    fChain->SetBranchAddress("bb.grinch_tdc.nrefhits", &bb_grinch_tdc_nrefhits, &b_bb_grinch_tdc_nrefhits);
-   fChain->SetBranchAddress("bb.hodoadc.nclus", &bb_hodoadc_nclus, &b_bb_hodoadc_nclus);
-   fChain->SetBranchAddress("bb.hodoadc.ngoodADChits", &bb_hodoadc_ngoodADChits, &b_bb_hodoadc_ngoodADChits);
-   fChain->SetBranchAddress("bb.hodoadc.ngoodTDChits", &bb_hodoadc_ngoodTDChits, &b_bb_hodoadc_ngoodTDChits);
-   fChain->SetBranchAddress("bb.hodoadc.nhits", &bb_hodoadc_nhits, &b_bb_hodoadc_nhits);
-   fChain->SetBranchAddress("bb.hodoadc.nrefhits", &bb_hodoadc_nrefhits, &b_bb_hodoadc_nrefhits);
    fChain->SetBranchAddress("bb.hodotdc.bar.ngoodbars", &bb_hodotdc_bar_ngoodbars, &b_bb_hodotdc_bar_ngoodbars);
    fChain->SetBranchAddress("bb.hodotdc.nclus", &bb_hodotdc_nclus, &b_bb_hodotdc_nclus);
-   fChain->SetBranchAddress("bb.hodotdc.ngoodADChits", &bb_hodotdc_ngoodADChits, &b_bb_hodotdc_ngoodADChits);
-   fChain->SetBranchAddress("bb.hodotdc.ngoodTDChits", &bb_hodotdc_ngoodTDChits, &b_bb_hodotdc_ngoodTDChits);
-   fChain->SetBranchAddress("bb.hodotdc.nhits", &bb_hodotdc_nhits, &b_bb_hodotdc_nhits);
-   fChain->SetBranchAddress("bb.hodotdc.nrefhits", &bb_hodotdc_nrefhits, &b_bb_hodotdc_nrefhits);
-   fChain->SetBranchAddress("bb.ps.colblk", &bb_ps_colblk, &b_bb_ps_colblk);
    fChain->SetBranchAddress("bb.ps.e", &bb_ps_e, &b_bb_ps_e);
    fChain->SetBranchAddress("bb.ps.e_c", &bb_ps_e_c, &b_bb_ps_e_c);
-   fChain->SetBranchAddress("bb.ps.e_m_res", &bb_ps_e_m_res, &b_bb_ps_e_m_res);
-   fChain->SetBranchAddress("bb.ps.eblk", &bb_ps_eblk, &b_bb_ps_eblk);
-   fChain->SetBranchAddress("bb.ps.eblk_c", &bb_ps_eblk_c, &b_bb_ps_eblk_c);
-   fChain->SetBranchAddress("bb.ps.idblk", &bb_ps_idblk, &b_bb_ps_idblk);
    fChain->SetBranchAddress("bb.ps.nblk", &bb_ps_nblk, &b_bb_ps_nblk);
    fChain->SetBranchAddress("bb.ps.nclus", &bb_ps_nclus, &b_bb_ps_nclus);
    fChain->SetBranchAddress("bb.ps.ngoodADChits", &bb_ps_ngoodADChits, &b_bb_ps_ngoodADChits);
-   fChain->SetBranchAddress("bb.ps.ngoodTDChits", &bb_ps_ngoodTDChits, &b_bb_ps_ngoodTDChits);
-   fChain->SetBranchAddress("bb.ps.nhits", &bb_ps_nhits, &b_bb_ps_nhits);
-   fChain->SetBranchAddress("bb.ps.nrefhits", &bb_ps_nrefhits, &b_bb_ps_nrefhits);
-   fChain->SetBranchAddress("bb.ps.rowblk", &bb_ps_rowblk, &b_bb_ps_rowblk);
    fChain->SetBranchAddress("bb.ps.x", &bb_ps_x, &b_bb_ps_x);
-   fChain->SetBranchAddress("bb.ps.x_m_res", &bb_ps_x_m_res, &b_bb_ps_x_m_res);
    fChain->SetBranchAddress("bb.ps.y", &bb_ps_y, &b_bb_ps_y);
-   fChain->SetBranchAddress("bb.ps.y_m_res", &bb_ps_y_m_res, &b_bb_ps_y_m_res);
-   fChain->SetBranchAddress("bb.sh.colblk", &bb_sh_colblk, &b_bb_sh_colblk);
    fChain->SetBranchAddress("bb.sh.e", &bb_sh_e, &b_bb_sh_e);
    fChain->SetBranchAddress("bb.sh.e_c", &bb_sh_e_c, &b_bb_sh_e_c);
-   fChain->SetBranchAddress("bb.sh.e_m_res", &bb_sh_e_m_res, &b_bb_sh_e_m_res);
-   fChain->SetBranchAddress("bb.sh.eblk", &bb_sh_eblk, &b_bb_sh_eblk);
-   fChain->SetBranchAddress("bb.sh.eblk_c", &bb_sh_eblk_c, &b_bb_sh_eblk_c);
-   fChain->SetBranchAddress("bb.sh.idblk", &bb_sh_idblk, &b_bb_sh_idblk);
    fChain->SetBranchAddress("bb.sh.nblk", &bb_sh_nblk, &b_bb_sh_nblk);
    fChain->SetBranchAddress("bb.sh.nclus", &bb_sh_nclus, &b_bb_sh_nclus);
    fChain->SetBranchAddress("bb.sh.ngoodADChits", &bb_sh_ngoodADChits, &b_bb_sh_ngoodADChits);
-   fChain->SetBranchAddress("bb.sh.ngoodTDChits", &bb_sh_ngoodTDChits, &b_bb_sh_ngoodTDChits);
-   fChain->SetBranchAddress("bb.sh.nhits", &bb_sh_nhits, &b_bb_sh_nhits);
-   fChain->SetBranchAddress("bb.sh.nrefhits", &bb_sh_nrefhits, &b_bb_sh_nrefhits);
-   fChain->SetBranchAddress("bb.sh.rowblk", &bb_sh_rowblk, &b_bb_sh_rowblk);
    fChain->SetBranchAddress("bb.sh.x", &bb_sh_x, &b_bb_sh_x);
-   fChain->SetBranchAddress("bb.sh.x_m_res", &bb_sh_x_m_res, &b_bb_sh_x_m_res);
    fChain->SetBranchAddress("bb.sh.y", &bb_sh_y, &b_bb_sh_y);
-   fChain->SetBranchAddress("bb.sh.y_m_res", &bb_sh_y_m_res, &b_bb_sh_y_m_res);
    fChain->SetBranchAddress("bb.tr.n", &bb_tr_n, &b_bb_tr_n);
-   fChain->SetBranchAddress("g.evlen", &g_evlen, &b_g_evlen);
-   fChain->SetBranchAddress("g.evnum", &g_evnum, &b_g_evnum);
-   fChain->SetBranchAddress("g.evtime", &g_evtime, &b_g_evtime);
-   fChain->SetBranchAddress("g.evtyp", &g_evtyp, &b_g_evtyp);
-   fChain->SetBranchAddress("g.runnum", &g_runnum, &b_g_runnum);
-   fChain->SetBranchAddress("g.runtime", &g_runtime, &b_g_runtime);
-   fChain->SetBranchAddress("g.runtype", &g_runtype, &b_g_runtype);
    fChain->SetBranchAddress("sbs.hcal.e", &sbs_hcal_e, &b_sbs_hcal_e);
    fChain->SetBranchAddress("sbs.hcal.nblk", &sbs_hcal_nblk, &b_sbs_hcal_nblk);
    fChain->SetBranchAddress("sbs.hcal.nclus", &sbs_hcal_nclus, &b_sbs_hcal_nclus);

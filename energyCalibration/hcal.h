@@ -42,6 +42,8 @@ namespace hcalt {
   Double_t cblke[MAX_HCAL_MODULES+1000] = {0.};
   Double_t cblkatime[MAX_HCAL_MODULES+1000] = {0.};
   Double_t catime[MAX_HCAL_MODULES+1000] = {0.};
+  Double_t cx[MAX_HCAL_MODULES+1000] = {0.};
+  Double_t cy[MAX_HCAL_MODULES+1000] = {0.};
   //Trigger generic detector vars
   Double_t Tsamps[MAX_TRIGGER_MODULES*MAX_FADC_SAMPLES+1000];
   Double_t Tnsamps[MAX_TRIGGER_MODULES+1000] = {0.};
@@ -55,7 +57,10 @@ namespace hcalt {
   //BB track vars
   Double_t BBtr_px[MAX_BB_MODULES+1000] = {0.};
   Double_t BBtr_py[MAX_BB_MODULES+1000] = {0.};
-  Double_t BBtr_pz[MAX_BB_MODULES+1000] = {0.};
+  Double_t BBtr_pz[MAX_BB_MODULES+1000] = {0.};  
+  Double_t BBtr_vx[MAX_BB_MODULES+1000] = {0.};
+  Double_t BBtr_vy[MAX_BB_MODULES+1000] = {0.};
+  Double_t BBtr_vz[MAX_BB_MODULES+1000] = {0.};
   Double_t BBtr_p[MAX_BB_MODULES+1000] = {0.};
   Double_t BBtr_chi2[MAX_BB_MODULES+1000] = {0.};
   Double_t BBtr_n[MAX_BB_MODULES+1000] = {0.};
@@ -74,7 +79,12 @@ namespace hcalt {
   Double_t BBcid[MAX_BB_MODULES+1000] = {0.};
   Double_t BBnblk[MAX_BB_MODULES+1000] = {0.};
   Double_t BBnclus[MAX_BB_MODULES+1000] = {0.}; 
-
+  Double_t BBsh_x[MAX_BB_MODULES+1000] = {0.};
+  Double_t BBsh_y[MAX_BB_MODULES+1000] = {0.};
+  Double_t BBsh_e[MAX_BB_MODULES+1000] = {0.};
+  Double_t BBps_x[MAX_BB_MODULES+1000] = {0.};
+  Double_t BBps_y[MAX_BB_MODULES+1000] = {0.};
+  Double_t BBps_e[MAX_BB_MODULES+1000] = {0.};
 
 }
 
