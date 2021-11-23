@@ -226,7 +226,8 @@ Int_t hcal_dispTrig(Int_t run = 1198, Int_t event = -1)
 
   if(!T) { 
     T = new TChain("T");
-    T->Add(TString::Format("%s/e1209019_%d*.root",getenv("DATA_DIR"),run));
+    //T->Add(TString::Format("%s/e1209019_%d*.root",getenv("DATA_DIR"),run));
+    T->Add(TString::Format("%s/hcal_gmn_%d*.root",getenv("DATA_DIR"),run));
     T->SetBranchStatus("*",0);
     T->SetBranchStatus("sbs.hcal.*",1);
     T->SetBranchStatus("sbs.trig.*",2);

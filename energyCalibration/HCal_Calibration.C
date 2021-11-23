@@ -50,6 +50,9 @@ void HCal_Calibration( const char *configfilename, int run = -1 ){
     T->SetBranchStatus( "*", 0 );
     T->SetBranchStatus( "sbs.hcal.*", 1 );
     T->SetBranchStatus( "bb.tr.*", 1 );
+    //T->SetBranchStatus( "bb.tdctrig.tdc", 1 );
+    //T->SetBranchStatus( "bb.tdctrig.tdcelemID", 1 );
+    //T->SetBranchStatus( "Ndata.bb.tdctrig.tdcelemID", 1 );
     T->SetBranchAddress( "bb.tr.chi2", hcalt::BBtr_chi2 );
     T->SetBranchAddress( "bb.tr.n", hcalt::BBtr_n );
     T->SetBranchAddress( "bb.tr.px", hcalt::BBtr_px );
@@ -68,13 +71,16 @@ void HCal_Calibration( const char *configfilename, int run = -1 ){
     T->SetBranchAddress( "sbs.hcal.nblk", hcalt::nblk ); // Total number of blocks in cell
     T->SetBranchAddress( "sbs.hcal.clus_blk.id", hcalt::cblkid ); // kNcell-1 index for each block
     T->SetBranchAddress( "sbs.hcal.clus_blk.e", hcalt::cblke ); // Array of block energies
+    //T->SetBranchAddress( "bb.tdctrig.tdcelemID", hcalt::TDCT_id );
+    //T->SetBranchAddress( "bb.tdctrig.tdc", hcalt::TDCT_tdc );
+    //T->SetBranchAddress( "Ndata.bb.tdctrig.tdcelemID", &hcalt::TDCTndata );
 
     cout << "Opened up tree with nentries=" << T->GetEntries() << endl;
   }
 
   //for( int iter=0; iter<2; iter++ ){
   double E_e = 1.92; // Energy of beam (incoming electrons from accelerator)
-  int minEventPerCell = 100; // Minimum number of scattered p in cell required to calibrate
+  int minEventPerCell = 500; // Minimum number of scattered p in cell required to calibrate
   int maxEventPerCell = 4000; // Maximum number of scattered p events to contribute
   double ScaleFac = 1.0;
   double highDelta = 0.1; // Minimum M(i,j)/b(i) factor allowed 
@@ -84,7 +90,7 @@ void HCal_Calibration( const char *configfilename, int run = -1 ){
   double W_mean = 0.93; // Mean of W at current kinematic
   double W_sig = 0.039; // Width of W at current kinematic
 
-  string inConstPath = "/adaqfs/home/a-onl/sbs/HCal_replay/hcal/energyCalibration/const.txt";
+  string inConstPath = "/adaqfs/home/a-onl/sbs/HCal_replay/hcal/energyCalibration/const_v2.txt"; //Where db file sees all 0.00175 GeV/pC
   string constPath = "/adaqfs/home/a-onl/sbs/HCal_replay/hcal/energyCalibration/outfiles/newRatio.txt";
   string ratioPath = "/adaqfs/home/a-onl/sbs/HCal_replay/hcal/energyCalibration/outfiles/ratio.txt";
   string oneBlockPath = "/adaqfs/home/a-onl/sbs/HCal_replay/hcal/energyCalibration/outfiles/oneBlock.txt";
@@ -167,6 +173,9 @@ void HCal_Calibration( const char *configfilename, int run = -1 ){
   TH1D *hKE_p = new TH1D( "Scattered Proton Kinetic Energy", "KE_pp", 500, 0.0, E_e*1.5 );
   hKE_p->GetXaxis()->SetTitle( "GeV" );
 
+  TH2D *hADC = new TH2D( "hADC", "HCal Int_ADC Spectra: W Cut", 288, 0, 288, 100., 0., 1. );
+  TH2D *hADC_amp = new TH2D( "hADC_amp", "HCal ADC_amp Spectra: W Cut", 288, 0, 288, 100., 0., 10. );
+
   Long64_t Nevents = T->GetEntries();
   cout << "Opened up tree with nentries: " << Nevents << ".." << endl;
 
@@ -179,7 +188,7 @@ void HCal_Calibration( const char *configfilename, int run = -1 ){
 
   cout << "Getting previous calibration constants.." << endl;
   int n1=0;
-  int d1=0;
+  double d1=0;
   string line;
   
   while( getline( inConstFile, line ) ){
@@ -248,14 +257,19 @@ void HCal_Calibration( const char *configfilename, int run = -1 ){
     //Electron polar angle
     double phi_p = TMath::ACos( ( E_e-hcalt::BBtr_pz[track])/p_p ) * 180.0 / PI;    
 
-    // Primary cuts on phi, theta, and W. 
-    /* 
-    if( hcalt::BBtr_tg_th[track]>-0.15 && 
-	hcalt::BBtr_tg_th[track]<0.15 && 
-	hcalt::BBtr_tg_ph[track]>-0.3 &&
-	hcalt::BBtr_tg_ph[track]<0.3 && 
-	fabs(W-W_mean)<W_sig ){
+    //Will need to wait until next mass replay
+    /*
+    //Cut on BBCal and HCal trigger coincidence
+    double bbcal_time=0., hcal_time=0.;
+    for(int ihit=0; ihit<hcalt::TDCTndata; ihit++){
+      if(hcalt::TDCT_id[ihit]==5) bbcal_time=hcalt::TDCT_tdc[ihit];
+      if(hcalt::TDCT_id[ihit]==0) hcal_time=hcalt::TDCT_tdc[ihit];
+    }
+    double diff = hcal_time - bbcal_time; 
     */
+
+    //if( fabs(W-W_mean)<W_sig && fabs(diff-510.)<20 )
+
     if( fabs(W-W_mean)<W_sig ){
       
 
@@ -286,6 +300,8 @@ void HCal_Calibration( const char *configfilename, int run = -1 ){
        
 	clusE += hcalt::cblke[blk];
 	A[blkid] += hcalt::cblke[blk];
+
+	hADC->Fill( blkid, hcalt::cblke[blk] );
 	
 	// Simple estimation of the coefficients assuming 100% energy deposition in one block. Will check against the more sophisticated version with chi^2 reduction.
 	if(hcalt::nblk[cluster]==1)
@@ -419,6 +435,7 @@ void HCal_Calibration( const char *configfilename, int run = -1 ){
   int cell = 0;
   for( int r = 0; r<kNrows; r++){
     for( int c = 0; c<kNcols; c++){
+      if( GCoeff[cell]==1 ) GCoeff[cell] = 0.00175;
       cout << GCoeff[cell] << "  ";
       cell++;
     }
@@ -426,7 +443,42 @@ void HCal_Calibration( const char *configfilename, int run = -1 ){
   }
   cell = 0;
 
-  cout << endl << endl;
+  for( int i=0; i<kNcell; i++){
+    GCoeff[i] = GCoeff[i] - 0.00175;
+  }
+
+  TGraphErrors *ccgraph_Cdiff = new TGraphErrors( kNcell, y, GCoeff, yErr, yErr ); 
+  ccgraph_Cdiff->GetXaxis()->SetLimits(0.0,288.0);  
+  ccgraph_Cdiff->GetYaxis()->SetLimits(0.0,0.025);
+  ccgraph_Cdiff->SetTitle("Cosmic Delta Calibration Coefficients");
+  ccgraph_Cdiff->GetXaxis()->SetTitle("Channel");
+  ccgraph_Cdiff->GetXaxis()->SetTitle("Unitless");
+  ccgraph_Cdiff->SetMarkerStyle(20); //idx 20 Circles, idx 21 Boxes
+  ccgraph_Cdiff->Write("constants_diff");
+
+  cout << endl << "Gain Coefficients diff from cosmic value: " << endl;
+
+  for( int r = 0; r<kNrows; r++){
+    for( int c = 0; c<kNcols; c++){
+      cout << GCoeff[cell] << "  ";
+      cell++;
+    }
+    cout << endl;
+  }
+  cell = 0;
+
+  cout << endl << "Number of events available for calibration: " << endl << endl;
+
+  for( int r = 0; r<kNrows; r++){
+    for( int c = 0; c<kNcols; c++){
+      cout << NEV[cell] << "  ";
+      cell++;
+    }
+    cout << endl;
+  }
+  cell = 0;
+
+  cout << endl << "One Block:" << endl;
 
   for( int r = 0; r<kNrows; r++){
     for( int c = 0; c<kNcols; c++){

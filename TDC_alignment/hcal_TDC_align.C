@@ -70,6 +70,7 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
   double W_mean = M_p; // With perfect optics, this should be true. Will read in until then by fitting W distribution on each run
   double W_sigma = 0.03; // Reasonable value by default, but will read in from W distribution
   int cosmic = 0; // Configure alignment script for cosmic signals
+  double tdc_calib = 0.112;
   vector<double> zero_offset;
 
   if( !T ) {
@@ -85,7 +86,10 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
     T->SetBranchAddress( "sbs.hcal.a_time", hcalt::a_time );
     //T->SetBranchAddress( "sbs.hcal.e", hcalt::e ); //En
     //T->SetBranchAddress( "sbs.hcal.eblk", hcalt::e ); //En
-    
+    T->SetBranchStatus( "bb.tdctrig.tdcelemID", 1 );
+    T->SetBranchStatus( "Ndata.bb.tdctrig.tdcelemID", 1 );
+    T->SetBranchStatus( "bb.sh.nclus", 1 );
+
     T->SetBranchAddress( "bb.tr.chi2", hcalt::BBtr_chi2 );
     T->SetBranchAddress( "bb.tr.n", hcalt::BBtr_n );
     T->SetBranchAddress( "bb.tr.px", hcalt::BBtr_px );
@@ -110,7 +114,9 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
     T->SetBranchAddress("sbs.hcal.clus_blk.e",hcalt::cblke); // Array of block energies
     //T->SetBranchAddress("sbs.hcal.clus.atimeblk",hcalt::atimeblk); //a_time for main block in main cluster 
     //T->SetBranchAddress("sbs.hcal.atime",hcalt::atimeblk); // atime for block with highest energy in highest energy cluster
-
+    T->SetBranchAddress( "bb.tdctrig.tdcelemID", hcalt::TDCT_id );
+    T->SetBranchAddress( "bb.tdctrig.tdc", hcalt::TDCT_tdc );
+    T->SetBranchAddress( "Ndata.bb.tdctrig.tdcelemID", &hcalt::TDCTndata );
     T->SetBranchStatus( "Ndata.sbs.hcal.adcrow", 1 );
     T->SetBranchAddress( "Ndata.sbs.hcal.adcrow", &hcalt::ndata );
     //cout << "Opened up tree with nentries=" << T->GetEntries() << endl;
@@ -163,9 +169,15 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
 	cosmic = sval.Atoi();
 	cout << "Cosmic data? (0 = false; 1 = true): " << cosmic << endl;
       }
+      if( skey == "tdc_calib" ){
+	TString sval = ( (TObjString*)(*tokens)[1] )->GetString();
+	tdc_calib = sval.Atof();
+	cout << "Operating TDC calibration constant: " << tdc_calib << endl;
+      }
       delete tokens;
     }
   }
+
   // Get the date
   string date = getDate();
   
@@ -174,7 +186,7 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
   TFile *fout = new TFile( Form("outfiles/TDCalign%i_%s.root", cosmic, date.c_str()), "RECREATE" );
 
   // Initialize histograms
-  TH1D *h_W = new TH1D( "W", "W", 250, 0.7, E_e*1.5 );
+  TH1D *h_W = new TH1D( "W", "W", 250, 0.0, E_e*1.5 );
   h_W->GetXaxis()->SetTitle( "GeV" );
   TH1D *h_Q2 = new TH1D( "Q2", "Q2", 250, 0.5, E_e*1.5 );
   h_Q2->GetXaxis()->SetTitle( "GeV" );
@@ -214,7 +226,7 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
   if( cosmic==0 ){
     while( T->GetEntry( mevent++ ) ){ 
     
-      if( mevent%1000 == 0 ) cout << "Loop: " << mevent << "/" << Nevents << endl;
+      if( mevent%1000 == 0 ) cout << "Loop: " << mevent << " / " << Nevents << endl;
     
       // Sort all tracks by lowest Chi^2 (highest confidence track)
       int track_tot = int(hcalt::BBtr_n[0]);
@@ -264,10 +276,16 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
       // Each component in the form p_p_z = p_p*cos(phi)
       double phi_p = TMath::ACos( ( E_e-hcalt::BBtr_pz[track])/p_p ) * 180.0 / PI;
 
-      // Get the projection of each event onto the face of HCal - consider only X (column) components to avoid calculations with 48D48 field map. Should still be useful
-
+      //Cut on BBCal and HCal trigger coincidence
+      double bbcal_time=0., hcal_time=0.;
+      for(int ihit=0; ihit<hcalt::TDCTndata; ihit++){
+	if(hcalt::TDCT_id[ihit]==5) bbcal_time=hcalt::TDCT_tdc[ihit];
+	if(hcalt::TDCT_id[ihit]==0) hcal_time=hcalt::TDCT_tdc[ihit];
+      }
+      double diff = hcal_time - bbcal_time; 
+      
       // Liberal cut on W (W=Mp for elastics)
-      if( W < (W_mean+W_sigma) && W > (W_mean-W_sigma) ){
+      if( W < (W_mean+W_sigma) && W > (W_mean-W_sigma) && fabs(diff-510.)<20 ){
 
 	for( int m = 0; m < hcalt::ndata; m++ ) { //Process event with m data 
 	  int r = hcalt::row[m];
@@ -282,9 +300,11 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
 	    continue;
 	  }
 
-	  if(globalcut){
-
+	  // if(globalcut){
+	  if( hcalt::ce[0]>0 && hcalt::tdc[m]<1000 ){
 	    gTDCSpec[r][c]->Fill( hcalt::tdc[m] );
+	    
+	    // cout << "Good event " << r << " " << c << " " << hcalt::tdc[m] << endl;
 	    
 	  }
 	}		
@@ -331,7 +351,8 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
 	  continue;
 	}
 	
-	if( hcalt::tdc[m]<1000&&hcalt::ce[0]>0 ){
+	//Require that the tdc is not off (1e38 registered when tdc off) and that some event occurs in HCal
+	if( hcalt::tdc[m]<1000&&hcalt::ce[0]>0 ){ 
 	  
 	  gTDCSpec[r][c]->Fill( hcalt::tdc[m] );
 	  
@@ -341,30 +362,34 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
       }
     }
   }
-
+  
+  vector<double> tdc_res;
 
   fout->cd();
   for( int r=0; r<kNrows; r++){
     for( int c=0; c<kNcols; c++){
       
-      gTDCSpec[r][c]->Fit("gaus","Q");
-      f1=gTDCSpec[r][c]->GetFunction("gaus");
-      fout->cd();
-      gTDCSpec[r][c]->Write(Form("TDC Spect R%d C%d FitMean%f FitSigma%f",r,c,f1->GetParameter(1),f1->GetParameter(2)));
-
-      zero_offset.push_back(f1->GetParameter(1));
+      if(gTDCSpec[r][c]->GetEntries()>0){
+	gTDCSpec[r][c]->Fit("gaus","Q");
+	f1=gTDCSpec[r][c]->GetFunction("gaus");
+	fout->cd();
+	gTDCSpec[r][c]->Write(Form("TDC Spect R%d C%d FitMean%f FitSigma%f",r,c,f1->GetParameter(1),f1->GetParameter(2)));
+	
+	zero_offset.push_back(f1->GetParameter(1));
+	tdc_res.push_back(f1->GetParameter(2));
+	//gTDCSpec[r][c]->Write();
+      }
     }
   }
-
+  
   fout->Close();
-
 
   ofstream TDCoffsets;
   TDCoffsets.open( "outfiles/TDCoffsets.txt" );
   int cell = 0;
   for( int r=0; r<kNrows; r++ ){
     for( int c=0; c<kNcols; c++ ){
-      TDCoffsets << zero_offset[cell]-zero_offset[42] << "  "; //Align to PMT 42 (for no reason whatsoever)
+      TDCoffsets << (zero_offset[cell]-zero_offset[42])/tdc_calib << "  "; //Align to PMT 42 (for no reason whatsoever) and correct for raw TDC value with tdc calibration constant
       cell++;
     }
     TDCoffsets << endl;
@@ -372,9 +397,8 @@ void hcal_TDC_align( const char *configfilename, int run = -1 ){
 
   TDCoffsets.close();
 
-  
   cout << "Wrote results to file: outfiles/TDCalign" << cosmic << "_" << date.c_str() << ".root" << endl;
-
+  
   st->Stop();
   
   // Send time efficiency report to console

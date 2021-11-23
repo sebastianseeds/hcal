@@ -91,3 +91,59 @@ new TBrowser
 .q
 .x HCal_Calibration.C("setup_HCal_Calibration.txt")
 .q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+TFile *_file0 = TFile::Open("eCalOut.root")
+new TBrowser
+.q
+TFile *_file0 = TFile::Open("eCalOut.root")
+TFile *_file0 = TFile::Open("eCalOut.root")
+new TBrowser
+.q
+TFile *_file0 = TFile::Open("eCalOut.root")
+new TBrowser
+hADC->Draw("colze")
+hADC->Draw("colz")
+hADC->Draw("colze")
+hADC->Draw("lego")
+hADC->Draw("colz")
+hADC->Draw("lego")
+hADC->Draw("colze")
+hADC->Draw("lego")
+hADC->Draw("colz")
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+TFile *_file0 = TFile::Open("eCalOut.root")
+new TBrowser
+constants_diff->Draw("AP")
+constants_diff->Draw("AP")
+constants_diff->Draw("AP")
+TFile *_file0 = TFile::Open("eCalOut.root")
+constants_diff->Draw("AP")
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+TFile *_file0 = TFile::Open("eCalOut.root")
+new TBrowser
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+.x HCal_Calibration.C("setup_HCal_Calibration.txt")
+.q
+TFile *_file0 = TFile::Open("eCalOut.root")
+new TBrowser
+.q
+.x hcal.h

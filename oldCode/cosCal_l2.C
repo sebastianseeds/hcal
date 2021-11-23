@@ -601,16 +601,16 @@ int cosCal_l2(int run = 989, int event = -1){
       //if(r==6||r==9) continue; //Temporary as fADC is in shop-------------------------------------------*
       
       //Create landau fit function per r and c
-      landauFitMax[r][c] = new TF1(Form("landauFitMax r%d c%d",r,c),landauFit, 0, 1000, 4);
+      landauFitMax[r][c] = new TF1(Form("landauFitMax r%d c%d",r,c), landauFit, 0, 1000, 4);
       landauFitMax[r][c]->SetLineColor(4);
       landauFitMax[r][c]->SetNpx(1000);
-      landauFitMaxTDC[r][c] = new TF1(Form("landauFitMaxTDC r%d c%d",r,c),landauFit, 0, 1000, 4);
+      landauFitMaxTDC[r][c] = new TF1(Form("landauFitMaxTDC r%d c%d",r,c), landauFit, 0, 1000, 4);
       landauFitMaxTDC[r][c]->SetLineColor(4);
       landauFitMaxTDC[r][c]->SetNpx(1000);
-      landauFitInt[r][c] = new TF1(Form("landauFitInt r%d c%d",r,c),landauFit, 0, 4000, 4);
+      landauFitInt[r][c] = new TF1(Form("landauFitInt r%d c%d",r,c), landauFit, 0, 4000, 4);
       landauFitInt[r][c]->SetLineColor(4);
       landauFitInt[r][c]->SetNpx(1000);
-      landauFitIntTDC[r][c] = new TF1(Form("landauFitIntTDC r%d c%d",r,c),landauFit, 0, 4000, 4);
+      landauFitIntTDC[r][c] = new TF1(Form("landauFitIntTDC r%d c%d",r,c), landauFit, 0, 4000, 4);
       landauFitIntTDC[r][c]->SetLineColor(4);
       landauFitIntTDC[r][c]->SetNpx(1000);
 

@@ -121,7 +121,7 @@ void processEvent(int entry = -1, int diagPlots = 0 ){
     // Mark saturated array when amplitude meets max RAU
     if( amp[r][c] > 3900 ) {
       saturated[r][c] = true;
-      cout << "Saturation on r " << r << ", col " << c << "." << endl;
+      //cout << "Saturation on r " << r << ", col " << c << "." << endl;
       gSaturated++;
     }
   }
@@ -268,56 +268,6 @@ void processEvent(int entry = -1, int diagPlots = 0 ){
 	    }
 	  }
 	}
-
-	// Leaving here just in case we want a more liberal cut on verticality in the future
-	/*
-	else if( r==0 || r==1) { // Logic for other row 1 or 2 channels
-	  if( (amp_p[r+1][c] > cut && amp_p[r+2][c] > cut) ||
-	      (r==1 && amp_p[r-1][c] > cut && amp_p[r+1][c] > cut) ) {
-	    if( amp_p[r][c-1] < 6 && amp_p[r][c+1] < 6 ) {
-	      if( tdc[r][c] != 0 ) {
-		gIntSpecTDC[r][c]->Fill( adc_p[r][c] );
-		gMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
-	      }
-	      gIntSpec[r][c]->Fill( adc_p[r][c] );
-	      gMaxSpec[r][c]->Fill( amp_p[r][c] );
-	      gTDCSpec[r][c]->Fill( tdc[r][c] );
-	      gSignalTotal++;
-	    }
-	  }
-	}
-	else if( r==23 || r==22 ) { // Logic for other row 22 or 23 channels
-	  if( (amp_p[r-1][c] > cut && amp_p[r-2][c] > cut) ||
-	      (r==22 && amp_p[r-1][c] > cut && amp_p[r+1][c] > cut) ) {
-	    if( amp_p[r][c-1] < 6 && amp_p[r][c+1] < 6 ) {
-	      if( tdc[r][c] != 0 ) {
-		gIntSpecTDC[r][c]->Fill( adc_p[r][c] );
-		gMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
-	      }
-	      gIntSpec[r][c]->Fill( adc_p[r][c] );
-	      gMaxSpec[r][c]->Fill( amp_p[r][c] );
-	      gTDCSpec[r][c]->Fill( tdc[r][c] );
-	      gSignalTotal++;
-	    }
-	  }
-	}
-	else { // Logic for all other channels
-	  if( (amp_p[r-2][c] > cut && amp_p[r-1][c] > cut) ||
-	      (amp_p[r-1][c] > cut && amp_p[r+1][c] > cut) ||
-	      (amp_p[r+1][c] > cut && amp_p[r+2][c] > cut) ) {
-	    if( amp_p[r][c-1] < 6 && amp_p[r][c+1] < 6 ) {
-	      if( tdc[r][c] != 0 ) {
-		gIntSpecTDC[r][c]->Fill( adc_p[r][c] );
-		gMaxSpecTDC[r][c]->Fill( amp_p[r][c] );
-	      }
-	      gIntSpec[r][c]->Fill( adc_p[r][c] );
-	      gMaxSpec[r][c]->Fill( amp_p[r][c] );
-	      gTDCSpec[r][c]->Fill( tdc[r][c] );
-	      gSignalTotal++;
-	    }
-	  }
-	}
-	*/
       }
     }
   }
@@ -327,11 +277,11 @@ void processEvent(int entry = -1, int diagPlots = 0 ){
 int hcal_gain_match(int run = -1, int event = -1){
   
   // Initialize function with user commands
-  bool diagPlots = 0;
-  bool vertCut = 0;
+  bool diagPlots = 1;
+  bool vertCut = 1;
   bool HVLimit = 0;
   string date = getDate();
-  
+  /*
   cout << "Enter run number for analysis." << endl;
   cin >> run;
   cout << "Cut on vertical tracks? Enter 0 for NO and 1 for YES." << endl;
@@ -340,13 +290,13 @@ int hcal_gain_match(int run = -1, int event = -1){
   cin >> diagPlots;
   cout << "Limit HV Targets to within 100V of HV settings? Enter 0 for NO and 1 for YES." << endl;
   cin >> HVLimit;
-  
+  */
   // Define a clock to check macro processing time
   TStopwatch *st = new TStopwatch();
   st->Start( kTRUE );
   
   //Declare outfile
-  TFile *cosHistFile = new TFile( Form( "%s/hcal_GMFile_%d.root", getenv("OUT_DIR"), run ), "RECREATE" );
+  TFile *cosHistFile = new TFile( Form( "outfiles/hcal_GMFile_%d.root", run ), "RECREATE" );
   ofstream fitData;
   fitData.open( Form( "%s/hcal_%d_fitdata.txt", getenv("OUT_DIR"), run ) );
   fitData << "Run Number: " << run << " Desired Peak Position: " << kTargetpC << endl;
@@ -374,10 +324,6 @@ int hcal_gain_match(int run = -1, int event = -1){
       gIntSpec[r][c] = new TH1F( Form( "Int ADC Spect R%d C%d PMT%d", r, c, m ), Form( "Int ADC Spect R%d C%d PMT%d", r, c, m ), SpecBins, IntSpec_min, IntSpec_max );
       gIntSpec[r][c]->GetXaxis()->SetTitle( "pC" );
       gIntSpec[r][c]->GetXaxis()->CenterTitle();
-      
-      //gRawIntSpec[r][c] = new TH1F( Form( "Raw Int ADC Spect R%d C%d PMT%d", r, c, m ), Form( "Raw Int ADC Spect R%d C%d PMT%d", r, c, m ), SpecBins, IntSpec_min, IntSpec_max );
-      //gRawIntSpec[r][c]->GetXaxis()->SetTitle( "pC" );
-      //gRawIntSpec[r][c]->GetXaxis()->CenterTitle();
       
       gMaxSpec[r][c] = new TH1F( Form( "Max ADC Spect R%d C%d PMT%d", r, c, m ), Form( "Max ADC Spect R%d C%d PMT%d", r, c, m ), SpecBins, MaxSpec_min, MaxSpec_max );
       gMaxSpec[r][c]->GetXaxis()->SetTitle( "mV" );
@@ -419,7 +365,7 @@ int hcal_gain_match(int run = -1, int event = -1){
   cout << "Reading replayed root file.." << endl;
   if( !T ) { 
     T = new TChain( "T" );
-    T->Add( Form( "%s/e1209019_%d*.root", getenv("DATA_DIR"), run ) );
+    T->Add( Form( "/adaqfs/home/a-onl/sbs/Rootfiles/hcal_trim_%d*.root", run ) );
     //T->Add( Form( "/volatile/halla/sbs/seeds/rootfiles/hcal_%d_-1_1.root", run ) ); //Debug
     T->SetBranchStatus( "*", 0 );
     T->SetBranchStatus( "sbs.hcal.*", 1 );
@@ -439,10 +385,10 @@ int hcal_gain_match(int run = -1, int event = -1){
   
   // Set appropriate HV and alphas for run. HV settings from HCAL wiki. Alphas from LED analysis. Must have accompanying text file, one double per line by module number. Assuming negative voltage inputs.
   
-  ifstream HVFile( Form( "setFiles/HV_run%d.txt", run ) );
+  ifstream HVFile( "setfiles/production_hv_set_2.txt" );
   
   if( !HVFile ){
-    cerr << "No HV settings from run present -> setFiles/HV_run" << run << ".txt expected." << endl;
+    cerr << "No HV settings from run present -> setfiles/setfiles/production_hv_set_2.txt expected." << endl;
     return 0;
   }
   
@@ -470,10 +416,10 @@ int hcal_gain_match(int run = -1, int event = -1){
     n1++;
   }
   
-  ifstream alphaFile( "setFiles/alphas.txt" );
+  ifstream alphaFile( "setfiles/alphas.txt" );
   
   if( !alphaFile ){
-    cerr << "No PMT alphas file present -> setFiles/alphas.txt expected." << endl;
+    cerr << "No PMT alphas file present -> setfiles/alphas.txt expected." << endl;
     return 0;
   }
   
@@ -497,29 +443,62 @@ int hcal_gain_match(int run = -1, int event = -1){
   }
   
   gCurrentEntry = event;
-  
-  cout << "Total events to process " << T->GetEntries() << ".." << endl;
+
+  int Nevents = T->GetEntries();
+
+  cout << "Total events to process " << Nevents << ".." << endl;
   
   cout << "Processing hits by event.." << endl;
   
-  for ( int i = gCurrentEntry; i < T->GetEntries(); i++ ){ 
-    processEvent( gCurrentEntry, diagPlots );
-    gCurrentEntry++;
-    
-    // Keep count of events processed for monitoring
-    if ( gCurrentEntry%10000 == 0 ){
-      cout << "Current event: " << gCurrentEntry << endl;
+  double progress = 0.;
+  
+  while( progress<1.0 ){
+    int barwidth = 70;
+    int step = 1;
+    for ( int i = gCurrentEntry; i < T->GetEntries(); i++ ){ 
+      processEvent( gCurrentEntry, diagPlots );
+      gCurrentEntry++;
+      
+      //Monitoring progress
+      cout << "[";
+      int pos = barwidth*progress;
+      for( int i=0; i<barwidth; ++i ){
+	if( i<pos ) cout << " ";
+	else if( i==pos ){ 
+	  
+	  if( step%4==0 ){
+	    cout << "(>^o^)>";
+	  }
+	  if( step%4==1 ){
+	    cout << "<(^o^)>";
+	  }
+	  if( step%4==2 ){
+	    cout << "<(^o^<)";
+	  }
+	  if( step%4==3 ){
+	    cout << "<( ; )>";
+	  }
+
+	}
+	else cout << " ";
+      }
+
+      progress = (double)( ( gCurrentEntry+1. )/Nevents );
+      
+      cout << "]" << int( progress*100 ) << "%\r";
+      cout.flush();
+      if( gCurrentEntry%1000==0 ) step++;
+
     }
   }
-  
   // Fit ADC spectra with landau to extract mpv for HV calibration
   cout << "Writing spectrum histograms and calibration constants to file.." << endl;
   ofstream reportFile;
-  reportFile.open( "outFiles/HVReport.txt" ); // Create text file to hold target HVs
+  reportFile.open( "outfiles/HVReport.txt" ); // Create text file to hold target HVs
   ofstream outFile;
-  outFile.open( Form("outFiles/HVTargets_run%d.txt", run ) ); // Create text file to hold target HVs
+  outFile.open( Form("outfiles/HVTargets_run%d.txt", run ) ); // Create text file to hold target HVs
   ofstream HVsetFile;
-  HVsetFile.open( "setFiles/HV_run####.txt" );
+  HVsetFile.open( "setfiles/production_hv_set_2.txt" );
   time_t now = time(0); 
   char *dt = ctime(&now);
   reportFile << "#Target HV settings for run " << run << " from hcal_gain_match.C on " << dt << "#" << endl;
@@ -878,8 +857,8 @@ int hcal_gain_match(int run = -1, int event = -1){
     
     for( int i=0; i<tab; i++){
       gStyle->SetImageScaling(3.);
-      c1[i]->SaveAs(Form("outFiles/Run%d_Q%d.png",run,i));
-      c1[i]->SaveAs(Form("outFiles/Run%d_Q%d.pdf",run,i));
+      c1[i]->SaveAs(Form("outfiles/Run%d_Q%d.png",run,i));
+      c1[i]->SaveAs(Form("outfiles/Run%d_Q%d.pdf",run,i));
 
       cosHistFile->cd();
       c1[i]->SetTitle( Form("Q%d",i) );

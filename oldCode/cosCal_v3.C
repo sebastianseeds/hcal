@@ -15,7 +15,7 @@ const int kNrows = 24;
 const int kNcols = 12;
 
 const int minSample = 0.0;
-const int maxSample = 50.0;
+const int maxSample = 40.0;
 const int totSample = (maxSample-minSample); //Should be the total fADC window size with each samp = 4ns
 
 //Counter to keep track of T tree entry for processing

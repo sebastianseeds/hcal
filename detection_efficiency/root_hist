@@ -111,3 +111,161 @@
 .q
 .x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
 .q
+.x hcal_detectionEff_oneloop.C("setup_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_detectionEff_oneloop.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_detectionEff_oneloop.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.x hcal_detectionEff_oneloop.C("setup_hcal_detectionEff.txt")
+.q
+.q

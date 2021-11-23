@@ -54,6 +54,10 @@ namespace hcalt {
   Double_t TelemID[MAX_TRIGGER_MODULES+1000] = {0.};
   Double_t Tcol[MAX_TRIGGER_MODULES+1000] = {0.};
   Int_t Tndata = 0;
+  //BB Trigger generic detector vars
+  Int_t TDCTndata = 0;
+  Double_t TDCT_id[MAX_TRIGGER_MODULES+1000] = {0.};
+  Double_t TDCT_tdc[MAX_TRIGGER_MODULES+1000] = {0.};
   //BB track vars
   Double_t BBtr_px[MAX_BB_MODULES+1000] = {0.};
   Double_t BBtr_py[MAX_BB_MODULES+1000] = {0.};
