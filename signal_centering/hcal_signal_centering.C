@@ -97,7 +97,8 @@ void hcal_signal_centering( int run = -1 ){
     //T->Add(Form("/adaqfs/home/a-onl/sbs/Rootfiles/hcal_%d*.root",run));
     //T->Add(Form("/adaqfs/home/a-onl/sbs/Rootfiles/hcal_gmn_%d*.root",run));
     //T->Add( inFile );
-    T->Add( "/adaqfs/home/a-onl/sbs/Rootfiles/hcal_12039_-1_1.root" );
+    //T->Add( "/adaqfs/home/a-onl/sbs/Rootfiles/hcal_12039_-1_1.root" );
+    T->Add( "/adaqfs/home/a-onl/sbs/Rootfiles/hcal_gmn_12276_100000.root" );
     //cout << "Loading branches from file: " << inFile << ".." << endl;
     T->SetBranchStatus( "*", 0 );
     T->SetBranchStatus( "sbs.hcal.*", 1 );
@@ -256,7 +257,9 @@ void hcal_signal_centering( int run = -1 ){
 
 	  //cout << peak[r][c] << endl;
 
-	  if( peak[r][c]>0.03 && peak[r][c]<3000 ){
+	  //if( peak[r][c]>0.03 && peak[r][c]<3000 ){
+	  //Added an amplitude cut 11/25/2021, Scott Barcus.
+	  if( peak[r][c]>0.03 && peak[r][c]<3000 && hcalt::a_amp_p[m]>50){
 	    gATimeSpec[r][c]->Fill( maxSamp*4. );
 	    ATimeDist_raw->Fill( maxSamp );
 	    if(hcalt::a_time[m]>0) 

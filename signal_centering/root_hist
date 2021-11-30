@@ -175,3 +175,17 @@ new TBrowser
 .q
 .x hcal_signal_centering.C(12039)
 .q
+.x hcal_signal_centering.C(12250)
+.q
+.x hcal_signal_centering.C(12254)
+.q
+.x hcal_signal_centering.C(12276)
+.q
+.x hcal_signal_centering.C(12276)
+.q
+.x hcal_signal_centering.C(12276)
+.q
+.x hcal_signal_centering.C(12276)
+.q
+.x hcal_signal_centering.C(12280)
+.q

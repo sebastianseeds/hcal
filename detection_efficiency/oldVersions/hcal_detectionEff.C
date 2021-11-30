@@ -6,7 +6,6 @@
 #include "TFile.h"
 #include "TH1D.h"
 #include "TH2D.h"
-#include "TF1.h"
 #include "TString.h"
 #include <iostream>
 #include <fstream>
@@ -31,39 +30,7 @@ const double PI = TMath::Pi();
 const double Mp = 0.938272;
 const double Mn = 0.939565;
 
-double gausFit_alt(double *x, double *par) {
-  double amp = par[0];
-  double loc = par[1];
-  double sigma = par[2];
-  double expo_0 = par[3];
-  double expo_1 = par[4];
-  double ADC = x[0];
-  return amp * TMath::Exp(-0.5 * pow(((ADC - loc) / sigma), 2)) * TMath::Exp( expo_0 + expo_1*ADC );
-}
-
-double expoFit(double *x, double *par) {
-  
-  double expo_0 = par[0];
-  double expo_1 = par[1];
-  double ADC = x[0];
-  /*
-  if ( ADC > 0.7 && ADC < 1.05 ) {
-    TF1::RejectPoint();
-    return 0;
-  }
-  */
-  return TMath::Exp( expo_0 + expo_1*ADC );
-}
-
-/*
-double gausFit_alt(double *X,double *p) //Single parameter fits - GOING FOR THE GOLD!
-{
-  double fitval = p[0]*pow(X[0]/p[1],p[2]); //X normalized to lowest HV value
-  return fitval;
-}
-*/
-
-void hcal_detectionEff_oneloop( const char *configfilename, int run = -1 ){
+void hcal_detectionEff( const char *configfilename, int run = -1 ){
 
   //const char *outfilename, double ebeam=3.7278, double bbtheta=36.0, double sbstheta=31.9, double hcaldist=11.0 ){
 
@@ -80,11 +47,9 @@ void hcal_detectionEff_oneloop( const char *configfilename, int run = -1 ){
     T->SetBranchStatus( "sbs.hcal.x", 1 );
     T->SetBranchStatus( "sbs.hcal.y", 1 );
     T->SetBranchStatus( "sbs.hcal.e", 1 );
+    T->SetBranchStatus( "sbs.hcal.nclus", 1 );
     T->SetBranchStatus( "sbs.hcal.clus.e", 1 );
     T->SetBranchStatus( "sbs.hcal.clus.nblk", 1 );
-    T->SetBranchStatus( "sbs.hcal.clus.row", 1 );
-    T->SetBranchStatus( "sbs.hcal.clus.col", 1 );
-    T->SetBranchStatus( "sbs.hcal.nclus", 1 );
     T->SetBranchStatus( "bb.tr.n", 1 );
     T->SetBranchStatus( "bb.tr.p", 1 );
     T->SetBranchStatus( "bb.tr.px", 1 );
@@ -118,21 +83,19 @@ void hcal_detectionEff_oneloop( const char *configfilename, int run = -1 ){
     T->SetBranchAddress( "bb.ps.x", hcalt::BBps_x );
     T->SetBranchAddress( "bb.ps.y", hcalt::BBps_y );
     T->SetBranchAddress( "bb.ps.e", hcalt::BBps_e );
-    T->SetBranchAddress( "sbs.hcal.clus.row", hcalt::crow );
-    T->SetBranchAddress( "sbs.hcal.clus.col", hcalt::ccol );
     T->SetBranchAddress( "sbs.hcal.x", hcalt::cx );
     T->SetBranchAddress( "sbs.hcal.y", hcalt::cy );
-    T->SetBranchAddress( "sbs.hcal.e", hcalt::e );
+    T->SetBranchAddress( "sbs.hcal.e", hcalt::ce );
+    T->SetBranchAddress( "sbs.hcal.nclus", hcalt::nclus );
     T->SetBranchAddress( "sbs.hcal.clus.e", hcalt::ce );
     T->SetBranchAddress( "sbs.hcal.clus.nblk", hcalt::cnblk );
-    T->SetBranchAddress( "sbs.hcal.nclus", hcalt::nclus );
     T->SetBranchAddress( "bb.tdctrig.tdcelemID", hcalt::TDCT_id );
     T->SetBranchAddress( "bb.tdctrig.tdc", hcalt::TDCT_tdc );
     T->SetBranchAddress( "Ndata.bb.tdctrig.tdcelemID", &hcalt::TDCTndata );
   }
   
   double E_e = 1.92; // Energy of the beam
-  double emin = 0.5; // Minimum energy of a block to be considered in clusters
+  double emin = 0.5; // Minimum energy of a block to be considered in a cluster
   double HCal_d = 14.5; // Distance to HCal from scattering chamber for comm1
   double HCal_th = 35.0; // Angle that the center of HCal is at  
   double opticsCorr = 1.05; // Correction to magnitude of p_e to account for misaligned optics
@@ -196,7 +159,6 @@ void hcal_detectionEff_oneloop( const char *configfilename, int run = -1 ){
       if( skey == "W_sig" ){
 	TString sval = ( (TObjString*)(*tokens)[1] )->GetString();
         W_sig = sval.Atof();
-	cout << "W sigma: " << W_sig << endl;
       }
       if( skey == "BB_th" ){
 	TString sval = ( (TObjString*)(*tokens)[1] )->GetString();
@@ -206,7 +168,7 @@ void hcal_detectionEff_oneloop( const char *configfilename, int run = -1 ){
       if( skey == "emin" ){
 	TString sval = ( (TObjString*)(*tokens)[1] )->GetString();
         emin = sval.Atof();
-	cout << "Minimum Block Energy " << emin << endl;
+	cout << "Cluster energy minimum " << emin << endl;
 
       }
     }
@@ -218,43 +180,31 @@ void hcal_detectionEff_oneloop( const char *configfilename, int run = -1 ){
   cout << endl;
 
   cout << "Opened tree with " << nentries << " entries." << endl;
-  
+
   BB_th *= TMath::DegToRad();
   HCal_th *= TMath::DegToRad();
   double hcalheight = 0.45; //m (we are guessing)
-  //24 rows x 12 cols (360cm x 180cm)
   
   //Keep a wide cut on W for allowed elastics
-  double Wmin_elastic = W_mean - 2.*W_sig;
-  double Wmax_elastic = W_mean + 2.*W_sig;
+  double Wmin_elastic = W_mean - 3.*W_sig;
+  double Wmax_elastic = W_mean + 3.*W_sig;
   
   //BigBite tracks
   double ntrack;
-  
+
   //Outfile
   TFile *fout = new TFile("outfiles/efficiency.root","RECREATE");
 
   //Histograms
   TH1D *hdpel = new TH1D("hdpel",";p/p_{elastic}(#theta)-1;", 250, -1.0, 0.5);
-  TH1D *hW = new TH1D( "hW",";W (GeV);", 400, 0.0, 4.0 );
-  TH1D *hW_pCut = new TH1D( "hW_pCut",";W (GeV);", 400, 0.0, 4.0 );
-  TH1D *hW_cut_emin = new TH1D( "hW_cut_emin",";W (GeV);", 400, 0., 4.0 );
-
-
-  //TH1D *hW_cut = new TH1D("hW_cut",";W (GeV);", 400,Wmin_elastic,Wmax_elastic);
-  TH1D *hW_cut = new TH1D( "hW_cut",";W (GeV);", 1150., 0., 1.15 );
-
+  TH1D *hW = new TH1D("hW",";W (GeV);", 400,0.0,4.0);
+  
   TH1D *hdx_HCAL = new TH1D("hdx_HCAL",";x_{HCAL}-x_{expect} (m);", 500, -2.5, 2.5);
   TH1D *hdy_HCAL = new TH1D("hdy_HCAL",";y_{HCAL}-y_{expect} (m);", 500, -1.25, 1.25);
-  TH1D *hdx_HCAL_emin = new TH1D("hdx_HCAL_emin",";x_{HCAL}-x_{expect} (m);", 500, -2.5, 2.5);
-  TH1D *hdy_HCAL_emin = new TH1D("hdy_HCAL_emin",";y_{HCAL}-y_{expect} (m);", 500, -1.25, 1.25);
   TH1D *hdr_HCAL = new TH1D("hdr_HCAL",";r_{HCAL}-r_{expect} (m);", 500, -2.5, 2.5);
   TH2D *hdxdy_HCAL = new TH2D("hdxdy_HCAL",";y_{HCAL}-y_{expect} (m); x_{HCAL}-x_{expect} (m)", 250, -1.25, 1.25, 250, -2.5, 2.5 );
   TH2D *hxcorr_HCAL = new TH2D("hxcorr_HCAL",";x_{expect} (m);x_{HCAL} (m)", 250, -2.5, 2.5, 250, -2.5, 2.5 );
   TH2D *hycorr_HCAL = new TH2D("hycorr_HCAL",";y_{expect} (m);y_{HCAL} (m)", 250, -1.25, 1.25, 250, -1.25, 1.25);
-
-  TH1D *hdx_HCAL_dyCut = new TH1D("hdx_HCAL_dyCut",";x_{HCAL}-x_{expect} (m);", 500, -2.5, 2.5);
-  TH1D *hdx_HCAL_dyCut_emin = new TH1D("hdx_HCAL_dyCut_emin",";x_{HCAL}-x_{expect} (m);", 500, -2.5, 2.5);
 
   TH1D *hvz = new TH1D("hvz","",250,-0.15,0.15);
 
@@ -267,83 +217,63 @@ void hcal_detectionEff_oneloop( const char *configfilename, int run = -1 ){
 
   cout << "Processing events.." << endl;
 
-  double progress = 0.;
-  
-  while( progress<1.0 ){
-    
-    int barwidth = 70;
-    int step = 1;
-    
-    
-    
-    while( T->GetEntry( nevent++ ) ){
-      //if( nevent % 10000 == 0 ) cout << nevent << " / " << nentries << endl;
+  while( T->GetEntry( nevent++ ) ){
+    if( nevent % 10000 == 0 ) cout << nevent << " / " << nentries << endl;
+
+    //Only consider event if tracks exist
+    ntrack = hcalt::BBtr_n;
+    if( ntrack > 0 ){
       
-      //Only consider event if tracks exist
-      ntrack = hcalt::BBtr_n;
-      if( ntrack > 0 ){
-	
-	//Define vectors from track in BB
-	double etheta = acos( hcalt::BBtr_pz[0]/hcalt::BBtr_p[0] );
-	double ephi = atan2( hcalt::BBtr_py[0], hcalt::BBtr_px[0] );
-	
-	//Reaction origin
-	TVector3 vertex(0,0,hcalt::BBtr_vz[0]);
-	
-	TLorentzVector Pbeam(0,0,E_e,E_e);
-	TLorentzVector kprime(hcalt::BBtr_px[0],hcalt::BBtr_py[0],hcalt::BBtr_pz[0],hcalt::BBtr_p[0]);
-	TLorentzVector Ptarg(0,0,0,Mp);
-	
-	TLorentzVector q = Pbeam - kprime;
-	
-	TLorentzVector PgammaN = Ptarg + q; //(-px, -py, ebeam - pz, Mp + ebeam - p)
-	
-	double pel = E_e/(1.+E_e/Mp*(1.-cos(etheta)));
-	
-	hdpel->Fill( hcalt::BBtr_p[0]/pel - 1.0 );
-	
-	hW->Fill( PgammaN.M() );
-	
-	hvz->Fill( vertex.Z() );
-	
-	//Now project to HCAL and compare to best HCAL cluster:
-	//Assume neutron (straight-line), quasi-elastic kinematics:, and assume BB/HCal trigger coincidence <20ns
-	
-	//Cut on BBCal and HCal trigger coincidence
-	double bbcal_time=0., hcal_time=0.;
-	for(int ihit=0; ihit<hcalt::TDCTndata; ihit++){
-	  if(hcalt::TDCT_id[ihit]==5) bbcal_time=hcalt::TDCT_tdc[ihit];
-	  if(hcalt::TDCT_id[ihit]==0) hcal_time=hcalt::TDCT_tdc[ihit];
-	}
-	double diff = hcal_time - bbcal_time; 
-	
-	//Count the number of elastic events with acceptable tracks in BB (reduction of pions with PS)
-	if( PgammaN.M() >= Wmin_elastic && 
-	    PgammaN.M() <= Wmax_elastic && 
-	    hcalt::BBps_e[0]>0.1 && 
-	    hcalt::BBsh_e[0]>0.1 && 
-	    fabs( vertex.Z() )<=0.08 ) {
-	  hits_elBB++;
-	  //hW_cut->Fill(PgammaN.M());
-	}
-	
-	//if( PgammaN.M()<1.15 &&
-	//fabs( vertex.Z() )<=0.08 &&
-	//  hcalt::BBps_e[0]>0.1 && 
-	//  hcalt::BBsh_e[0]>0.1 ) hW_cut->Fill(PgammaN.M());
-	
-	//Require that track corresponds to elastic event, energy deposited in preshower, and coincidence trigger between HCal and BB
-	//if( PgammaN.M() >= Wmin_elastic && PgammaN.M() <= Wmax_elastic && hcalt::BBps_e[0]>0.1 && hcalt::BBsh_e[0]>0.1 && fabs( vertex.Z() )<=0.08 && fabs(diff-510.)<30 ){
-	
+      //Define vectors from track in BB
+      double etheta = acos( hcalt::BBtr_pz[0]/hcalt::BBtr_p[0] );
+      double ephi = atan2( hcalt::BBtr_py[0], hcalt::BBtr_px[0] );
+
+      //Reaction origin
+      TVector3 vertex(0,0,hcalt::BBtr_vz[0]);
+
+      TLorentzVector Pbeam(0,0,E_e,E_e);
+      TLorentzVector kprime(hcalt::BBtr_px[0],hcalt::BBtr_py[0],hcalt::BBtr_pz[0],hcalt::BBtr_p[0]);
+      TLorentzVector Ptarg(0,0,0,Mp);
+
+      TLorentzVector q = Pbeam - kprime;
+
+      TLorentzVector PgammaN = Ptarg + q; //(-px, -py, ebeam - pz, Mp + ebeam - p)
+      
+      double pel = E_e/(1.+E_e/Mp*(1.-cos(etheta)));
+
+      hdpel->Fill( hcalt::BBtr_p[0]/pel - 1.0 );
+
+      hW->Fill( PgammaN.M() );
+
+      hvz->Fill( vertex.Z() );
+
+      //Now project to HCAL and compare to best HCAL cluster:
+      //Assume neutron (straight-line), quasi-elastic kinematics:, and assume BB/HCal trigger coincidence <20ns
+      
+      //Cut on BBCal and HCal trigger coincidence
+      double bbcal_time=0., hcal_time=0.;
+      for(int ihit=0; ihit<hcalt::TDCTndata; ihit++){
+	if(hcalt::TDCT_id[ihit]==5) bbcal_time=hcalt::TDCT_tdc[ihit];
+	if(hcalt::TDCT_id[ihit]==0) hcal_time=hcalt::TDCT_tdc[ihit];
+      }
+      double diff = hcal_time - bbcal_time; 
+      
+      //Count the number of elastic events with acceptable tracks in BB (reduction of pions with PS)
+      if( PgammaN.M() >= Wmin_elastic && PgammaN.M() <= Wmax_elastic && hcalt::BBps_e[0]>0.1 && fabs( vertex.Z() )<=0.1 ) 
+	hits_elBB++;
+
+      //Require that track corresponds to elastic event, energy deposited in preshower, and coincidence trigger between HCal and BB
+      if( PgammaN.M() >= Wmin_elastic && PgammaN.M() <= Wmax_elastic && hcalt::BBps_e[0]>0.1 && fabs( vertex.Z() )<=0.1 && fabs(diff-510.)<20 ){
+
 	//Now determine projected expectation for proton from BB e' track
 	double nu = E_e - hcalt::BBtr_p[0];
 	double pp = sqrt(pow(nu,2)+2.*Mp*nu);
 	double phinucleon = ephi + TMath::Pi(); //Coplanarity
 	double thetanucleon = acos( (E_e - hcalt::BBtr_p[0]*cos(etheta))/pp ); //Elastic constraint on nucleon kinematics
-	
+
 	//Nucleon momentum unit vector - no field
 	TVector3 pNhat( sin(thetanucleon)*cos(phinucleon),sin(thetanucleon)*sin(phinucleon),cos(thetanucleon));
-	
+
 	//Get the coordinate system for HCal from the kinematic HCal theta
 	TVector3 HCAL_zaxis(-sin(HCal_th),0,cos(HCal_th));
 	TVector3 HCAL_xaxis(0,1,0);
@@ -351,145 +281,46 @@ void hcal_detectionEff_oneloop( const char *configfilename, int run = -1 ){
 	
 	//Project the origin of the detector coordinate system from the scattering chamber
 	TVector3 HCAL_origin = HCal_d * HCAL_zaxis;
-	
+
 	//
 	double sintersect = ( HCAL_origin - vertex ).Dot( HCAL_zaxis ) / ( pNhat.Dot( HCAL_zaxis ) );
 	TVector3 HCAL_intersect = vertex + sintersect * pNhat;
-	
-	
+
+
 	double yexpect_HCAL = (HCAL_intersect - HCAL_origin).Dot( HCAL_yaxis );
 	double xexpect_HCAL = (HCAL_intersect - HCAL_origin).Dot( HCAL_xaxis );
 	
-	double dx = (hcalt::cx[0]+1.550) - xexpect_HCAL; //Adding offset to correct for error in database file. Will adjust later.
-	double dy = (hcalt::cy[0]+0.323) - yexpect_HCAL; //Adding offset
-	
-	double dr = sqrt( pow( dx, 2 )+pow( dy, 2 ));
-	
-	//cout << "dx=" << dx << " dy=" << dy << " dr=" << dr << endl;
-	//if( hcalt::ce[0] > emin ) hW_cut_emin->Fill(PgammaN.M());
+	double dx = hcalt::cx[0] - xexpect_HCAL;
+	double dy = hcalt::cy[0] - yexpect_HCAL;
 
-	// Can add cut on proton spot here to populate W distribution
-	// Add fiducial cut here on both BB elastics and HCal elastics
-	// Fill denominator if conditions are met
-	if(  PgammaN.M()<1.15 &&
-	     fabs( vertex.Z() )<=0.08 &&
-	     hcalt::BBps_e[0]>0.1 && 
-	     hcalt::BBsh_e[0]>0.1 &&
-	     yexpect_HCAL < 0.885 &&
-	     yexpect_HCAL > -0.885 &&
-	     xexpect_HCAL < 1.785 + hcalheight &&
-	     xexpect_HCAL > -1.785 + hcalheight ){
-	  hW_cut->Fill(PgammaN.M());
-	  //if( hcalt::ce[0] > emin ) hW_cut_emin->Fill(PgammaN.M());
-	}
+	double dr = sqrt( pow( dx, 2 )+pow( dy, 2 ));
+
+	//cout << "dx=" << dx << " dy=" << dy << " dr=" << dr << endl;
 	
-	//if(hcalt::crow[0]==0||hcalt::crow[0]==24||hcalt::ccol[0]==0||hcalt::ccol[0]==12) cout << hcalt::crow[0] << " " << hcalt::ccol[0] << endl;
-	
-	// Fill Numerator if conditions are met
-	if( PgammaN.M() >= Wmin_elastic && 
-	    PgammaN.M() <= Wmax_elastic && 
-	    hcalt::BBps_e[0] > 0.1 &&
-	    hcalt::BBsh_e[0] > 0.1 &&
-	    hcalt::crow[0] > 0 &&
-	    hcalt::ccol[0] > 0 &&
-	    hcalt::crow[0] < 23 &&
-	    hcalt::ccol[0] < 11 &&
-	    fabs( vertex.Z() ) <= 0.08 &&
-	    fabs( diff-510. )<30 ){
-	  
-	  hdx_HCAL->Fill( dx );
-	  hdy_HCAL->Fill( dy );
-	  if( hcalt::ce[0] > emin ) hdx_HCAL_emin->Fill( dx ); //Only fill these if the minimum energy of the cluster correlates well with more than a single block
-	  if( hcalt::ce[0] > emin ) hdy_HCAL_emin->Fill( dy );
-	  hdr_HCAL->Fill( dr );
-	  
-	  if(dy>-0.5&&dy<0.5) {
-	    if( hcalt::ce[0] > emin ) hdx_HCAL_dyCut_emin->Fill( dx );
-	    hdx_HCAL_dyCut->Fill( dx );
-	  }
-	  hdxdy_HCAL->Fill( dy, dx );
-	  
-	  hxcorr_HCAL->Fill( xexpect_HCAL, hcalt::cx[0] );
-	  hycorr_HCAL->Fill( yexpect_HCAL, hcalt::cy[0] );
-	  
-	  hdy_HCAL_vs_z->Fill( vertex.Z(), hcalt::cy[0] - yexpect_HCAL );
-	  hdy_HCAL_vs_ptheta->Fill( thetanucleon, hcalt::cy[0] - yexpect_HCAL );
-	  
-	}
-	
-	//Plot another distribution of W cutting on the region which should contain elastics on HCal
-	if(dy>-0.5&&dy<0.5 && dx>-0.5&&dx<0.5) {
-	  hW_pCut->Fill(PgammaN.M());
-	  if( hcalt::ce[0] > emin ) hW_cut_emin->Fill(PgammaN.M());
-	}
+	hdx_HCAL->Fill( dx );
+	hdy_HCAL->Fill( dy );
+	hdr_HCAL->Fill( dr );
+
+	hdxdy_HCAL->Fill( dy, dx );
+
+	hxcorr_HCAL->Fill( xexpect_HCAL, hcalt::cx[0] );
+	hycorr_HCAL->Fill( yexpect_HCAL, hcalt::cy[0] );
+
+	hdy_HCAL_vs_z->Fill( vertex.Z(), hcalt::cy[0] - yexpect_HCAL );
+	hdy_HCAL_vs_ptheta->Fill( thetanucleon, hcalt::cy[0] - yexpect_HCAL );
+
       }
-      
-      cout << "[";
-      int pos = barwidth*progress;
-      for( int i=0; i<barwidth; ++i ){
-	if( i<pos ) cout << "_";
-	else if( i==pos ){ 
-	  
-	  if( step%4==0 ){
-	    cout << "(>^o^)>";
-	  }
-	  if( step%4==1 ){
-	    cout << "<(^o^)>";
-	  }
-	  if( step%4==2 ){
-	    cout << "<(^o^<)";
-	  }
-	  if( step%4==3 ){
-	    cout << "<( ; )>";
-	  }
-	  
-	}
-	else cout << " ";
-      }
-      progress = (double)( ( nevent+1. )/nentries );
-      
-      cout << "]" << int( progress*100 ) << "%\r";
-      cout.flush();
-      if( nevent%10000==0 ) step++;
-      
-      
-      
-      
+
     }
-    
-    
-    
   }
   
-  TF1 *fg = new TF1("fg",gausFit_alt,0.0,1.15,5);
-  fg->SetRange(0.0,1.15);
-  fg->SetParameter(0,1.);
-  fg->SetParameter(1,0.9);
-  fg->FixParameter(2,0.5);
-  fg->SetParameter(3,1);
-  fg->SetParameter(4,2.5);
-  
-  TF1 *fe = new TF1("fe",expoFit,0.0,1.15,2);
-  //fe->SetRange(0.0,1.15);
-  //fe->SetParameter(0,-0.36);
-  //fe->SetParameter(1,4.95);
-  //fe->FixParameter(0,-0.613473);
-  //fe->FixParameter(1,5.27608);
-  fe->FixParameter(0,-0.585486);
-  fe->FixParameter(1,5.15219);
-
-  //Can do sideband analysis with RejectPoint() on TF1
-
   TF1 *f1;
   TF1 *f2;
   TF1 *f3;
-  TF1 *f4;
-  TF1 *f5;
   double sig_x;
   double sig_y;
   double sig_r;
-  double sig_x_dyCut;
-  double BB_elas;
+  double r_max;
 
   hdx_HCAL->Fit("gaus","Q");
   f1=hdx_HCAL->GetFunction("gaus");
@@ -509,38 +340,92 @@ void hcal_detectionEff_oneloop( const char *configfilename, int run = -1 ){
 
   cout << "Sigma r = " << sig_r << endl;
 
-  hdx_HCAL_dyCut->Fit("gaus","Q");
-  f4=hdx_HCAL_dyCut->GetFunction("gaus");
-  sig_x_dyCut = f4->GetParameter(2);
+  double expect_factor = 3.0; //As of now, arbitrary
 
-  cout << "Sigma x dyCut = " << sig_x_dyCut << endl;
+  //r_max = sqrt( pow( expect_factor*sig_x, 2 )+pow( expect_factor*sig_y, 2 ) );
+  r_max = expect_factor*sig_r;
 
-  hW_cut->Fit(fe,"Q");
-
-  cout << fe->GetParameter(0) << " " << fe->GetParameter(1) << endl;
-
-  //hW_cut->Fit("expo","Q");
-  //f5=hW_cut->GetFunction("expo");
-  //f5->FixParameter(1,2.5);
-  //hW_cut->Fit(f5,"Q");
-
-  BB_elas = hW_cut->GetEntries() - (fe->Integral( 0., 1.15 )*1000.); //Include conversion factor, bins/GeV
-
-  cout << "BB elastics from integral = " << sig_x_dyCut << endl;
-
+  cout << "Max distance from expected location to be included as good hit = " << r_max << endl;
   cout << "Total elastic events detected in BB = " << hits_elBB << endl;
-
-  cout << "Or, alternatively with fits = " << BB_elas << endl;
 
   fout->Write();
 
+  //Reset nevent counter
+  nevent = 0;
 
-  //Simple integral method
-  hits_gHCAL = 100.*f4->Integral(-2.5,2.5); //500 bins to 5.0 range ratio
+  cout << "Reprocessing events to obtain efficiency.." << endl;
+
+  while( T->GetEntry( nevent++ ) ){
+    if( nevent % 10000 == 0 ) cout << nevent << " / " << nentries << endl;
+
+    //Only consider event if tracks exist
+    ntrack = hcalt::BBtr_n;
+    if( ntrack > 0 ){
+      
+      //Define vectors from track in BB
+      double etheta = acos( hcalt::BBtr_pz[0]/hcalt::BBtr_p[0] );
+      double ephi = atan2( hcalt::BBtr_py[0], hcalt::BBtr_px[0] );
+
+      TVector3 vertex(0,0,hcalt::BBtr_vz[0]);
+
+      TLorentzVector Pbeam(0,0,E_e,E_e);
+      TLorentzVector kprime(hcalt::BBtr_px[0],hcalt::BBtr_py[0],hcalt::BBtr_pz[0],hcalt::BBtr_p[0]);
+      TLorentzVector Ptarg(0,0,0,Mp);
+
+      TLorentzVector q = Pbeam - kprime;
+
+      TLorentzVector PgammaN = Ptarg + q; //(-px, -py, ebeam - pz, Mp + ebeam - p)
+      
+      double pel = E_e/(1.+E_e/Mp*(1.-cos(etheta)));
+      
+      double bbcal_time=0., hcal_time=0.;
+      for(int ihit=0; ihit<hcalt::TDCTndata; ihit++){
+	if(hcalt::TDCT_id[ihit]==5) bbcal_time=hcalt::TDCT_tdc[ihit];
+	if(hcalt::TDCT_id[ihit]==0) hcal_time=hcalt::TDCT_tdc[ihit];
+      }
+      double diff = hcal_time - bbcal_time; 
+
+      // Need to keep all cuts to eliminate incidentals from numerator
+      if( PgammaN.M() >= Wmin_elastic && PgammaN.M() <= Wmax_elastic && hcalt::BBps_e[0]>0.1 && fabs( vertex.Z() )<=0.1 && fabs(diff-510.)<20 ){
+
+	double nu = E_e - hcalt::BBtr_p[0];
+	double pp = sqrt(pow(nu,2)+2.*Mp*nu);
+	double phinucleon = ephi + TMath::Pi();
+	double thetanucleon = acos( (E_e - hcalt::BBtr_p[0]*cos(etheta))/pp );
+
+	TVector3 pNhat( sin(thetanucleon)*cos(phinucleon),sin(thetanucleon)*sin(phinucleon),cos(thetanucleon));
+
+	TVector3 HCAL_zaxis(-sin(HCal_th),0,cos(HCal_th));
+	TVector3 HCAL_xaxis(0,1,0);
+	TVector3 HCAL_yaxis = HCAL_zaxis.Cross(HCAL_xaxis).Unit();
+	
+	TVector3 HCAL_origin = HCal_d * HCAL_zaxis;
+
+	double sintersect = ( HCAL_origin - vertex ).Dot( HCAL_zaxis ) / (pNhat.Dot( HCAL_zaxis ) );
+
+	TVector3 HCAL_intersect = vertex + sintersect * pNhat;
+
+	double yexpect_HCAL = (HCAL_intersect - HCAL_origin).Dot( HCAL_yaxis );
+	double xexpect_HCAL = (HCAL_intersect - HCAL_origin).Dot( HCAL_xaxis );
+	
+	double dx = hcalt::cx[0] - xexpect_HCAL;
+	double dy = hcalt::cy[0] - yexpect_HCAL;
+
+	double dr = sqrt( pow( dx, 2 )+pow( dy, 2 ));
+
+	//cout << "dx=" << dx << " dy=" << dy << " dr=" << dr << endl;
+
+	if( dr<r_max ){
+	  hdxdy_HCAL_cut->Fill( hcalt::cy[0] - yexpect_HCAL, hcalt::cx[0] - xexpect_HCAL );
+	  hits_gHCAL++;
+	}
+      }
+    }
+  }
 
   cout << endl << "Total elastic events detected in HCal = " << hits_gHCAL << endl;
 
-  double efficiency = double(hits_gHCAL)/double(BB_elas);
+  double efficiency = double(hits_gHCAL)/double(hits_elBB);
 
   cout << endl << "Detection efficiency for run = " << efficiency*100. << " percent." << endl << endl;
 
